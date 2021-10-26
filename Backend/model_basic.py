@@ -7,8 +7,13 @@ import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
+#reading the dataset
 data = pd.read_csv('Comments.csv')
+
+#getting the data (all columns)
 allColumns = data[['comment','label','language']]
+
+#getting the data (comment and label columns only)
 commentsAndLabel = data[['comment','label']]
 
 #convert comments and label dataFrame into list
@@ -46,7 +51,6 @@ y = np.array([countCebuano, countEnglish])
 plt.title("Languages in the dataset")
 plt.bar(x,y)
 plt.show()
-
 
 #printing number of data by label
 print("No. of positive comments: ", countPositives)
