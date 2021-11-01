@@ -1,9 +1,10 @@
-from flask import Flask
+from flask import Flask,request, json
 import numpy as np
 import pandas as pd
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 import matplotlib.pyplot as plt
+import csv
 
 app = Flask(__name__)
 
@@ -59,10 +60,17 @@ print("No. of neutral comments: ", countNeutral)
 
 classifier = NaiveBayesClassifier(list_commentsAndLabel)
 
-while(True):
-    comment = input("enter you comment here >> ")
-    result = classifier.classify(comment)
-    print("result: " + result)
+# while(True):
+#     comment = input("enter you comment here >> ")
+#     result = classifier.classify(comment)
+#     print("result: " + result)
 
+
+#POST Api for receiving the comment then sentiment analysis
+@app.route("/sentimentAnalysis", methods='POST')
+def sentimentAnalyis():
+    comment = json.loads(request.data)
+    return comment
+    
 if __name__ == '__main__':
     app.run(debug=True)
