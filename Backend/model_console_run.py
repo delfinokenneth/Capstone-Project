@@ -8,10 +8,7 @@ import csv
 from flask_cors import CORS
 from werkzeug.exceptions import RequestEntityTooLarge
 
-app = Flask(__name__)
-
 #this is to allow cross-origin to the backend
-cors = CORS(app)
 
 #reading the dataset
 data = pd.read_csv('Comments.csv')
@@ -65,14 +62,10 @@ print("No. of neutral comments: ", countNeutral)
 
 classifier = NaiveBayesClassifier(list_commentsAndLabel)
 
-#POST Api for receiving the comment then sentiment analysis
-@app.route("/sentimentAnalysis", methods=['POST'])
-def sentimentAnalyis():
-    #get the data from the payload
-    comment = json.loads(request.data)
-    result = classifier.classify(comment['comment'])
-    return result
+while(True):
+    comment = input("enter you comment here >> ")
+    result = classifier.classify(comment)
+    print("result: " + result)
 
-    
-if __name__ == '__main__':
-    app.run(debug=True)
+
+

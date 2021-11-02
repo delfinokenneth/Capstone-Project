@@ -1,15 +1,19 @@
 import React from "react";
 import '../Test.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Button} from 'react-bootstrap';
+import TestButton from './TestButton.js';
 
-const inputComment = () =>
+const inputComment = (props) =>
 {
     return (
         <div className="div_Comment">
             <h2>Enter you comment here: </h2>
-            <input placeholder="Enter Comment" className="input_Comment"></input>
-            <Button variant="primary" className="btn_test">test</Button>
+            <input 
+            placeholder="Enter Comment" 
+            className="input_Comment"
+            onChange={props.textChange}
+            />
+            <TestButton onTestClick = {props.onTestClick}/>
         </div>
     );
 }
