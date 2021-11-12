@@ -27,7 +27,6 @@ class Test extends Component {
             console.log(res);
             this.setState({sentiment: res.data})
         })
-
     }
     render() {
         const sentiment = this.state.sentiment;
