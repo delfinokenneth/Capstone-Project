@@ -1,4 +1,4 @@
-from flask import Flask,request, json
+from flask import Flask,request, json, jsonify
 import numpy as np
 import pandas as pd
 from textblob import TextBlob
@@ -109,36 +109,44 @@ def sentiment_scores(sentence):
     # oject gives a sentiment dictionary. 
     # which contains pos, neg, neu, and compound scores. 
     sentiment_dict = sid_obj.polarity_scores(sentence) 
+    
     print("word: ", sentence)
     print("Overall sentiment dictionary is : ", sentiment_dict) 
     print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative") 
     print("sentence was rated as ", sentiment_dict['neu']*100, "% Neutral") 
     print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive") 
-  
+    
     print("Sentence Overall Rated As", end = " ") 
-    output = ""
+    #storing all the outputs into an array
+    output_array = []
+    output_array.append("word: "+ sentence)
+    output_array.append("Overall sentiment dictionary is : "+ json.dumps(sentiment_dict))
+    output_array.append("sentence was rated as "+ str(sentiment_dict['neg']*100)+ "% Negative")
+    output_array.append("sentence was rated as "+ str(sentiment_dict['neu']*100)+ "% Neutral")
+    output_array.append("sentence was rated as "+ str(sentiment_dict['pos']*100)+ "% Positive")
+    output = ''
     # decide sentiment as positive, negative and neutral 
     if sentiment_dict['compound'] >= 0.05 : 
         print(output, "Positive") 
         output = "Sentence Overall Rated AS Positive"
-        return output
-  
-    elif sentiment_dict['compound'] <= - 0.05 : 
+ 
+    elif sentiment_dict['compound'] <= -0.05 : 
         print(output, "Negative") 
         output = "Sentence Overall Rated AS Negative"
-        return output
   
     else :
         print(output, "neutral")
         output = "Sentence Overall Rated AS Neutral"
-        return output
+
+    output_array.append(output)
+    return output_array
 
     
 
 #function to split the data except of "not"
 def connectSomeWords(sentence):
     list_sentence = sentence.split(" ")
-
+    list_output = []
     new_list = []
     new_word = ""
     
@@ -152,9 +160,10 @@ def connectSomeWords(sentence):
             new_word=list_sentence[i]
             new_list.append(new_word) 
         i += 1
-        sentiment_scores(new_word)
+        list_output.append(sentiment_scores(new_word))
         print("")
-    return sentiment_scores(sentence)
+    list_output.append(sentiment_scores(sentence))
+    return list_output
 #----------------------------------------------------------------------------- NAIVEBAYESCLASSIFIER
 classifier = NaiveBayesClassifier(list_commentsAndLabel)
 
@@ -163,9 +172,9 @@ classifier = NaiveBayesClassifier(list_commentsAndLabel)
 def sentimentAnalyis():
     #get the data from the payload
     comment = json.loads(request.data)
-    result = connectSomeWords(comment.get("comment"))
+    result = connectSomeWords(comment.get("comment")).copy()
     print(result)
-    return result
+    return jsonify(tuple(result))
 
 #POST Api for receiving the comment then sentiment analysis
 @app.route("/displayName", methods=['GET'])

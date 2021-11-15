@@ -3,11 +3,23 @@ import '../Test.css';
 
 const Result = (props) => 
 {
-    return (
+    console.log(props.comment)
+    return (  
         <div className="div_Result">
             <h2>Result</h2>
-            <text>{props.comment}</text>
+            <ul>
+                {props.comment.map(comments => (
+                    <li>
+                        {
+                            comments.map(c => (
+                                <ul>{c}</ul>
+                            ))
+                        }
+                    </li>
+                ))}
+            </ul>
         </div>
+
     );
 }
 

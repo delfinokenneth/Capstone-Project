@@ -10,7 +10,7 @@ class Test extends Component {
         super()
         this.state={
             comment: '',
-            sentiment: '',
+            sentiment: [],
         }
     }
     onTextChange = (event) =>
