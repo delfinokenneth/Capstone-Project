@@ -7,17 +7,20 @@ const Result = (props) =>
     return (  
         <div className="div_Result">
             <h2>Result</h2>
-            <ul>
+            <ol>
                 {props.comment.map(comments => (
                     <li>
-                        {
-                            comments.map(c => (
-                                <ul>{c}</ul>
-                            ))
+                        {   
+                          comments.map(line => (
+                            <ul>
+                                {line}
+                            </ul>
+
+                          ))
                         }
                     </li>
                 ))}
-            </ul>
+            </ol>
         </div>
 
     );

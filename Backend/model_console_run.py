@@ -62,10 +62,18 @@ print("No. of neutral comments: ", countNeutral)
 
 classifier = NaiveBayesClassifier(list_commentsAndLabel)
 
-while(True):
-    comment = input("enter you comment here >> ")
-    result = classifier.classify(comment)
-    print("result: " + result)
+# comment = input("enter you comment here >> ")
+# result = classifier.classify(comment)
+# print("result: " + result)
+
+#function to get how many items in the dataset will be classified  correctly(only cebuano)
+def getAccuracy():
+    correct = 0
+    miss = 0
+    for data in list_commentsAndLabel:
+        print(data)
+
+getAccuracy()
 
 
 
