@@ -58,7 +58,7 @@ tokenizer.fit_on_texts(list(train_reviews))
 list_tokenized_train = tokenizer.texts_to_sequences(train_reviews)
 list_tokenized_test = tokenizer.texts_to_sequences(test_reviews)
 
-max_length = 370
+max_length = 21
 X_train = pad_sequences(list_tokenized_train, maxlen=max_length)
 X_test = pad_sequences(list_tokenized_test, maxlen=max_length)
 
@@ -101,8 +101,6 @@ model_random_forest = RandomForestClassifier(n_estimators = 150, random_state=45
 model_random_forest.set_params(max_features=2)
 model_random_forest.fit(X_train, y)
 
-
-
 def predict_func(model):
   print(X_test)
   prediction = model.predict(X_test)
@@ -122,3 +120,13 @@ def predict_func(model):
 
 random_forest_score = predict_func(model_random_forest)
 
+while(True):
+  comment = input("Leave comment >> ")
+
+  comment = tokenizer.texts_to_sequences(comment)
+  twt = pad_sequences(comment, maxlen=max_length, dtype='int32', value=0)
+
+  sentiment =  model_random_forest.predict(twt)[0]
+  # sentiment = model_random_forest.predict(twt)
+
+  print("sentiment >> ", sentiment, " argmax ", np.argmax(sentiment))

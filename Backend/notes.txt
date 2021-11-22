@@ -3,6 +3,7 @@ if these words exist, ilabay sa naivebayes
 2 undecided 50/50
 3. if contains "haha"
 4. contains won't, don't, doesn't, shouldn't, etc.
+5. miss = miss is either maestra ang pasabot niya or miss in english
 
 downpoints sa vader
 1. dili kaila sa "no"
