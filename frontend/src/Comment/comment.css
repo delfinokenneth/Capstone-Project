@@ -1,0 +1,22 @@
+.commentBox,.resultBox{
+padding: 20px;
+width: 500px;
+}
+.inputComment{
+    padding: 5px;
+    width: 80%;
+}
+.btnSubmitFragment{
+    margin: 5px;
+}
+#btnSubmit{
+    width: 200px;
+}
+.main_div{
+    margin: auto; 
+    padding: 30px;
+    border: 1px solid black;
+    border-radius: 5px;
+    max-width: 50%;
+    margin-top: 50px;
+}
