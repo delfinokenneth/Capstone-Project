@@ -6,12 +6,12 @@ const inputComment = (props) =>
     return (
         <div className="commentBox">
             <h4>INPUT SAMPLE COMMENT</h4>
-            <input 
+            <textarea
             placeholder="Sample student's comment"
             className="inputComment"
             onChange={props.textChange}
             >
-            </input>  
+            </textarea> 
             <SubmitButton 
             submitComment = {props.submitComment}>   
             </SubmitButton>
