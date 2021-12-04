@@ -12,6 +12,13 @@ nltk.download('vader_lexicon')
 from nltk.tokenize import word_tokenize, RegexpTokenizer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+#Naive bayes imports
+import numpy as np
+import pandas as pd
+from textblob import TextBlob
+from textblob.classifiers import NaiveBayesClassifier
+import matplotlib.pyplot as plt
+
 app = Flask(__name__)
 
 #this is to allow cross-origin to the backend
@@ -95,15 +102,7 @@ def FinalSentiment(sentence):
         return NB_Classify(sentence)
 
 #--------------------------------------------------------------------------------------- NAIVE BAYES
-from flask import Flask,request, json
-import numpy as np
-import pandas as pd
-from textblob import TextBlob
-from textblob.classifiers import NaiveBayesClassifier
-import matplotlib.pyplot as plt
-import csv
-from flask_cors import CORS
-from werkzeug.exceptions import RequestEntityTooLarge
+
 
 #this is to allow cross-origin to the backend
 
