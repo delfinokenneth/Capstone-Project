@@ -16,3 +16,9 @@ strenght sa vader
 1. can predict emoticons
 2. dataset independent
 3. can update or add values sa vader lexicons
+
+stop words sa nb
+miss
+teacher
+maestra
+word contains maestra
