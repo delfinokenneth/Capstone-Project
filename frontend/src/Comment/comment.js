@@ -29,7 +29,7 @@ class comment extends Component {
         })
     }
     render() {
-        return (
+        return ( 
             <div className="main_div">
                 <Comment textChange={this.onTextChange} submitComment={this.onSubmitComment}/>
                 <Result sentiment={this.state.sentiment}/>

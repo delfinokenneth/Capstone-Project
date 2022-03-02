@@ -1,5 +1,4 @@
 a
-all
 also
 an
 and
@@ -20,7 +19,6 @@ by
 c
 came
 can
-cannot
 case
 cases
 come
@@ -39,14 +37,12 @@ end
 ended
 ending
 ends
-even
 ever
 every
 f
 for
 four
 from
-full
 further
 furthered
 furthering
@@ -65,7 +61,6 @@ him
 himself
 his
 how
-however
 i
 if
 in
@@ -74,7 +69,6 @@ it
 its
 itself
 j
-just
 k
 l
 last
@@ -84,9 +78,6 @@ least
 less
 let
 lets
-like
-likely
-long
 m
 man
 many
@@ -94,8 +85,6 @@ may
 me
 men
 might
-more
-most
 mr
 mrs
 much
@@ -176,9 +165,6 @@ shows
 side
 sides
 since
-small
-smaller
-smallest
 so
 some
 somebody
@@ -206,8 +192,6 @@ these
 they
 thing
 things
-think
-thinks
 this
 those
 though
@@ -216,7 +200,6 @@ through
 thus
 to
 today
-together
 too
 took
 toward
@@ -288,3 +271,10 @@ ka
 na
 nga
 ko
+miss
+sir
+teacher
+maestraha
+teachers
+teaches
+maestra

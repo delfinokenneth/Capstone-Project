@@ -1,6 +1,7 @@
 #imports for flask
 from flask import Flask,request, json, jsonify
 import csv
+import string
 from flask_cors import CORS
 from werkzeug.exceptions import RequestEntityTooLarge
 
@@ -48,13 +49,13 @@ def sentiment_scores(sentence):
     # oject gives a sentiment dictionary. 
     # which contains pos, neg, neu, and compound scores. 
     sentiment_dict = sid_obj.polarity_scores(sentence) 
-    print("word: ", sentence)
-    print("Overall sentiment dictionary is : ", sentiment_dict) 
-    print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative") 
-    print("sentence was rated as ", sentiment_dict['neu']*100, "% Neutral") 
-    print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive") 
+    # print("word: ", sentence)
+    # print("Overall sentiment dictionary is : ", sentiment_dict) 
+    # print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative") 
+    # print("sentence was rated as ", sentiment_dict['neu']*100, "% Neutral") 
+    # print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive") 
   
-    print("Sentence Overall Rated As", end = " ") 
+    # print("Sentence Overall Rated As", end = " ") 
     
     #tweak the downpoints of the vader
     #check if "no" exist in the comment
@@ -65,10 +66,7 @@ def sentiment_scores(sentence):
             break
         
     if(hasNo
-    or "n't" in sentence
-    or "haha" in sentence
-    or "miss" in sentence
-    or "absent" in sentence):
+    or "haha" in sentence):
         return NB_Classify(sentence)
     # decide sentiment as positive, negative and neutral 
     elif sentiment_dict['compound'] >= 0.05 : 
@@ -106,6 +104,22 @@ def FinalSentiment(sentence):
 data = pd.read_csv('Comments.csv')
 print("number of data ", data.shape)
 training = data[['comment','label']]
+
+#clean the dataset, remove words that is in the stopwords
+#function for data cleaning
+# Stopwords
+stopwords = set(line.strip() for line in open('customized_stopwords.txt'))
+stopwords = stopwords.union(set(['mr','mrs','one','two','said']))
+
+def data_cleaning(raw_data):
+    raw_data = raw_data.translate(str.maketrans('', '', string.punctuation + string.digits))
+    words = raw_data.lower().split()
+    stops = set(stopwords)
+    useful_words = [w for w in words if not w in stops]
+    return(" ".join(useful_words))
+
+training['comment']=training['comment'].apply(data_cleaning)
+
 #convert comments and label dataFrame into list
 list_commentsAndLabel = training.values.tolist()
 
@@ -115,10 +129,10 @@ def NB_Classify(comment):
     comment_blob = TextBlob(comment, classifier=classifier)
 
     prob = classifier.prob_classify(comment)
-    print("")
-    print("positive",round(prob.prob("positive"),2))
-    print("negative", round(prob.prob("negative"),2))
-    print("neutral",round(prob.prob("neutral"),2))
+    # print("")
+    # print("positive",round(prob.prob("positive"),2))
+    # print("negative", round(prob.prob("negative"),2))
+    # print("neutral",round(prob.prob("neutral"),2))
 
     return comment_blob.classify()
 # comment = input("enter comment here: ")
@@ -142,6 +156,7 @@ def getAccuracy():
     miss = 0
     for entry in list_commentsAndLabel:
         comment = entry[0];
+        comment = comment.replace("miss","")
         sentiment = sentiment_scores(comment)
         if(sentiment == entry[1]):
             correct += 1
@@ -168,6 +183,7 @@ def getPosNegNeuAccuracy():
     miss = 0
     for entry in list_data:
         comment = entry[0];
+        comment = comment.replace("miss","")
         sentiment = sentiment_scores(comment)
         if(sentiment == entry[1]):
             if(entry[1] == "positive"):
@@ -205,6 +221,7 @@ def getLanguageAccuracy():
 
     for entry in list_data:
         comment = entry[0];
+        comment = comment.replace("miss","")
         sentiment = sentiment_scores(comment)
         if(sentiment == entry[1]):
             if(entry[2] == "cebuano"):

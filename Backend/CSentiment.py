@@ -1,25 +1,27 @@
 #imports for flask
-from flask import Flask,request, json, jsonify
-import csv
-from flask_cors import CORS
-from werkzeug.exceptions import RequestEntityTooLarge
-
-# import SentimentIntensityAnalyzer class 
-from typing import Final
+# import SentimentIntensityAnalyzer class
+from flask_mysqldb import MySQL
 import nltk
-from nltk.text import TextCollection
+from flask import Flask, request, json, jsonify
+from flask_cors import CORS
+
 nltk.download('vader_lexicon')
-from nltk.tokenize import word_tokenize, RegexpTokenizer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 #Naive bayes imports
-import numpy as np
 import pandas as pd
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
-import matplotlib.pyplot as plt
+import string
 
 app = Flask(__name__)
+
+app.config['MYSQL_HOST'] = 'localhost';
+app.config['MYSQL_USER'] = 'root';
+app.config['MYSQL_PASSWORD'] = '';
+app.config['MYSQL_DB'] = 'isent';
+
+mysql = MySQL(app)
 
 #this is to allow cross-origin to the backend
 cors = CORS(app)
@@ -36,28 +38,39 @@ new_vader ={
     'ontime': 2,
     'on-time': 2,
     'approachable': 4,
-    'without': -2,
-    
+    'without': -2,   
 }
+
+#global variables
+vdpos = 0
+vdneu = 0
+vdneg = 2
+nbpos = 0
+nbneu = 0
+nbneg = 0
 
 #ALGORITHM 1
 # function to print sentiments 
-# of the sentence. 
+# of the sentence.
 def sentiment_scores(sentence): 
-    # Create a SentimentIntensityAnalyzer object. 
-    sid_obj = SentimentIntensityAnalyzer() 
+    # Create a SentimentIntensityAnalyzer object.
+    sid_obj = SentimentIntensityAnalyzer()
     sid_obj.lexicon.update(new_vader)
 
-    # polarity_scores method of SentimentIntensityAnalyzer 
-    # oject gives a sentiment dictionary. 
-    # which contains pos, neg, neu, and compound scores. 
-    sentiment_dict = sid_obj.polarity_scores(sentence) 
+    # polarity_scores method of SentimentIntensityAnalyzer
+    # oject gives a sentiment dictionary.
+    # which contains pos, neg, neu, and compound scores.
+    sentiment_dict = sid_obj.polarity_scores(sentence)
+    print(sentiment_dict)
     print("word: ", sentence)
     print("Overall sentiment dictionary is : ", sentiment_dict) 
-    print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative") 
+    print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative")
     print("sentence was rated as ", sentiment_dict['neu']*100, "% Neutral") 
-    print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive") 
-  
+    print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive")
+    vdpos = str(round(sentiment_dict['pos']*100,2))
+    vdneu = str(round(sentiment_dict['neu']*100,2))
+    vdneg = str(round(sentiment_dict['neg']*100,2))
+
     print("Sentence Overall Rated As", end = " ") 
     
     #tweak the downpoints of the vader
@@ -69,17 +82,14 @@ def sentiment_scores(sentence):
             break
         
     if(hasNo
-    or "n't" in sentence
-    or "haha" in sentence
-    or "miss" in sentence
-    or "absent" in sentence):
+    or "haha" in sentence):
         return NB_Classify(sentence)
     # decide sentiment as positive, negative and neutral 
     elif sentiment_dict['compound'] >= 0.05 : 
-        return "positive" 
+        return "positive" + " " + vdpos + " " + vdneu + " " + vdneg
   
     elif sentiment_dict['compound'] <= - 0.05 : 
-        return "negative"
+        return "negative" + " " + vdpos + " " + vdneu + " " + vdneg
 
     else :
         return NB_Classify(sentence)
@@ -110,6 +120,22 @@ def FinalSentiment(sentence):
 data = pd.read_csv('Comments.csv')
 print("number of data ", data.shape)
 training = data[['comment','label']]
+
+#clean the dataset, remove words that is in the stopwords
+#function for data cleaning
+# Stopwords
+stopwords = set(line.strip() for line in open('customized_stopwords.txt'))
+stopwords = stopwords.union(set(['mr','mrs','one','two','said']))
+
+def data_cleaning(raw_data):
+    raw_data = raw_data.translate(str.maketrans('', '', string.punctuation + string.digits))
+    words = raw_data.lower().split()
+    stops = set(stopwords)
+    useful_words = [w for w in words if not w in stops]
+    return(" ".join(useful_words))
+
+training['comment']=training['comment'].apply(data_cleaning)
+
 #convert comments and label dataFrame into list
 list_commentsAndLabel = training.values.tolist()
 
@@ -119,12 +145,17 @@ def NB_Classify(comment):
     comment_blob = TextBlob(comment, classifier=classifier)
 
     prob = classifier.prob_classify(comment)
+
     print("")
     print("positive",round(prob.prob("positive"),2))
     print("negative", round(prob.prob("negative"),2))
     print("neutral",round(prob.prob("neutral"),2))
 
-    return comment_blob.classify()
+    nbpos = str(round(prob.prob("positive"),2))
+    nbneu = str(round(prob.prob("neutral"), 2))
+    nbneg = str(round(prob.prob("negative"), 2))
+    print(comment_blob.classify())
+    return comment_blob.classify() + " " + nbpos + " " + nbneu + " " + nbneg
 
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
@@ -133,13 +164,21 @@ def NB_Classify(comment):
 @app.route("/getSentiment", methods=['POST'])
 def sentimentAnalyis():
     #get the data from the payload
-    comment = json.loads(request.data)
+    comment = request.get_json(force=True)
+    print("sentiment scores below : ")
     result = sentiment_scores(comment.get("comment"))
     return jsonify(result)
 
 @app.route("/displaydata", methods=['GET'])
 def displayData():
     return jsonify(list_commentsAndLabel)
+
+@app.route("/getQuestions", methods = ['GET'])
+def getQuestions():
+    con = mysql.connection.cursor()
+    con.execute("Select * from questionaire")
+    questions = con.fetchall()
+    return jsonify(questions)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -5,6 +5,7 @@ from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 import matplotlib.pyplot as plt
 import csv
+import string
 from flask_cors import CORS
 from werkzeug.exceptions import RequestEntityTooLarge
 
@@ -14,6 +15,22 @@ from werkzeug.exceptions import RequestEntityTooLarge
 data = pd.read_csv('Comments.csv')
 print("number of data ", data.shape)
 training = data[['comment','label']]
+
+#clean the dataset, remove words that is in the stopwords
+#function for data cleaning
+# Stopwords
+stopwords = set(line.strip() for line in open('customized_stopwords.txt'))
+stopwords = stopwords.union(set(['mr','mrs','one','two','said']))
+
+def data_cleaning(raw_data):
+    raw_data = raw_data.translate(str.maketrans('', '', string.punctuation + string.digits))
+    words = raw_data.lower().split()
+    stops = set(stopwords)
+    useful_words = [w for w in words if not w in stops]
+    return(" ".join(useful_words))
+
+training['comment']=training['comment'].apply(data_cleaning)
+
 #convert comments and label dataFrame into list
 list_commentsAndLabel = training.values.tolist()
 
