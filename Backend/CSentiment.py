@@ -1,23 +1,16 @@
 #imports for flask
-from flask import Flask,request, json, jsonify
-import csv
-from flask_cors import CORS
-from werkzeug.exceptions import RequestEntityTooLarge
-
-# import SentimentIntensityAnalyzer class 
-from typing import Final
+# import SentimentIntensityAnalyzer class
 import nltk
-from nltk.text import TextCollection
+from flask import Flask, request, json, jsonify
+from flask_cors import CORS
+
 nltk.download('vader_lexicon')
-from nltk.tokenize import word_tokenize, RegexpTokenizer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 #Naive bayes imports
-import numpy as np
 import pandas as pd
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
-import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -40,24 +33,36 @@ new_vader ={
     
 }
 
+#global variables
+vdpos = 0
+vdneu = 0
+vdneg = 2
+nbpos = 0
+nbneu = 0
+nbneg = 0
+
 #ALGORITHM 1
 # function to print sentiments 
-# of the sentence. 
+# of the sentence.
 def sentiment_scores(sentence): 
-    # Create a SentimentIntensityAnalyzer object. 
-    sid_obj = SentimentIntensityAnalyzer() 
+    # Create a SentimentIntensityAnalyzer object.
+    sid_obj = SentimentIntensityAnalyzer()
     sid_obj.lexicon.update(new_vader)
 
-    # polarity_scores method of SentimentIntensityAnalyzer 
-    # oject gives a sentiment dictionary. 
-    # which contains pos, neg, neu, and compound scores. 
-    sentiment_dict = sid_obj.polarity_scores(sentence) 
+    # polarity_scores method of SentimentIntensityAnalyzer
+    # oject gives a sentiment dictionary.
+    # which contains pos, neg, neu, and compound scores.
+    sentiment_dict = sid_obj.polarity_scores(sentence)
+    print(sentiment_dict)
     print("word: ", sentence)
     print("Overall sentiment dictionary is : ", sentiment_dict) 
-    print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative") 
+    print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative")
     print("sentence was rated as ", sentiment_dict['neu']*100, "% Neutral") 
-    print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive") 
-  
+    print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive")
+    vdpos = str(round(sentiment_dict['pos']*100,2))
+    vdneu = str(round(sentiment_dict['neu']*100,2))
+    vdneg = str(round(sentiment_dict['neg']*100,2))
+
     print("Sentence Overall Rated As", end = " ") 
     
     #tweak the downpoints of the vader
@@ -76,10 +81,10 @@ def sentiment_scores(sentence):
         return NB_Classify(sentence)
     # decide sentiment as positive, negative and neutral 
     elif sentiment_dict['compound'] >= 0.05 : 
-        return "positive" 
+        return "positive" + " " + vdpos + " " + vdneu + " " + vdneg
   
     elif sentiment_dict['compound'] <= - 0.05 : 
-        return "negative"
+        return "negative" + " " + vdpos + " " + vdneu + " " + vdneg
 
     else :
         return NB_Classify(sentence)
@@ -123,8 +128,11 @@ def NB_Classify(comment):
     print("positive",round(prob.prob("positive"),2))
     print("negative", round(prob.prob("negative"),2))
     print("neutral",round(prob.prob("neutral"),2))
-
-    return comment_blob.classify()
+    nbpos = str(round(prob.prob("positive"),2))
+    nbneu = str(round(prob.prob("neutral"), 2))
+    nbneg = str(round(prob.prob("negative"), 2))
+    print(comment_blob.classify())
+    return comment_blob.classify() + " " + nbpos + " " + nbneu + " " + nbneg
 
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
@@ -133,7 +141,8 @@ def NB_Classify(comment):
 @app.route("/getSentiment", methods=['POST'])
 def sentimentAnalyis():
     #get the data from the payload
-    comment = json.loads(request.data)
+    comment = request.get_json(force=True)
+    print("sentiment scores below : ")
     result = sentiment_scores(comment.get("comment"))
     return jsonify(result)
 
@@ -141,6 +150,8 @@ def sentimentAnalyis():
 def displayData():
     return jsonify(list_commentsAndLabel)
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="127.0.0.6", port=8000, debug=True)
+#    app.run(debug=True)
 
