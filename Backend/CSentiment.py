@@ -59,9 +59,17 @@ def sentiment_scores(sentence):
     print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative")
     print("sentence was rated as ", sentiment_dict['neu']*100, "% Neutral") 
     print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive")
-    vdpos = str(round(sentiment_dict['pos']*100,2))
-    vdneu = str(round(sentiment_dict['neu']*100,2))
-    vdneg = str(round(sentiment_dict['neg']*100,2))
+    vdpos = round(sentiment_dict['pos']*100,2)
+    vdneu = round(sentiment_dict['neu']*100,2)
+    vdneg = round(sentiment_dict['neg']*100,2)
+
+    #if neutral value is greater than both positive and negative value, then com us "-"
+    if(vdneu > vdpos and vdneu > vdneg):
+        vdcom = "-"
+    else:
+        vdcom = vdpos+-abs(vdneg)
+        
+        
 
     print("Sentence Overall Rated As", end = " ") 
     
@@ -81,10 +89,10 @@ def sentiment_scores(sentence):
         return NB_Classify(sentence)
     # decide sentiment as positive, negative and neutral 
     elif sentiment_dict['compound'] >= 0.05 : 
-        return "positive" + " " + vdpos + " " + vdneu + " " + vdneg
+        return "positive" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdcom)
   
     elif sentiment_dict['compound'] <= - 0.05 : 
-        return "negative" + " " + vdpos + " " + vdneu + " " + vdneg
+        return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdcom)
 
     else :
         return NB_Classify(sentence)
@@ -128,11 +136,18 @@ def NB_Classify(comment):
     print("positive",round(prob.prob("positive"),2))
     print("negative", round(prob.prob("negative"),2))
     print("neutral",round(prob.prob("neutral"),2))
-    nbpos = str(round(prob.prob("positive"),2))
-    nbneu = str(round(prob.prob("neutral"), 2))
-    nbneg = str(round(prob.prob("negative"), 2))
+    nbpos = round(prob.prob("positive"),2)
+    nbneu = round(prob.prob("neutral"), 2)
+    nbneg = round(prob.prob("negative"), 2)
     print(comment_blob.classify())
-    return comment_blob.classify() + " " + nbpos + " " + nbneu + " " + nbneg
+
+    #if neutral value is greater than both positive and negative value, then com us "-"
+    if(nbneu > nbpos and nbneu > nbneg):
+        nbcom = "-"
+    else:
+        nbcom = nbpos+-abs(nbneg)
+
+    return comment_blob.classify() + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbcom)
 
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
