@@ -1,4 +1,4 @@
-import '../comment.css';
+import '../evaluationForm.css';
 
 const displayResult =(props) =>
 {

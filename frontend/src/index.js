@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Test from './Test/Test.js'
-import Comment from './Comment/comment.js';
+import Comment from './Evaluation Form/evaluationForm.js';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(

@@ -1,5 +1,5 @@
 import { Button } from 'react-bootstrap';
-import '../comment.css';
+import '../evaluationForm.css';
 const submitComment = (props) =>
 {
     return (

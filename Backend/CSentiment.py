@@ -173,10 +173,10 @@ def sentimentAnalyis():
 def displayData():
     return jsonify(list_commentsAndLabel)
 
-@app.route("/getQuestions", methods = ['GET'])
-def getQuestions():
+@app.route("/getQuestions/<section>", methods = ['GET'])
+def getQuestions(section):
     con = mysql.connection.cursor()
-    con.execute("Select * from questionaire")
+    con.execute("Select question from questionaire where section = %s", section)
     questions = con.fetchall()
     return jsonify(questions)
 
