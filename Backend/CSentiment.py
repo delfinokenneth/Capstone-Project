@@ -1,5 +1,7 @@
 #imports for flask
 # import SentimentIntensityAnalyzer class
+from json import JSONEncoder
+from xml.dom.minidom import TypeInfo
 from flask_mysqldb import MySQL
 import nltk
 from flask import Flask, request, json, jsonify

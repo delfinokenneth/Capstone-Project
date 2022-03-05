@@ -23,3 +23,15 @@ width: 500px;
     max-width: 50%;
     margin-top: 50px;
 }
+
+.questionaireTable tr,th{
+    width: 100%;
+    background-color: aquamarine;
+    text-align: left;
+}
+
+.questionaireDiv
+{
+    display: block;
+    border: 1px black solid;
+}

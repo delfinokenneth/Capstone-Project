@@ -22,35 +22,30 @@ class comment extends Component {
     {
         //get questions for section 1
         ApiService.getQuestions(1).then((res) => {
+            console.log(res)
             this.setState({questions_sec1: res.data})
-            console.log(this.state.questions_sec1)
         })
         //get questions for section 2
         ApiService.getQuestions(2).then((res) => {
             this.setState({questions_sec2: res.data})
-            console.log(this.state.questions_sec2)
         })
         //get questions for section 3
         ApiService.getQuestions(3).then((res) => {
             this.setState({questions_sec2: res.data})
-            console.log(this.state.questions_sec2)
         })
         //get questions for section 4
         ApiService.getQuestions(4).then((res) => {
             this.setState({questions_sec2: res.data})
-            console.log(this.state.questions_sec2)
         })
         //get questions for section 5
         ApiService.getQuestions(5).then((res) => {
             this.setState({questions_sec2: res.data})
-            console.log(this.state.questions_sec2)
         })
 
     }
     onTextChange = (event) =>
     {
         this.setState({comment: event.target.value});
-        console.log(event.target.value);
     }
     onSubmitComment = (event) =>
     {
@@ -60,7 +55,7 @@ class comment extends Component {
         }
         console.log(COMMENT);
         ApiService.getSentiment(COMMENT).then((res) =>{
-            console.log(res);
+            console.log(res)
             this.setState({sentiment: res.data})
         })
     }
