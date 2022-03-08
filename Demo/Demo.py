@@ -114,42 +114,6 @@ def evaluate():
 			sec5_rating.append(request.form[f'rating5[{i}]'])
 
 
-
-		# code for the translation and getting sentiment analysis
-		comment = request.form["txtcomment"]
-
-
-		try:
-			cur = mysql.connection.cursor()
-			# converting list into string
-			sec1_string = ','.join(sec1_rating)
-			sec2_string = ','.join(sec2_rating)
-			sec3_string = ','.join(sec3_rating)
-			sec4_string = ','.join(sec4_rating)
-			sec5_string = ','.join(sec5_rating)
-
-			sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5,comment,sentiment)\
-			 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-			val = (
-			"18013672", "18013672", sec1_string, sec2_string, sec3_string, sec4_string, sec5_string, comment, getsentiment(comment))
-			cur.execute(sql, val)
-			mysql.connection.commit()
-			cur.close()
-			return f'<h1>Successfully saved!</h1>'
-
-		except Exception as exp:
-			return f'<h1>{exp}</h1>'
-
-	# return redirect(url_for("scratch", sec1_rating = sec1_rating, sec2_rating = sec2_rating, sec3_rating = sec3_rating,
-	#			sec4_rating = sec4_rating,sec5_rating = sec5_rating, result = result))
-
-
-	#		section5 = section5, lensec5 = len(section5),
-	#		sectionsleft = sectionsleft,
-	#		sectionsright = sectionsright,
-	#		lensectionsleft = len(sectionsleft),
-	#		lensectionsright = len(sectionsright))
-
 	
 	else:
 		return render_template("teachers_evaluation.html",
@@ -235,9 +199,16 @@ def evaluation():
 			sec4_string = ','.join(sec4_rating) 
 			sec5_string = ','.join(sec5_rating)    
 
-			sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5,pos,neu,neg,comment,sentiment, com)\
-			 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-			val = ("18013672","18013672",sec1_string,sec2_string,sec3_string,sec4_string,sec5_string,pos_val,neu_val,neg_val,comment,sen_val,com_val)
+			#if comment is not empty
+			if comment is not "":
+				sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5,pos,neu,neg,comment,sentiment, com)\
+					 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+				val = ("18013672","18013672",sec1_string,sec2_string,sec3_string,sec4_string,sec5_string,pos_val,neu_val,neg_val,comment,sen_val,com_val)
+			#else comment is empty
+			else:
+				sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5)\
+							 VALUES (%s,%s,%s,%s,%s,%s,%s);"
+				val = ("18013672", "18013672", sec1_string, sec2_string, sec3_string, sec4_string, sec5_string)
 			cur.execute(sql,val)
 			mysql.connection.commit()
 			cur.close()
@@ -245,9 +216,6 @@ def evaluation():
 
 		except Exception as exp:
 			return f'<h1>{exp}</h1>'
-
-		#return redirect(url_for("scratch", sec1_rating = sec1_rating, sec2_rating = sec2_rating, sec3_rating = sec3_rating,
-		#			sec4_rating = sec4_rating,sec5_rating = sec5_rating, result = result))
 
 	else:
 		return render_template("evaluation_page.html", section1 = section1, section2 = section2, lensec1 = len(section1),
@@ -317,31 +285,6 @@ def instrument():
 
 		# code for the translation and getting sentiment analysis
 		comment = request.form["txtcomment"]
-
-
-		try:
-			cur = mysql.connection.cursor()
-			# converting list into string
-			sec1_string = ','.join(sec1_rating)
-			sec2_string = ','.join(sec2_rating)
-			sec3_string = ','.join(sec3_rating)
-			sec4_string = ','.join(sec4_rating)
-			sec5_string = ','.join(sec5_rating)
-
-			sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5,comment,sentiment)\
-			 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-			val = (
-			"18013672", "18013672", sec1_string, sec2_string, sec3_string, sec4_string, sec5_string, comment, getsentiment(comment))
-			cur.execute(sql, val)
-			mysql.connection.commit()
-			cur.close()
-			return f'<h1>Successfully saved!</h1>'
-
-		except Exception as exp:
-			return f'<h1>{exp}</h1>'
-
-	# return redirect(url_for("scratch", sec1_rating = sec1_rating, sec2_rating = sec2_rating, sec3_rating = sec3_rating,
-	#			sec4_rating = sec4_rating,sec5_rating = sec5_rating, result = result))
 
 	else:
 		return render_template("instrument_evaluation.html", section1=section1, section2=section2, lensec1=len(section1),
