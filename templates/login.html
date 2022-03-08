@@ -1,0 +1,104 @@
+<style>
+	.login{
+		margin: auto;
+		display: inline-block;
+		position: relative;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		text-align: center;
+		border: 1px solid #0047b3;
+		background: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7));
+	}
+	.logins
+	{
+		padding: 20px;
+	}
+	.login input[type="text"], .login input[type="password"]
+	{
+		border: none;
+		border-bottom: 1px solid black;
+	}
+	.inputs{
+		width: 200px;
+		margin-bottom: 5px;
+		height: 30px;
+
+	}
+	body
+	{	
+		background: linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.3)),url('https://edukasyon-production.s3-ap-southeast-1.amazonaws.com/uploads/facility/image/2684/26993563_1757686364302295_3516595903469583675_n.jpg');
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+		background-attachment: fixed;
+	}	
+	#header
+	{
+		margin-bottom: 1px;
+		color: #0066ff;
+		font-size: 40px;
+	}
+	#lblheader
+	{
+		color: white;
+		margin-bottom: 30px;
+		font-weight: bold;
+	}
+	#btnlogin
+	{
+		margin-top: 20px;
+		 background-color: #00cc00;
+		 color: white;
+		 border: none;
+	}
+	.formfooter
+	{ 
+		width: 100%;
+		bottom: 0;
+		height: 25px;
+		background-color: #0047b3;
+		float: left;
+		padding-left: 0;
+		padding-top: 5px;
+		color: white;
+	}
+</style>
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--<meta name="description" content="">
+  <meta name="author" content="">
+ 
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>FaceTea - Admin</title>
+        <link href="css/styles.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
+       -->
+	<title>LOGIN PAGE</title>
+</head>
+<body>
+	<form method="POST" class="login">
+		<div class="logins">
+			<h2 id="header">UCLM</h2>
+			<label id="lblheader" >Teacher's Evaluation</label>
+			<hr style="margin-top: 20px; margin-bottom: 20px;">
+			<input class="inputs" type="text" name="idnumber" placeholder="ID NUMBER"><br>
+			<input class="inputs" type="password" name="password" placeholder="PASSWORD"><br>
+			<input class="inputs" type="submit" id="btnlogin" value="login"><br>
+		</div>
+		<div class="formfooter">
+			<span>No account yet? </span><a href="" style="color: white; font-weight: bolder;">Sign up</a>
+		</div>
+	</form>
+</body>
+</html>
+
+<style>
+	
+	</style>
