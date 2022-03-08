@@ -1,0 +1,288 @@
+{% extends "base.html" %}
+
+{% block title %} Evaluation Page {% endblock %}
+
+{% block content %}
+<style>
+	*{
+		font-size: 15px;
+	}
+	#teacher{
+		font-weight: bolder;
+	}
+
+	#rating tr:nth-child(even){background-color: #f2f2f2;}
+
+	#rating tr:hover {background-color: #ddd;}
+
+	#rating th,td 
+	{
+		font-size: 13px;
+	}
+	#rating th {
+	  padding-top: 12px;
+	  padding-bottom: 12px;
+	  text-align: left;
+	  background-color: #ccddff;
+	  color: black;
+	}
+	#rating 
+	{
+		width: 870px;
+	}
+	#detailsandlegend
+	{
+		display: inline-block;
+		min-width: 100%;
+	}
+	#details,#legend
+	{
+		padding: 10px;
+		border-radius: 5px;
+		margin-bottom: 10px;
+	}
+	#details
+	{
+		font-size: 12px;
+		float: left;
+		width: 320px;
+	}
+	#legend
+	{
+		float: right;
+	}
+	#tname
+	{
+		background-color: #f2f2f2;
+	}
+	.evaluatee
+	{
+		min-width: 150px;
+		font-weight: bolder;
+	}
+	#info_tname, #info_sub
+	{
+		min-width: 100px;
+
+	}
+	.info_details
+	{
+		padding-top: 5px;
+		padding-bottom: 5px;
+		width: 100%;
+	}
+	#note
+	{
+		width: 100%;
+		display: inline-block;
+		padding: 10px;
+		border-radius: 5px;
+		background-color: #ccddff;
+		color: blue;
+	}
+	@media screen and (max-width: 1200px)
+	{
+		
+		#legend
+		{
+			float: left;
+		}
+		#details, #rating, #legend
+		{
+			width: 100%;
+		}
+	}
+
+	/* TWO COLUMNS */
+
+/* Create two unequal columns that floats next to each other */
+.column {
+  float: left;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+
+}
+
+.left {
+  width: 25%;
+}
+
+.right {
+  width: 75%;
+
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+</style>
+
+<div class="row">
+  <div class="column left">
+
+	  <div id="section1" class="sectionsleft">
+	  <table id="section">
+			<tbody>
+				<tr class="sectioncolumn">
+					<td class="scenario" style="padding-bottom: 20px; padding-top: 20px">
+						<center> Evaluation Sections </center> </td>
+				</tr>
+			</tbody>
+	  </table>
+	  </div>
+	  	 		<!-- leftsectionsleft view ->  https://imgur.com/YMKA4ib -->
+				{% for n in range(0, lensectionsleft) %}
+	  <div id="section1" class="sectionsleft">
+	  <table id="section">
+			<tbody>
+				<tr class="sectiondata">
+					<td class="scenario">  <b> SECTION {{n + 1}}  </b>
+						<div class="float-end">
+							<button type="button" class="btn btn-primary btn-sm">Edit</button>
+						</div>
+					</td>
+				</tr>
+
+				<tr class="sectiondata">
+					<td class="scenario">  Name  :  {{ sectionsleft[n][2] }}   </td>
+				</tr>
+
+				<tr class="sectiondata">
+					<td class="scenario">  Description  :  {{ sectionsleft[n][3] }}   </td>
+				</tr>
+				<tr class="sectiondata">		<!-- DB guide-> https://imgur.com/YMKA4ib -->
+					<td class="scenario">  Total Questions  : {{ sectionsleft[n][5+n] }}  </td>
+				</tr>
+				<tr class="sectiondata">
+					<td class="scenario">   Percentage  :  {{ sectionsleft[n][4] }}%  </td>
+				</tr>
+			</tbody>
+	  </table>
+	  </div>
+
+	  {% endfor %}
+
+
+
+  </div>
+  <div class="column right" >
+  	 <!-- leftsectionsleft view ->  https://imgur.com/YMKA4ib -->
+	  {% for n in range(0, lensectionsleft) %}
+	  <div id="section2" class="sectionsright">
+		<table id="section">
+			<tbody>
+				<tr class="sectioncolumn">
+					<td class="scenario">  <b> SECTION {{n + 1}}:  {{ sectionsleft[n][2] }} ({{ sectionsleft[n][4] }}%) </b> </td>
+				</tr>
+
+				{% set counter = namespace(value = 0) %}
+				{% for x in range(0, lensectionsright) %}
+					{% if ((n + 1)==sectionsright[x][0]) %}
+						<tr class="sectiondata">
+							<td class="scenario"> {% set counter.value = counter.value + 1 %} {{ counter.value}}. {{ sectionsright[x][1] }} </td>
+							<td class="rates" id="rate" style="text-align: center;" colspan="100">
+								<button type="button" class="btn btn-primary btn-sm">Edit</button>
+							</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+			</tbody>
+		</table>
+	  </div>
+	  {% endfor %}
+
+
+
+  </div>
+</div>
+
+
+
+<!-- STYLE FOR SECTION 1-->
+<style type="text/css">
+	#section1
+	{
+		width: 100%;
+		margin-top: 10px;
+	}
+	#section tr:nth-child(even){background-color: #f2f2f2;}
+
+	#section tr:hover {background-color: #ddd;}
+
+	#section td
+	{
+		font-size: 15px;
+	}
+	#section th
+	{
+		font-size: 15px;
+	}
+	#section th {
+	  padding-top: 12px;
+	  padding-bottom: 12px;
+	  text-align: left;
+	  background-color: #ccddff;
+	  color: black;
+	}
+	#section
+	{
+		width: 100%;
+	}
+	.scenario
+	{
+		width: calc(100%);
+		padding: 5px;
+	}
+	#rate
+	{
+		min-width: 100px;
+	}
+	.rates
+	{
+		text-align: center;
+	}
+	.sectioncolumn, .sectiondata
+	{
+		border-bottom: solid 0.5px lightgray;
+	}
+	.sectioncolumn td
+	{
+		color: black;
+		font-weight: bold;
+	}
+	#section tr
+	{
+		padding: 5px;
+	}
+	.sectionsleft
+	{
+		margin-top: 20px;
+	/*	border-bottom: 3px solid #0066ff; */
+	}
+
+	.sectionsright
+	{
+		margin-top: 20px;
+		border-left: 3px solid #0066ff;
+	}
+
+
+	form
+	{
+		margin-bottom: 20px;
+	}
+	@media screen and (min-width: 1200px)
+	{
+		#rate
+		{
+			min-width: 200px;
+		}
+	}
+
+</style>
+{% endblock %}
+

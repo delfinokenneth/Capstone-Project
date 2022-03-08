@@ -1,0 +1,448 @@
+{% extends "base.html" %}
+
+{% block title %} Evaluation Page {% endblock %}
+
+{% block content %}
+<style>
+	*{
+		font-size: 15px;
+	}
+	#teacher{
+		font-weight: bolder;
+	}
+
+	#rating tr:nth-child(even){background-color: #f2f2f2;}
+
+	#rating tr:hover {background-color: #ddd;}
+
+	#rating th,td 
+	{
+		font-size: 13px;
+	}
+	#rating th {
+	  padding-top: 12px;
+	  padding-bottom: 12px;
+	  text-align: left;
+	  background-color: #ccddff;
+	  color: black;
+	}
+	#rating 
+	{
+		width: 500px;
+	}
+	#detailsandlegend
+	{
+		display: inline-block;
+		min-width: 100%;
+	}
+	#details,#legend
+	{
+		padding: 10px;
+		border-radius: 5px;
+		margin-bottom: 10px;
+	}
+	#details
+	{
+		font-size: 12px;
+		float: left;
+		width: 400px;
+	}
+	#legend
+	{
+		float: right;
+	}
+	#tname
+	{
+		background-color: #f2f2f2;
+	}
+	.evaluatee
+	{
+		min-width: 150px;
+		font-weight: bolder;
+	}
+	#info_tname, #info_sub
+	{
+		min-width: 100px;
+
+	}
+	.info_details
+	{
+		padding-top: 5px;
+		padding-bottom: 5px;
+		width: 100%;
+	}
+	#note
+	{
+		width: 100%;
+		display: inline-block;
+		padding: 10px;
+		border-radius: 5px;
+		background-color: #ccddff;
+		color: blue;
+	}
+	@media screen and (max-width: 1200px)
+	{
+		
+		#legend
+		{
+			float: left;
+		}
+		#details, #rating, #legend
+		{
+			width: 100%;
+		}
+	}
+</style>
+
+<div id="detailsandlegend">
+	<div id="details">
+	 <h6 style="font-weight: bolder;"> EVALUATION FOR </h6>
+	 	<label class="info_details" id="tname"><label class="evaluatee">Teacher's Name </label> <label id="info_tname"> Bryan Namoc </label></label><br>
+		<label class="info_details" ><label class="evaluatee">Subject </label> <label id="info_sub"> 18823 | Math 101 </label></label>
+	</div>
+	<div id="legend">
+		<table id ="rating">
+			<thead>
+				<tr>
+					<th>RATING</th>
+					<th>DESCRIPTION</th>
+					<th>MEAN RANGES</th>
+					<th>INTERPRETATION</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>5</td>
+	 				<td>Always</td>
+					<td>4.20-5</td>
+					<td>Excellent</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Oftentimes</td>
+					<td>3.40-4.19</td>
+					<td>Very Satisfactory</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Sometimes</td>
+					<td>2.60-3.39</td>
+					<td>Satisfactory</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Rarely</td>
+					<td>1.80-2.59</td>
+					<td>Poor</td>
+				</tr>
+				<tr>
+					<td>1</td>
+					<td>Never	</td>
+					<td>1-1.79</td>
+					<td>Needs improvement</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div id="note">
+	<i>UC values your feedback on the teaching performance of your instructor. Inorder to improve
+	the quality of education offered by UC, kindly rate accordingly.</i>
+</div>
+
+<!-- STYLE FOR SECTION 1-->
+<style type="text/css">
+	#section1
+	{
+		width: 100%;
+		margin-top: 10px;
+	}
+	#section tr:nth-child(even){background-color: #f2f2f2;}
+
+	#section tr:hover {background-color: #ddd;}
+
+	#section td 
+	{
+		font-size: 15px;
+	}
+	#section th
+	{
+		font-size: 15px;
+	}
+	#section th {
+	  padding-top: 12px;
+	  padding-bottom: 12px;
+	  text-align: left;
+	  background-color: #ccddff;
+	  color: black;
+	}
+	#section 
+	{
+		width: 100%;
+	}
+	.scenario
+	{
+		width: calc(100%);
+		padding: 5px;
+	}
+	#rate
+	{
+		min-width: 100px;
+	}
+	.rates 
+	{
+		text-align: center; 
+	}
+	.sectioncolumn, .sectiondata
+	{
+		border-bottom: solid 0.5px lightgray;
+	}
+	.sectioncolumn td
+	{
+		color: black;
+		font-weight: bold;
+	}
+	#section tr
+	{
+		padding: 5px;	
+	}
+	.sections
+	{
+		margin-top: 20px;
+		border-bottom: 3px solid #0066ff;
+	}
+	form
+	{
+		margin-bottom: 20px;
+	}
+	@media screen and (min-width: 1200px)
+	{
+		#rate
+		{
+			min-width: 200px;
+		}
+	}
+
+</style>
+<form method="POST">
+<div id="questionaire">
+	<div id="section1" class="sections">
+		<table id="section">
+			<thead>
+				<tr>
+					<th class="scenario">SECTION 1: Preparation (15%)</th>
+					<th class="rates" id="rate" style="text-align: center;" colspan="5">RATES</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="sectioncolumn" >
+					<td class="scenario">The teacher ...</td>
+					<td class="rates">5</td>
+					<td class="rates">4</td>
+					<td class="rates">3</td>
+					<td class="rates">2</td>
+				 	<td class="rates">1</td>
+				</tr>
+				{% for x in range(0, lensec1) %}
+				<tr class="sectiondata">
+					<td class="scenario"> {{x + 1}}. {{ section1[x][2] }}</td>
+					<td class="rates"><input type="radio" name="rating[{{x}}]" value=5 required></td>
+					<td class="rates"><input type="radio" name="rating[{{x}}]" value=4></td>
+					<td class="rates"><input type="radio" name="rating[{{x}}]" value=3></td>
+					<td class="rates"><input type="radio" name="rating[{{x}}]" value=2></td>
+					<td class="rates"><input type="radio" name="rating[{{x}}]" value=1></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div id="section2" class="sections">
+		<table id="section">
+			<thead>
+				<tr>
+					<th class="scenario">SECTION 2: Teaching and Learning Process (35%)</th>
+					<th class="rates" id="rate" style="text-align: center;" colspan="5">RATES</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="sectioncolumn" >
+					<td class="scenario">The teacher ...</td>
+					<td class="rates">5</td>
+					<td class="rates">4</td>
+					<td class="rates">3</td>
+					<td class="rates">2</td>
+					<td class="rates">1</td>
+				</tr>
+				{% for x in range (0, lensec2) %}
+				<tr class="sectiondata">
+					<td class="scenario">{{x+1}}. {{ section2[x][2] }}</td>
+					<td class="rates"><input type="radio" name="rating2[{{x}}]" value=5 required></td>
+					<td class="rates"><input type="radio" name="rating2[{{x}}]" value=4></td>
+					<td class="rates"><input type="radio" name="rating2[{{x}}]" value=3></td>
+					<td class="rates"><input type="radio" name="rating2[{{x}}]" value=2></td>
+					<td class="rates"><input type="radio" name="rating2[{{x}}]" value=1></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div id="section3" class="sections">
+		<table id="section">
+			<thead>
+				<tr>
+					<th class="scenario">SECTION 3: Assessment (25%)</th>
+					<th class="rates" id="rate" style="text-align: center;" colspan="5">RATES</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="sectioncolumn" >
+					<td class="scenario">The teacher ...</td>
+					<td class="rates">5</td>
+					<td class="rates">4</td>
+					<td class="rates">3</td>
+					<td class="rates">2</td>
+					<td class="rates">1</td>
+				</tr>
+				{% for x in range (0, lensec3) %}
+				<tr class="sectiondata">
+					<td class="scenario">{{ x+1}}. {{ section3[x][2] }}</td>
+					<td class="rates"><input type="radio" name="rating3[{{x}}]" value=5 required></td>
+					<td class="rates"><input type="radio" name="rating3[{{x}}]" value=4></td>
+					<td class="rates"><input type="radio" name="rating3[{{x}}]" value=3></td>
+					<td class="rates"><input type="radio" name="rating3[{{x}}]" value=2></td>
+					<td class="rates"><input type="radio" name="rating3[{{x}}]" value=1></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div id="section4" class="sections">
+		<table id="section">
+			<thead>
+				<tr>
+					<th class="scenario">SECTION 4: Online Learning Environment (10%)</th>
+					<th class="rates" id="rate" style="text-align: center;" colspan="5">RATES</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="sectioncolumn" >
+					<td class="scenario">The teacher ...</td>
+					<td class="rates">5</td>
+					<td class="rates">4</td>
+					<td class="rates">3</td>
+					<td class="rates">2</td>
+					<td class="rates">1</td>
+				</tr>
+				{% for x in range (0, lensec4) %}
+				<tr class="sectiondata">
+					<td class="scenario">{{ x+1}}. {{ section4[x][2] }}</td>
+					<td class="rates"><input type="radio" name="rating4[{{x}}]" value=5 required></td>
+					<td class="rates"><input type="radio" name="rating4[{{x}}]" value=4></td>
+					<td class="rates"><input type="radio" name="rating4[{{x}}]" value=3></td>
+					<td class="rates"><input type="radio" name="rating4[{{x}}]" value=2></td>
+					<td class="rates"><input type="radio" name="rating4[{{x}}]" value=1></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+	<div id="section5" class="sections">
+		<table id="section">
+			<thead>
+				<tr>
+					<th class="scenario">SECTION 5: Teacher's Professionalism (15%)</th>
+					<th class="rates" id="rate" style="text-align: center;" colspan="5">RATES</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="sectioncolumn" >
+					<td class="scenario">The teacher ...</td>
+					<td class="rates">5</td>
+					<td class="rates">4</td>
+					<td class="rates">3</td>
+					<td class="rates">2</td>
+					<td class="rates">1</td>
+				</tr>
+				{% for x in range (0, lensec5) %}
+				<tr class="sectiondata">
+					<td class="scenario">{{ x+1}}. {{ section5[x][2] }}</td>
+					<td class="rates"><input type="radio" name="rating5[{{x}}]" value=5 required></td>
+					<td class="rates"><input type="radio" name="rating5[{{x}}]" value=4></td>
+					<td class="rates"><input type="radio" name="rating5[{{x}}]" value=3></td>
+					<td class="rates"><input type="radio" name="rating5[{{x}}]" value=2></td>
+					<td class="rates"><input type="radio" name="rating5[{{x}}]" value=1></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+<!--STYLE FOR COMMENT-->
+<style>
+	#comment
+	{
+		display: inline-block;
+		min-height: 50px;
+		width: 100%;
+		margin-top: 10px;
+	}
+	#lblcomment
+	{
+	 	font-weight: bolder;
+	}
+	#txtcomment
+	{
+		width: 100%;
+		resize: none;
+		min-height: 70px;
+		padding:5px;
+	}
+</style>
+<div id="comment">
+	<label id="lblcomment">Comment:</label>
+	<textarea id="txtcomment" name="txtcomment"></textarea>
+</div>
+<!--STYLE FOR BUTTON SUBMIT-->
+<style>
+	#divsubmit
+	{
+		margin-bottom: 20px;
+		padding-bottom: 50px;
+	}
+	@media screen and (min-width: 1201px)
+	{
+		#btnsubmit
+		{
+			height: 30px;
+			background-color:#00cc00 ;
+			width: 100px;
+			font-weight: bold;
+			color: white;
+			border: none;
+			float:right;
+			margin-right: 10px;
+			margin-top: 10px;
+		}
+	}
+	@media screen and (max-width: 1200px)
+	{
+
+		#btnsubmit
+		{
+			height: 30px;
+			background-color:#00cc00 ;
+			width: 100%;
+			font-weight: bold;
+			color: white;
+			border: none;
+			float:right;
+			margin-top: 10px;
+		}
+	}
+</style>
+<div id="divsubmit">
+	<input type="submit" id="btnsubmit" href="/teachersevaluation">
+</div>
+</form>
+{% endblock %}
+
