@@ -49,12 +49,12 @@ def evaluate():
 	section5 = cur.fetchall()
 
 	# get comment and sentiment from db
-	# changed: satisfied -> positive | unsatisfied -> negative
-	cur.execute("SELECT comment,pos,neu,neg,sentiment,com from evaluation")
+	# get all comments and sentiments that are not null or empty
+	cur.execute("SELECT comment,pos,neu,neg,sentiment,com from evaluation where comment is not null and comment <> ''")
 	comments = cur.fetchall()
 
 	#get the average of compound values
-	cur.execute("SELECT AVG(com) from evaluation LIMIT 1")
+	cur.execute("SELECT AVG(com) from evaluation where comment is not null and comment <> '' LIMIT 1")
 	comAverage = cur.fetchall()
 
 	# get total number of respondents
@@ -183,6 +183,7 @@ def evaluation():
 		comment = comment.replace("miss","")
 
 
+		#getting the sentiment and details from API
 		pos_val = getsentiment(comment).split(" ")[1]
 		neu_val = getsentiment(comment).split(" ")[2]
 		neg_val = getsentiment(comment).split(" ")[3]
@@ -199,12 +200,12 @@ def evaluation():
 			sec4_string = ','.join(sec4_rating) 
 			sec5_string = ','.join(sec5_rating)    
 
-			#if comment is not empty
+			#if input comment is not empty
 			if comment is not "":
 				sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5,pos,neu,neg,comment,sentiment, com)\
 					 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
 				val = ("18013672","18013672",sec1_string,sec2_string,sec3_string,sec4_string,sec5_string,pos_val,neu_val,neg_val,comment,sen_val,com_val)
-			#else comment is empty
+			#else input comment is empty
 			else:
 				sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5)\
 							 VALUES (%s,%s,%s,%s,%s,%s,%s);"
@@ -297,6 +298,7 @@ def instrument():
 							   lensectionsright = len(sectionsright))
 
 
+#method that will send the input comment to the API and return its response
 with app.app_context():
 	def getsentiment(comment):
 		import requests
