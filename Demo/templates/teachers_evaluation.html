@@ -341,12 +341,12 @@
 					<td class="sentimentValues">{{"%.2f"|format(row.3|float)}}</td>
 					<td class="sentimentValues">{{"%.2f"|format(row.5|float)}}</td>
 					<td class="sentimentValues">
-						{% if (row.5) > 1 %}
+						{% if (row.5|float) > 1 %}
 						{{"%.2f"|format(((((row.5+100)/2)/100)*5)|float)}}
 							{% set commentsum.value = commentsum.value + ((((row.5+100)/2)/100)*5)|float %}
 						{% else %}
-						{{"%.2f"|format((((((row.5|abs)-100)/2)/100)*5)|float|abs)}}
-							{% set commentsum.value = commentsum.value + ((((row.5+100)/2)/100)*5)|float %}
+						{{"%.2f"|format((((((row.5|float|abs)-100)/2)/100)*5)|float|abs)}}
+							{% set commentsum.value = commentsum.value + (((((row.5|float)+100)/2)/100)*5)|float %}
 						{% endif %}
 					</td>
 					<td 

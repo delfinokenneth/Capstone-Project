@@ -117,9 +117,6 @@ def evaluate():
 
 		for i in range(len(section5)):
 			sec5_rating.append(request.form[f'rating5[{i}]'])
-
-
-	
 	else:
 		return render_template("teachers_evaluation.html",
 							   section1=section1, section2=section2,

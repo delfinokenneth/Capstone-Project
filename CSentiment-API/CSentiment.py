@@ -73,19 +73,11 @@ def sentiment_scores(sentence):
     vdpos = round(sentiment_dict['pos']*100,2)
     vdneu = round(sentiment_dict['neu']*100,2)
     vdneg = round(sentiment_dict['neg']*100,2)
-<<<<<<< HEAD
     comval = round(sentiment_dict['compound']*100,2)
     print("compound value: ", str(comval))
     #if neutral value is greater than both positive and negative value, then com us "-"
     if(vdneu > vdpos and vdneu > vdneg):
         vdcom = "-"
-=======
-
-    #if vd sentiment is not positive or negative
-    if sentiment_dict['compound'] >= 0.05 and sentiment_dict['compound'] <= - 0.05:
-        vdscore = '-'
-    #if vd sentiment is positive or negative
->>>>>>> main
     else:
         vdscore = vdpos+-abs(vdneg)
         vdscore = vdscore + 100
@@ -104,11 +96,7 @@ def sentiment_scores(sentence):
             hasNo = True
             break
         
-    if(hasNo
-    or "n't" in sentence
-    or "haha" in sentence
-    or "miss" in sentence
-    or "absent" in sentence):
+    if(hasNo):
         return NB_Classify(sentence)
     # decide sentiment as positive, negative and neutral 
     elif sentiment_dict['compound'] >= 0.05 : 
