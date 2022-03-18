@@ -278,7 +278,7 @@
 						{% set count = namespace(value=0) %}
 					{% endif %}
 				{% endfor %}
-				{{ arrayAve.append(secrateavg) }}
+				{{ arrayAve.append("%.2f"|format(secavg.value/counter.value)|float) }}
 				<!-- RATING AVG -->
 				<tr class="sectiondata">
 					<td class="scenario" bgcolor="#ccddff"> <b> Rating Average </b> </td>
@@ -412,8 +412,9 @@
 			<tr class="sectiondata">
 				<td class="scenario"> Comment (30%)</td>
 
-
+				
 				{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
+				{{arrayAve.append(comavg)}}
 				<td class="sentimentValues"> {{ comavg }} </td>
 				<td class="sentimentValues">
 					{% if comavg >= 4.2 and comavg <= 5.0 %}
@@ -508,7 +509,9 @@
 	</div>
 </div>
 <div>
-	<a href="/generateReport"> Generate Report</a>
+	
+	<h2>{{arrayAve[0]}}</h2>
+	<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}" > Generate Report</a>
 </div>
 </form>
 

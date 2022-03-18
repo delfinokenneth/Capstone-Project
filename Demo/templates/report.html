@@ -17,7 +17,7 @@
         <script>
             var ctx = document.getElementById("lineChart").getContext("2d");
             var lineChart = new Chart(ctx, {
-                type: "pie",
+                type: "bar",
                 data: {
                     labels: {{ labels | safe }},
                     datasets: [
@@ -25,7 +25,9 @@
                             label: "Average",
                             data: {{ values | safe }},
                             fill: false,
-                            borderColor: "rgb(75,192,192)",
+                            backgroundColor: [ '#5DA5DA ', '#FAA43A', '#60BD68',
+                            '#B276B2', '#E16851', '#E0B95A'],
+                            borderColor: "74738C",
                             lineTension: 0.1,
                         }
                     ]
@@ -36,6 +38,7 @@
             });
         </script>
 
+    <h6 style="text-align: center;"> ---------- END OF FILE ---------- </h6>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>

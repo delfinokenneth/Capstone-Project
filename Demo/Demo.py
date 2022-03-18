@@ -301,15 +301,15 @@ def instrument():
 							   lensectionsleft = len(sectionsleft),
 							   lensectionsright = len(sectionsright))
 
-@app.route("/generateReport",methods=["POST","GET"])
-def generateReport():
+@app.route("/generateReport/<sec1>/<sec2>/<sec3>/<sec4>/<sec5>/<comment>",methods=["POST","GET"])
+def generateReport(sec1,sec2,sec3,sec4,sec5,comment):
 	data =[
-		("Section 1", 4.65),
-		("Section 2", 4.25),
-		("Section 3", 5),
-		("Section 4", 5),
-		("Section 5", 3.50),
-		("Comments", 2.46),
+		("Section 1", sec1),
+		("Section 2", sec2),
+		("Section 3", sec3),
+		("Section 4", sec4),
+		("Section 5", sec5),
+		("Comments", comment),
 	]
 	labels = [row[0] for row in data]
 	values = [row[1] for row in data]
