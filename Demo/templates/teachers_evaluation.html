@@ -325,7 +325,6 @@
 					<td class="sentimentValues"> <b> pos </b></td>
 					<td class="sentimentValues"> <b> neu </b></td>
 					<td class="sentimentValues"> <b> neg </b></td>
-					<td class="sentimentValues"> <b> com </b></td>
 					<td class="sentimentValues"> <b> score </b></td>
 					<td class="sentimentValues"> <b> result </b></td>
 				</tr>
@@ -334,37 +333,34 @@
 				{% set commentsum = namespace(value = 0) %}
 				{% set commentavg = namespace(value = 0) %}
 				{% for row in datacomments %}
-				{% set counter.value = counter.value + 1 %}
 				<tr class="sectiondata">
-					<td class="scenario"> {{ row.0 }}</td>
-					<td class="sentimentValues">{{"%.2f"|format(row.1|float)}}</td>
-					<td class="sentimentValues">{{"%.2f"|format(row.2|float)}}</td>
-					<td class="sentimentValues">{{"%.2f"|format(row.3|float)}}</td>
-					<td class="sentimentValues">{{"%.2f"|format(row.5|float)}}</td>
+					<td class="scenario"> {{ row.0 }}</td> <!-- comment -->
+					<td class="sentimentValues">{{"%.2f"|format(row.1|float)}}</td> <!-- pos -->
+					<td class="sentimentValues">{{"%.2f"|format(row.2|float)}}</td> <!-- neu -->
+					<td class="sentimentValues">{{"%.2f"|format(row.3|float)}}</td> <!-- neg -->
 					<td class="sentimentValues">
-						{% if (row.5) > 1 %}
-						{{"%.2f"|format(((((row.5+100)/2)/100)*5)|float)}}
-							{% set commentsum.value = commentsum.value + ((((row.5+100)/2)/100)*5)|float %}
+						{% if row.5 is not none %}
+								{{"%.2f"|format(row.5|float)}}
+								{% set commentsum.value = commentsum.value + "%.2f"|format(row.5|float)|float %}
+								{% set counter.value = counter.value + 1 %}
 						{% else %}
-						{{"%.2f"|format((((((row.5|abs)-100)/2)/100)*5)|float|abs)}}
-							{% set commentsum.value = commentsum.value + ((((row.5+100)/2)/100)*5)|float %}
+								{{"-"}}
 						{% endif %}
-					</td>
-					<td 
-					class="sentimentValues"
-					colspan="200">
-					{{row.4}}
-					</td>
+
+
+					<td class="sentimentValues" colspan="200">  {{row.4}} </td> <!-- sentiment -->
 
 					
 				</tr>
 				{% endfor %}
 				<tr class="scenario" bgcolor="#ccddff">
-					<td class="scenario" bgcolor="#ccddff"> <b>Comment Rating Average</b></td>
+					<td class="scenario" bgcolor="#ccddff"> <b>Comment Rating Average </b></td>
 
 					<td class="scenario" bgcolor="#ccddff"></td>
 					<td class="scenario" bgcolor="#ccddff"></td>
 					<td class="scenario" bgcolor="#ccddff"></td>
+
+
 					{% set comrateavg = "%.2f"|format(commentsum.value/counter.value)|float %}
 					<td class="scenario" bgcolor="#ccddff"> {{ comrateavg }}</td>
 					<td class="scenario" bgcolor="#ccddff" colspan="200" style="text-align: left; padding-left: 15px;">
@@ -377,8 +373,9 @@
 						{% elif comrateavg >= 1.8 and comrateavg <= 2.59 %}
 							{{"Poor"}}
 						{% elif comrateavg >= 1.0 and comrateavg <= 1.79 %}
-							{{"Needs Improvement"}}								
-						{% endif %}	
+							{{"Needs Improvement"}}
+						{% endif %}
+
 					</td>
 				</tr>
 			</tbody>
@@ -415,6 +412,8 @@
 			</tr> 
 			<tr class="sectiondata">
 				<td class="scenario"> Comment (30%)</td>
+
+
 				{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
 				<td class="sentimentValues"> {{ comavg }} </td>
 				<td class="sentimentValues">
@@ -428,17 +427,19 @@
 						{{"Poor"}}
 					{% elif comavg >= 1.0 and comavg <= 1.79 %}
 						{{"Needs Improvement"}}								
-					{% endif %}		
+					{% endif %}
+
 				</td>
 			</tr>
 			<tr>
 				<td class="scenario" bgcolor="#ccddff"><b>OVERALL EVALUATION AVERAGE</b></td>
 				<td class="sentimentValues" bgcolor="#ccddff"><b>
+
 					{% set overallavg = "%.2f"|format(( 70 * numavg + 30 * comavg) / (70+30))|float %}
-					{{ overallavg }}
+						{{ overallavg }}
 				</b></td>
-					<td class="sentimentValues" bgcolor="#ccddff"><b>
-						{% if overallavg >= 4.2 and overallavg <= 5.0 %}
+				<td class="sentimentValues" bgcolor="#ccddff"><b>
+					{% if overallavg >= 4.2 and overallavg <= 5.0 %}
 						{{"Excellent"}}
 					{% elif overallavg >= 3.4 and overallavg <= 4.19 %}
 						{{"Very Satisfactory"}}
@@ -448,7 +449,7 @@
 						{{"Poor"}}
 					{% elif overallavg >= 1.0 and overallavg <= 1.79 %}
 						{{"Needs Improvement"}}								
-					{% endif %}		
+					{% endif %}
 
 				</b></td>
 			</tr>
