@@ -320,7 +320,7 @@ def generateReport(sec1,sec2,sec3,sec4,sec5,comment):
 	print("trying to generate")
 	response = make_response(pdf)
 	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'inline; filename=summary.pdf'
+	response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
 
 	return response
 #method that will send the input comment to the API and return its response
