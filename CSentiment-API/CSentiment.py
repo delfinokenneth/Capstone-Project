@@ -76,7 +76,7 @@ def sentiment_scores(sentence):
 
     #if vd sentiment is not positive or negative
     if sentiment_dict['compound'] >= 0.05 and sentiment_dict['compound'] <= - 0.05:
-        vdscore = 2.50
+        vdscore = '-'
     #if vd sentiment is positive or negative
     else:
         vdscore = vdpos+-abs(vdneg)
@@ -106,7 +106,7 @@ def sentiment_scores(sentence):
     elif sentiment_dict['compound'] >= 0.05 : 
         return "positive" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
   
-    elif sentiment_dict['compound'] <= - 0.05 : 
+    elif sentiment_dict['compound'] <= -0.05 :
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
     else :
@@ -151,9 +151,9 @@ def NB_Classify(comment):
     print("positive",round(prob.prob("positive"),2))
     print("negative", round(prob.prob("negative"),2))
     print("neutral",round(prob.prob("neutral"),2))
-    nbpos = round(prob.prob("positive"),2)
-    nbneu = round(prob.prob("neutral"), 2)
-    nbneg = round(prob.prob("negative"), 2)
+    nbpos = round(prob.prob("positive")*100,2)
+    nbneu = round(prob.prob("neutral")*100, 2)
+    nbneg = round(prob.prob("negative")*100, 2)
     print(comment_blob.classify())
 
     #if neutral value is greater than both positive and negative value, then com us "-"
@@ -161,16 +161,17 @@ def NB_Classify(comment):
 
     # if nb sentiment is  neutral
     if comment_blob.classify() == 'neutral':
-        nbscore = 2.50
+        nbscore = '-'
     # if nb sentiment is positive or negative
     else:
         nbscore = nbpos+-abs(nbneg)
         nbscore = nbscore+100
         nbscore = nbscore/2
         nbscore = nbscore/100
-        nbscore = nbscore * 5
+        nbscore = abs(nbscore)*5
+        nbscore = round (nbscore, 2)
 
-    return "NB=" + comment_blob.classify() + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
+    return comment_blob.classify() + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
