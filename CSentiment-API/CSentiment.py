@@ -71,7 +71,8 @@ def sentiment_scores(sentence):
     vdpos = round(sentiment_dict['pos']*100,2)
     vdneu = round(sentiment_dict['neu']*100,2)
     vdneg = round(sentiment_dict['neg']*100,2)
-
+    comval = round(sentiment_dict['compound']*100,2)
+    print("compound value: ", str(comval))
     #if neutral value is greater than both positive and negative value, then com us "-"
     if(vdneu > vdpos and vdneu > vdneg):
         vdcom = "-"

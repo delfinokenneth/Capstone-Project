@@ -6,7 +6,7 @@ from flask_mysqldb import MySQL
 from googletrans import Translator
 from textblob import TextBlob
 
-nltk.download('vader_lexicon')
+#nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from textblob.classifiers import NaiveBayesClassifier
 import enchant
@@ -303,85 +303,23 @@ def instrument():
 
 @app.route("/generateReport",methods=["POST","GET"])
 def generateReport():
-	cur = mysql.connection.cursor()
-	cur.execute("SELECT * FROM questionaire where section = 1")
-	section1 = cur.fetchall()
-
-	cur.execute("SELECT * FROM questionaire where section = 2")
-	section2 = cur.fetchall()
-
-	cur.execute("SELECT * FROM questionaire where section = 3")
-	section3 = cur.fetchall()
-
-	cur.execute("SELECT * FROM questionaire where section = 4")
-	section4 = cur.fetchall()
-
-	cur.execute("SELECT * FROM questionaire where section = 5")
-	section5 = cur.fetchall()
-
-	# get comment and sentiment from db
-	# get all comments and sentiments that are not null or empty
-	cur.execute("SELECT comment,pos,neu,neg,sentiment,com from evaluation where comment is not null and comment <> ''")
-	comments = cur.fetchall()
-
-	#get the average of compound values
-	cur.execute("SELECT AVG(com) from evaluation where comment is not null and comment <> '' LIMIT 1")
-	comAverage = cur.fetchall()
-
-	# get total number of respondents
-	cur.execute("select count(id) as totalnum from evaluation")
-	numofrespondents = cur.fetchall()
-
-	#get evaluation from sect1
-	cur.execute("SELECT SUBSTRING(section1, 1, 1) from evaluation")
-	evalsec1 = cur.fetchall()
-
-
-	# <!-- DB guide-> https://imgur.com/YMKA4ib -->
-	cur.execute("""SELECT DISTINCT section.id, section.section, section.name, section.description, section.percentage, 
-				(select count(question) from questionaire  where section = '1') as total1, 
-				(select count(question) from questionaire  where section = '2') as total2, 
-				(select count(question) from questionaire  where section = '3') as total3, 
-				(select count(question) from questionaire  where section = '4') as total4,
-				(select count(question) from questionaire  where section = '5') as total5 
-				from section 
-				right join questionaire on section.section = questionaire.section """)
-	sectionsleft = cur.fetchall()
-
-
-	cur.execute(""" SELECT questionaire.section, questionaire.question from questionaire
-					right join section
-					ON questionaire.section = section.section """)
-	sectionsright = cur.fetchall()
-
-
-	cur.execute("select section1, section2, section3, section4, section5, (select count(id) from evaluation) as totalnum from evaluation")
-	evalsecans = cur.fetchall()
-
-	cur.close()
-
-	rendered = render_template("teachers_evaluation.html",
-							section1=section1, section2=section2,
-							lensec1=len(section1), lensec2=len(section2),
-							section3=section3, lensec3=len(section3),
-							section4=section4, lensec4=len(section4),
-							section5=section5, lensec5=len(section5),
-							datacomments = comments,
-							comAverage = comAverage[0],
-							countrespondents = numofrespondents,
-							evaluationsec1 = evalsec1,
-							lenevalsec1 = len(evalsec1),
-							sectionsleft = sectionsleft,
-							sectionsright = sectionsright,
-							lensectionsleft = len(sectionsleft),
-							lensectionsright = len(sectionsright),
-							evalsecans = evalsecans)
+	data =[
+		("Section 1", 4.65),
+		("Section 2", 4.25),
+		("Section 3", 5),
+		("Section 4", 5),
+		("Section 5", 3.50),
+		("Comments", 2.46),
+	]
+	labels = [row[0] for row in data]
+	values = [row[1] for row in data]
+	rendered = render_template("report.html", labels = labels, values= values)
 
 	pdf = pdfkit.from_string(rendered, configuration=config)
 	print("trying to generate")
 	response = make_response(pdf)
 	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=summary.pdf'
 
 	return response
 #method that will send the input comment to the API and return its response
