@@ -39,7 +39,9 @@ new_vader ={
     'on-time': 2,
     'approachable': 4,
     'without': -2,
-    
+    'buang': -1.4,
+    'tapolan': -1.1,
+    'tapolan': -1.5,
 }
 
 #global variables
@@ -72,13 +74,17 @@ def sentiment_scores(sentence):
     vdneu = round(sentiment_dict['neu']*100,2)
     vdneg = round(sentiment_dict['neg']*100,2)
 
-    #if neutral value is greater than both positive and negative value, then com us "-"
-    if(vdneu > vdpos and vdneu > vdneg):
-        vdcom = "-"
+    #if vd sentiment is not positive or negative
+    if sentiment_dict['compound'] >= 0.05 and sentiment_dict['compound'] <= - 0.05:
+        vdscore = 2.50
+    #if vd sentiment is positive or negative
     else:
-        vdcom = vdpos+-abs(vdneg)
-        
-        
+        vdscore = vdpos+-abs(vdneg)
+        vdscore = vdscore + 100
+        vdscore = vdscore/2
+        vdscore = vdscore/100
+        vdscore = abs(vdscore) * 5
+        vdscore = round(vdscore, 2)
 
     print("Sentence Overall Rated As", end = " ") 
     
@@ -98,10 +104,10 @@ def sentiment_scores(sentence):
         return NB_Classify(sentence)
     # decide sentiment as positive, negative and neutral 
     elif sentiment_dict['compound'] >= 0.05 : 
-        return "positive" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdcom)
+        return "positive" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
   
     elif sentiment_dict['compound'] <= - 0.05 : 
-        return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdcom)
+        return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
     else :
         return NB_Classify(sentence)
@@ -151,12 +157,20 @@ def NB_Classify(comment):
     print(comment_blob.classify())
 
     #if neutral value is greater than both positive and negative value, then com us "-"
-    if(nbneu > nbpos and nbneu > nbneg):
-        nbcom = "-"
-    else:
-        nbcom = nbpos+-abs(nbneg)
+    #if(nbneu > nbpos and nbneu > nbneg):
 
-    return comment_blob.classify() + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbcom)
+    # if nb sentiment is  neutral
+    if comment_blob.classify() == 'neutral':
+        nbscore = 2.50
+    # if nb sentiment is positive or negative
+    else:
+        nbscore = nbpos+-abs(nbneg)
+        nbscore = nbscore+100
+        nbscore = nbscore/2
+        nbscore = nbscore/100
+        nbscore = nbscore * 5
+
+    return "NB=" + comment_blob.classify() + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
@@ -173,13 +187,6 @@ def sentimentAnalyis():
 @app.route("/displaydata", methods=['GET'])
 def displayData():
     return jsonify(list_commentsAndLabel)
-
-@app.route("/getQuestions/<section>", methods = ['GET'])
-def getQuestions(section):
-    con = mysql.connection.cursor()
-    con.execute("Select question from questionaire where section = %s", section)
-    questions = con.fetchall()
-    return jsonify(questions)
 
 if __name__ == '__main__':
     app.run(host="127.0.0.6", port=8000, debug=True)
