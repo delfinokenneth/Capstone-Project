@@ -218,6 +218,7 @@
 	
 	{% set allsecsum = namespace(value = 0) %}
 	{% set countsec = namespace(value = 0) %}
+	{% set arrayAve =[] %}
 	<!-- assign var secallavg = 0 (all section averages) -->
 
 
@@ -277,6 +278,7 @@
 						{% set count = namespace(value=0) %}
 					{% endif %}
 				{% endfor %}
+				{{ arrayAve.append(secrateavg) }}
 				<!-- RATING AVG -->
 				<tr class="sectiondata">
 					<td class="scenario" bgcolor="#ccddff"> <b> Rating Average </b> </td>
@@ -288,7 +290,7 @@
 					{% set secrateavg = "%.2f"|format(secavg.value/counter.value)|float %}
 					{% set allsecsum.value =  allsecsum.value + (secavg.value/counter.value) %}
 					{% set countsec.value = countsec.value + 1 %}
-
+					
 
 					</td>
 					<td class="rates" id="rate" style="text-align: center;" colspan="100" bgcolor="#ccddff"> 				
