@@ -55,11 +55,11 @@ def evaluate():
 
 	# get comment and sentiment from db
 	# get all comments and sentiments that are not null or empty
-	cur.execute("SELECT comment,pos,neu,neg,sentiment,com from evaluation where comment is not null and comment <> ''")
+	cur.execute("SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> ''")
 	comments = cur.fetchall()
 
-	#get the average of compound values
-	cur.execute("SELECT AVG(com) from evaluation where comment is not null and comment <> '' LIMIT 1")
+	#get the average of compound values --- will check this again
+	cur.execute("SELECT AVG(score) from evaluation where comment is not null and comment <> '' LIMIT 1")
 	comAverage = cur.fetchall()
 
 	# get total number of respondents
@@ -191,9 +191,12 @@ def evaluation():
 		pos_val = getsentiment(comment).split(" ")[1]
 		neu_val = getsentiment(comment).split(" ")[2]
 		neg_val = getsentiment(comment).split(" ")[3]
-		com_val = getsentiment(comment).split(" ")[4]
+		score_val = getsentiment(comment).split(" ")[4]
 		sen_val = getsentiment(comment).split(" ")[0]
 
+		#if sentiment is neutral then score = null
+		if sen_val == 'neutral':
+			score_val = None
 
 		try:       
 			cur = mysql.connection.cursor()
@@ -206,9 +209,9 @@ def evaluation():
 
 			#if input comment is not empty
 			if comment is not "":
-				sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5,pos,neu,neg,comment,sentiment, com)\
+				sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5,pos,neu,neg,comment,sentiment, score)\
 					 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-				val = ("18013672","18013672",sec1_string,sec2_string,sec3_string,sec4_string,sec5_string,pos_val,neu_val,neg_val,comment,sen_val,com_val)
+				val = ("18013672","18013672",sec1_string,sec2_string,sec3_string,sec4_string,sec5_string,pos_val,neu_val,neg_val,comment,sen_val,score_val)
 			#else input comment is empty
 			else:
 				sql = "INSERT INTO evaluation (idteacher,idstudent,section1,section2,section3,section4,section5)\
@@ -321,12 +324,13 @@ def generateReport():
 
 	# get comment and sentiment from db
 	# get all comments and sentiments that are not null or empty
-	cur.execute("SELECT comment,pos,neu,neg,sentiment,com from evaluation where comment is not null and comment <> ''")
+	cur.execute("SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> ''")
 	comments = cur.fetchall()
 
 	#get the average of compound values
-	cur.execute("SELECT AVG(com) from evaluation where comment is not null and comment <> '' LIMIT 1")
+	cur.execute("SELECT AVG(score) from evaluation where comment is not null and comment <> '' and score is not null LIMIT 1")
 	comAverage = cur.fetchall()
+
 
 	# get total number of respondents
 	cur.execute("select count(id) as totalnum from evaluation")
@@ -367,7 +371,7 @@ def generateReport():
 							section4=section4, lensec4=len(section4),
 							section5=section5, lensec5=len(section5),
 							datacomments = comments,
-							comAverage = comAverage[0],
+							comAverage=comAverage[0],
 							countrespondents = numofrespondents,
 							evaluationsec1 = evalsec1,
 							lenevalsec1 = len(evalsec1),
