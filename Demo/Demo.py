@@ -303,26 +303,12 @@ def instrument():
 
 @app.route("/generateReport/<sec1>/<sec2>/<sec3>/<sec4>/<sec5>/<comment>",methods=["POST","GET"])
 def generateReport(sec1,sec2,sec3,sec4,sec5,comment):
-	data =[
-		("Section 1", sec1),
-		("Section 2", sec2),
-		("Section 3", sec3),
-		("Section 4", sec4),
-		("Section 5", sec5),
-		("Comments", comment),
-	]
-	labels = [row[0] for row in data]
-	values = [row[1] for row in data]
-	rendered = render_template("report.html", labels = labels, values= values)
+	try:
+		resp = printReport(sec1,sec2,sec3,sec4,sec5,comment)
+		return resp
+	except:
+		return "Can't print report"
 
-
-	pdf = pdfkit.from_string(rendered, configuration=config)
-	print("trying to generate")
-	response = make_response(pdf)
-	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
-
-	return response
 #method that will send the input comment to the API and return its response
 with app.app_context():
 	def getsentiment(comment):
@@ -333,6 +319,22 @@ with app.app_context():
 		dictFromServer = res.json()
 		return str(dictFromServer)
 
+with app.app_context():	
+	def printReport(sec1,sec2,sec3,sec4,sec5,comment):
+		import requests
+		data =[
+		("Section1", sec1),
+		("Section2", sec2),
+		("Section3", sec3),
+		("Section4", sec4),
+		("Section5", sec5),
+		("Comments", comment),
+		("Teacher", "Bryan Namoc"), #static value
+		("Subject", "MATH 101"), #static value
+		("Respondents", "36"), #static value
+		]
+		resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = data, stream=True)
+		return resp.raw.read(), resp.status_code, resp.headers.items()
 
 if __name__ == "__main__":
 	app.run(host='127.0.0.1', port=8080, debug=True)

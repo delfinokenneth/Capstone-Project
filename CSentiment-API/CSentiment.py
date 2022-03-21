@@ -5,11 +5,10 @@
 from xml.dom.minidom import Document
 # noinspection PyUnresolvedReferences
 from xml.dom.minidom import Element
-
-
+from h11 import Data
 
 import nltk
-from flask import Flask, request, json, jsonify
+from flask import Flask, request, json, jsonify, make_response, render_template
 from flask_cors import CORS
 
 nltk.download('vader_lexicon')
@@ -20,6 +19,12 @@ import pandas as pd
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 import string
+
+import pdfkit
+
+path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
 
 app = Flask(__name__)
 
@@ -172,6 +177,38 @@ def NB_Classify(comment):
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
 
+#convert 2d list into dictionary
+def toDict(data):
+    labels = [row[0] for row in data]
+    values = [row[1] for row in data]
+    dataDict = {}
+    for i in range(len(values)):
+        dataDict[labels[i]] = values[i]
+
+    return dataDict
+#creating list for the labels in average chart
+def averageChartLabel():
+    labels = []
+    labels.append("Section 1")
+    labels.append("Section 2")
+    labels.append("Section 3")
+    labels.append("Section 4")
+    labels.append("Section 5")
+    labels.append("Comment")
+
+    return labels
+
+#creating list for the labels in average chart
+def averageChartValues(dataDict):
+    values = []
+    values.append(dataDict['Section1'])
+    values.append(dataDict['Section2'])
+    values.append(dataDict['Section3'])
+    values.append(dataDict['Section4'])
+    values.append(dataDict['Section5'])
+    values.append(dataDict['Comments'])
+
+    return values
 #building API
 @app.route("/getSentiment", methods=['POST'])
 def sentimentAnalyis():
@@ -184,6 +221,23 @@ def sentimentAnalyis():
 @app.route("/displaydata", methods=['GET'])
 def displayData():
     return jsonify(list_commentsAndLabel)
+    
+#Report Generation
+@app.route("/reportGeneration",methods=["POST","GET"])
+def generateReport():
+    data = request.get_json(force=True)
+    dataDict = toDict(data)
+    averageLabel = averageChartLabel()
+    averageValues = averageChartValues(dataDict)
+
+    rendered = render_template("report.html", labels = averageLabel, values=averageValues, data = dataDict)
+    pdf = pdfkit.from_string(rendered, configuration=config)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=summary.pdf'
+
+    return response
 
 if __name__ == '__main__':
     app.run(host="127.0.0.6", port=8000, debug=True)
