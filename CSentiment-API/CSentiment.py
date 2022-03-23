@@ -198,6 +198,15 @@ def averageChartLabel():
 
     return labels
 
+#creating list for pos,neg,neu averages
+def posNegNeuAve(dataDict):
+    values = []
+    values.append(dataDict['posAve'])
+    values.append(dataDict['negAve'])
+    values.append(dataDict['neuAve'])
+
+    return values
+
 #creating list for the labels in average chart
 def averageChartValues(dataDict):
     values = []
@@ -229,8 +238,9 @@ def generateReport():
     dataDict = toDict(data)
     averageLabel = averageChartLabel()
     averageValues = averageChartValues(dataDict)
-
-    rendered = render_template("report.html", labels = averageLabel, values=averageValues, data = dataDict)
+    sentimentAve = posNegNeuAve(dataDict)
+    print("sentiment Averages: ", sentimentAve)
+    rendered = render_template("report.html", labels = averageLabel, values=averageValues, data = dataDict, sentimentAve = sentimentAve)
     pdf = pdfkit.from_string(rendered, configuration=config)
 
     response = make_response(pdf)

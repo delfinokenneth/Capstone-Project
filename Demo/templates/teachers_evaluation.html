@@ -278,7 +278,9 @@
 						{% set count = namespace(value=0) %}
 					{% endif %}
 				{% endfor %}
-				{{ arrayAve.append("%.2f"|format(secavg.value/counter.value)|float) }}
+				<text style="display: none;">
+					{{ arrayAve.append("%.2f"|format(secavg.value/counter.value)|float) }}
+				</text>
 				<!-- RATING AVG -->
 				<tr class="sectiondata">
 					<td class="scenario" bgcolor="#ccddff"> <b> Rating Average </b> </td>
@@ -374,7 +376,6 @@
 						{% elif comrateavg >= 1.0 and comrateavg <= 1.79 %}
 							{{"Needs Improvement"}}
 						{% endif %}
-
 					</td>
 				</tr>
 			</tbody>
@@ -387,7 +388,7 @@
 	<table id="section">
 		<tbody>
 			<tr class="sectioncolumn" >
-				<td > <b> EVALUATION RESULT </b></td>
+				<td > <b> EVALUATION RESULT </b> </td>
 				<td class="sentimentValues"> <b> Average </b></td>
 				<td class="sentimentValues"> <b> Status </b></td>
 			</tr>
@@ -414,7 +415,9 @@
 
 				
 				{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
-				{{arrayAve.append(comavg)}}
+				<text style="display: none;">
+					{{arrayAve.append(comavg)}}
+				</text>
 				<td class="sentimentValues"> {{ comavg }} </td>
 				<td class="sentimentValues">
 					{% if comavg >= 4.2 and comavg <= 5.0 %}
@@ -509,7 +512,14 @@
 	</div>
 </div>
 <div>
-	<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}" > Generate Report</a>
+		 <button>
+			<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}"
+				style="text-decoration: none; color: black;"
+			>
+			 Generate Report
+			</a>
+		</button>
+	
 </div>
 </form>
 

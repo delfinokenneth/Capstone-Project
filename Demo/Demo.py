@@ -300,11 +300,32 @@ def instrument():
 							   sectionsright = sectionsright,
 							   lensectionsleft = len(sectionsleft),
 							   lensectionsright = len(sectionsright))
+# getting average for positive, negative and neutral
+def getPositiveAverage():
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT AVG(pos) from evaluation where idteacher = 18013672 and score IS NOT NULL  LIMIT 1")
+		posAve = cur.fetchall()[0]
+		return posAve
 
+def getNegativeAverage():
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT AVG(neg) from evaluation where idteacher = 18013672 and score IS NOT NULL  LIMIT 1")
+		negAve = cur.fetchall()[0]
+		return negAve
+
+def getNeutralAverage():
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT AVG(neu) from evaluation where idteacher = 18013672 and score IS NOT NULL LIMIT 1")
+		neuAve = cur.fetchall()[0]
+		return neuAve
+# end for getting average for positive, negative and neutral
 @app.route("/generateReport/<sec1>/<sec2>/<sec3>/<sec4>/<sec5>/<comment>",methods=["POST","GET"])
 def generateReport(sec1,sec2,sec3,sec4,sec5,comment):
 	try:
-		resp = printReport(sec1,sec2,sec3,sec4,sec5,comment)
+		posAve = getPositiveAverage()
+		negAve = getNegativeAverage()
+		neuAve = getNeutralAverage()
+		resp = printReport(sec1,sec2,sec3,sec4,sec5,comment,posAve[0],negAve[0],neuAve[0] )
 		return resp
 	except:
 		return "Can't print report"
@@ -320,7 +341,7 @@ with app.app_context():
 		return str(dictFromServer)
 
 with app.app_context():	
-	def printReport(sec1,sec2,sec3,sec4,sec5,comment):
+	def printReport(sec1,sec2,sec3,sec4,sec5,comment,posAve,negAve,neuAve):
 		import requests
 		data =[
 		("Section1", sec1),
@@ -332,6 +353,9 @@ with app.app_context():
 		("Teacher", "Bryan Namoc"), #static value
 		("Subject", "MATH 101"), #static value
 		("Respondents", "36"), #static value
+		("posAve", posAve),
+		("negAve", negAve),
+		("neuAve", neuAve),
 		]
 		resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = data, stream=True)
 		return resp.raw.read(), resp.status_code, resp.headers.items()

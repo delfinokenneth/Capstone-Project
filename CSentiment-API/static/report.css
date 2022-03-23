@@ -7,5 +7,44 @@
     text-align: center;
 }
 
-
-
+#divForOverallAve {
+    width: 100%;
+    margin: auto;
+    border-left: 4px solid #ccddff;
+}
+#tblForOverallAve {
+    width: 100%;
+}
+#tblForOverallAve td, th {
+    padding: 5px;
+}
+#colEvalResult {
+    width: 50%;
+}
+#colAve{
+    width: 15%;
+}
+#colStatus
+{
+    width: 20%;
+}
+#tblHead {
+    background-color: #ccddff;
+}
+#ratingResult, #commentResult
+{
+    background-color: #f2f2f2;
+}
+#pieChart{
+    padding: 10px;
+    padding-left: 15%;
+    width: 100%;
+    border: solid 2px  #ccddff;
+    border-radius: 5px;
+}
+#lineChart{
+    width: 100%;
+}
+#graphDesc{
+    text-align: center;
+}
