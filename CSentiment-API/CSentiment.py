@@ -46,8 +46,6 @@ newvaderdata = pd.read_csv('cebuanonewword.csv')
 print("number of data ", newvaderdata.shape)
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 
-
-
 #global variables
 vdpos = 0
 vdneu = 0
