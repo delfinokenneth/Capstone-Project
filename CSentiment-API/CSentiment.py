@@ -44,10 +44,12 @@ new_vader ={
     'on-time': 2,
     'approachable': 4,
     'without': -2,
-    'buang': -1.4,
-    'tapolan': -1.1,
-    'tapolan': -1.5,
 }
+
+#get cebuano token and sentiment rating from csv
+newvaderdata = pd.read_csv('cebuanonewword.csv')
+print("number of data ", newvaderdata.shape)
+new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 
 #global variables
 vdpos = 0
