@@ -11,12 +11,19 @@ from xml.dom.minidom import Element
 import nltk
 from flask import Flask, request, json, jsonify
 from flask_cors import CORS
-
+import pandas as pd
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+#replace negate and booster tuples in nltk from csv
+vaderconstants = pd.read_csv('vaderconstants.csv')
+newnegate = tuple(vaderconstants['negate'])
+newbooster = vaderconstants.set_index('booster-key')['booster-value'].to_dict()
+nltk.sentiment.vader.VaderConstants.NEGATE = newnegate
+nltk.sentiment.vader.VaderConstants.BOOSTER_DICT = newbooster
+
+
 #Naive bayes imports
-import pandas as pd
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 import string
@@ -194,6 +201,7 @@ def displayData():
     return jsonify(list_commentsAndLabel)
 
 if __name__ == '__main__':
-    app.run(host="127.0.0.6", port=8000, debug=True)
+    #app.run(host="127.0.0.6", port=8000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
 #    app.run(debug=True)
 
