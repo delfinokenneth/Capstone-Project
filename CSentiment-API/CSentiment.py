@@ -140,6 +140,7 @@ def FinalSentiment(sentence):
 #reading the dataset
 data = pd.read_csv('Comments.csv')
 print("number of data ", data.shape)
+print(data)
 training = data[['comment','label']]
 #convert comments and label dataFrame into list
 list_commentsAndLabel = training.values.tolist()
