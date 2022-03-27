@@ -5,11 +5,10 @@
 from xml.dom.minidom import Document
 # noinspection PyUnresolvedReferences
 from xml.dom.minidom import Element
-
-
+from h11 import Data
 
 import nltk
-from flask import Flask, request, json, jsonify
+from flask import Flask, request, json, jsonify, make_response, render_template
 from flask_cors import CORS
 import pandas as pd
 nltk.download('vader_lexicon')
@@ -27,6 +26,12 @@ nltk.sentiment.vader.VaderConstants.BOOSTER_DICT = newbooster
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 import string
+
+import pdfkit
+
+path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
 
 app = Flask(__name__)
 
@@ -52,8 +57,6 @@ new_vader ={
 newvaderdata = pd.read_csv('cebuanonewword.csv')
 print("number of data ", newvaderdata.shape)
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
-
-
 
 #global variables
 vdpos = 0
@@ -107,11 +110,7 @@ def sentiment_scores(sentence):
             hasNo = True
             break
         
-    if(hasNo
-    or "n't" in sentence
-    or "haha" in sentence
-    or "miss" in sentence
-    or "absent" in sentence):
+    if(hasNo):
         return NB_Classify(sentence)
     # decide sentiment as positive, negative and neutral 
     elif sentiment_dict['compound'] >= 0.05 : 
@@ -148,6 +147,7 @@ def FinalSentiment(sentence):
 #reading the dataset
 data = pd.read_csv('Comments.csv')
 print("number of data ", data.shape)
+print(data)
 training = data[['comment','label']]
 #convert comments and label dataFrame into list
 list_commentsAndLabel = training.values.tolist()
@@ -187,6 +187,47 @@ def NB_Classify(comment):
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
 
+#convert 2d list into dictionary
+def toDict(data):
+    labels = [row[0] for row in data]
+    values = [row[1] for row in data]
+    dataDict = {}
+    for i in range(len(values)):
+        dataDict[labels[i]] = values[i]
+
+    return dataDict
+#creating list for the labels in average chart
+def averageChartLabel():
+    labels = []
+    labels.append("Section 1")
+    labels.append("Section 2")
+    labels.append("Section 3")
+    labels.append("Section 4")
+    labels.append("Section 5")
+    labels.append("Comment")
+
+    return labels
+
+#creating list for pos,neg,neu averages
+def posNegNeuAve(dataDict):
+    values = []
+    values.append(dataDict['posAve'])
+    values.append(dataDict['negAve'])
+    values.append(dataDict['neuAve'])
+
+    return values
+
+#creating list for the labels in average chart
+def averageChartValues(dataDict):
+    values = []
+    values.append(dataDict['Section1'])
+    values.append(dataDict['Section2'])
+    values.append(dataDict['Section3'])
+    values.append(dataDict['Section4'])
+    values.append(dataDict['Section5'])
+    values.append(dataDict['Comments'])
+
+    return values
 #building API
 @app.route("/getSentiment", methods=['POST'])
 def sentimentAnalyis():
@@ -199,9 +240,27 @@ def sentimentAnalyis():
 @app.route("/displaydata", methods=['GET'])
 def displayData():
     return jsonify(list_commentsAndLabel)
+    
+#Report Generation
+@app.route("/reportGeneration",methods=["POST","GET"])
+def generateReport():
+    data = request.get_json(force=True)
+    dataDict = toDict(data)
+    averageLabel = averageChartLabel()
+    averageValues = averageChartValues(dataDict)
+    sentimentAve = posNegNeuAve(dataDict)
+    print("sentiment Averages: ", sentimentAve)
+    rendered = render_template("report.html", labels = averageLabel, values=averageValues, data = dataDict, sentimentAve = sentimentAve)
+    pdf = pdfkit.from_string(rendered, configuration=config)
+
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=summary.pdf'
+
+    return response
 
 if __name__ == '__main__':
-    #app.run(host="127.0.0.6", port=8000, debug=True)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="127.0.0.6", port=8000, debug=True)
+    #app.run(host="0.0.0.0", port=5000, debug=True)
 #    app.run(debug=True)
 

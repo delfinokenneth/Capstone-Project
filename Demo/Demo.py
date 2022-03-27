@@ -6,7 +6,7 @@ from flask_mysqldb import MySQL
 from googletrans import Translator
 from textblob import TextBlob
 
-nltk.download('vader_lexicon')
+#nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from textblob.classifiers import NaiveBayesClassifier
 import enchant
@@ -117,9 +117,6 @@ def evaluate():
 
 		for i in range(len(section5)):
 			sec5_rating.append(request.form[f'rating5[{i}]'])
-
-
-	
 	else:
 		return render_template("teachers_evaluation.html",
 							   section1=section1, section2=section2,
@@ -303,91 +300,36 @@ def instrument():
 							   sectionsright = sectionsright,
 							   lensectionsleft = len(sectionsleft),
 							   lensectionsright = len(sectionsright))
+# getting average for positive, negative and neutral
+def getPositiveAverage():
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT AVG(pos) from evaluation where idteacher = 18013672 and score IS NOT NULL  LIMIT 1")
+		posAve = cur.fetchall()[0]
+		return posAve
 
-@app.route("/generateReport",methods=["POST","GET"])
-def generateReport():
-	cur = mysql.connection.cursor()
-	cur.execute("SELECT * FROM questionaire where section = 1")
-	section1 = cur.fetchall()
+def getNegativeAverage():
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT AVG(neg) from evaluation where idteacher = 18013672 and score IS NOT NULL  LIMIT 1")
+		negAve = cur.fetchall()[0]
+		return negAve
 
-	cur.execute("SELECT * FROM questionaire where section = 2")
-	section2 = cur.fetchall()
+def getNeutralAverage():
+		cur = mysql.connection.cursor()
+		cur.execute("SELECT AVG(neu) from evaluation where idteacher = 18013672 and score IS NOT NULL LIMIT 1")
+		neuAve = cur.fetchall()[0]
+		return neuAve
+# end for getting average for positive, negative and neutral
+@app.route("/generateReport/<sec1>/<sec2>/<sec3>/<sec4>/<sec5>/<comment>",methods=["POST","GET"])
+def generateReport(sec1,sec2,sec3,sec4,sec5,comment):
+	try:
+		posAve = getPositiveAverage()
+		negAve = getNegativeAverage()
+		neuAve = getNeutralAverage()
+		resp = printReport(sec1,sec2,sec3,sec4,sec5,comment,posAve[0],negAve[0],neuAve[0] )
+		return resp
+	except:
+		return "Can't print report"
 
-	cur.execute("SELECT * FROM questionaire where section = 3")
-	section3 = cur.fetchall()
-
-	cur.execute("SELECT * FROM questionaire where section = 4")
-	section4 = cur.fetchall()
-
-	cur.execute("SELECT * FROM questionaire where section = 5")
-	section5 = cur.fetchall()
-
-	# get comment and sentiment from db
-	# get all comments and sentiments that are not null or empty
-	cur.execute("SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> ''")
-	comments = cur.fetchall()
-
-	#get the average of compound values
-	cur.execute("SELECT AVG(score) from evaluation where comment is not null and comment <> '' and score is not null LIMIT 1")
-	comAverage = cur.fetchall()
-
-
-	# get total number of respondents
-	cur.execute("select count(id) as totalnum from evaluation")
-	numofrespondents = cur.fetchall()
-
-	#get evaluation from sect1
-	cur.execute("SELECT SUBSTRING(section1, 1, 1) from evaluation")
-	evalsec1 = cur.fetchall()
-
-
-	# <!-- DB guide-> https://imgur.com/YMKA4ib -->
-	cur.execute("""SELECT DISTINCT section.id, section.section, section.name, section.description, section.percentage, 
-				(select count(question) from questionaire  where section = '1') as total1, 
-				(select count(question) from questionaire  where section = '2') as total2, 
-				(select count(question) from questionaire  where section = '3') as total3, 
-				(select count(question) from questionaire  where section = '4') as total4,
-				(select count(question) from questionaire  where section = '5') as total5 
-				from section 
-				right join questionaire on section.section = questionaire.section """)
-	sectionsleft = cur.fetchall()
-
-
-	cur.execute(""" SELECT questionaire.section, questionaire.question from questionaire
-					right join section
-					ON questionaire.section = section.section """)
-	sectionsright = cur.fetchall()
-
-
-	cur.execute("select section1, section2, section3, section4, section5, (select count(id) from evaluation) as totalnum from evaluation")
-	evalsecans = cur.fetchall()
-
-	cur.close()
-
-	rendered = render_template("teachers_evaluation.html",
-							section1=section1, section2=section2,
-							lensec1=len(section1), lensec2=len(section2),
-							section3=section3, lensec3=len(section3),
-							section4=section4, lensec4=len(section4),
-							section5=section5, lensec5=len(section5),
-							datacomments = comments,
-							comAverage=comAverage[0],
-							countrespondents = numofrespondents,
-							evaluationsec1 = evalsec1,
-							lenevalsec1 = len(evalsec1),
-							sectionsleft = sectionsleft,
-							sectionsright = sectionsright,
-							lensectionsleft = len(sectionsleft),
-							lensectionsright = len(sectionsright),
-							evalsecans = evalsecans)
-
-	pdf = pdfkit.from_string(rendered, configuration=config)
-	print("trying to generate")
-	response = make_response(pdf)
-	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
-
-	return response
 #method that will send the input comment to the API and return its response
 with app.app_context():
 	def getsentiment(comment):
@@ -398,6 +340,25 @@ with app.app_context():
 		dictFromServer = res.json()
 		return str(dictFromServer)
 
+with app.app_context():	
+	def printReport(sec1,sec2,sec3,sec4,sec5,comment,posAve,negAve,neuAve):
+		import requests
+		data =[
+		("Section1", sec1),
+		("Section2", sec2),
+		("Section3", sec3),
+		("Section4", sec4),
+		("Section5", sec5),
+		("Comments", comment),
+		("Teacher", "Bryan Namoc"), #static value
+		("Subject", "MATH 101"), #static value
+		("Respondents", "36"), #static value
+		("posAve", posAve),
+		("negAve", negAve),
+		("neuAve", neuAve),
+		]
+		resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = data, stream=True)
+		return resp.raw.read(), resp.status_code, resp.headers.items()
 
 if __name__ == "__main__":
 	app.run(host='127.0.0.1', port=8080, debug=True)

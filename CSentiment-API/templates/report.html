@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href={{ url_for('static', filename='report.css', _external=True) }} > 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js" 
+        integrity="sha512-R/QOHLpV1Ggq22vfDAWYOaMd5RopHrJNMxi8/lJu8Oihwi4Ho4BRFeiMiCefn9rasajKjnx9/fTQ/xkWnkDACg==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer">
+        </script>
+        <title>Summary Report</title>
+    </head>
+    <body>
+        <h3 class="title">Report Summary</h3>
+        <!-- line of code for the teacher information -->
+        <div>
+            <label class="holders"> Teacher </label><text>: {{ data['Teacher'] }}</text><br>
+            <label class="holders"> Subject </label><text>: {{ data['Subject'] }} </text><br>
+            <label class="holders"> Respondents </label><text>: {{ data['Respondents'] }} </text>
+            <hr>
+        </div>
+        <!-- end line of code for the teacher information -->
+        <!-- line of code for the pie chart -->
+        <canvas id="pieChart" width="900" height="300"></canvas>
+        <script>
+            var ctx = document.getElementById("pieChart").getContext("2d");
+            var sum = {{
+               sentimentAve[0] | float +
+               sentimentAve[1] | float +
+               sentimentAve[2] | float
+            }};
+            console.log(sum)
+            var posAve = "(" + ({{ sentimentAve[0] | float }} / sum * 100).toFixed(2)  + "%) Positive";
+            var negAve = "(" + ({{ sentimentAve[1] | float }} / sum * 100).toFixed(2)  + "%) Negative";
+            var neuAve = "(" + ({{ sentimentAve[2] | float }} / sum * 100).toFixed(2)  + "%) Neutral";
+            var label = [posAve,negAve,neuAve]
+            console.log({{sentimentAve}})
+            var lineChart = new Chart(ctx, {
+                type: "pie",
+                data: {
+                    labels: label,
+                    datasets: [
+                        {
+                            label: "Sentiment Average",
+                            data: {{ sentimentAve | safe }},
+                            fill: true,
+                            backgroundColor: [ '#80ff80', '#ff8080', '#8080ff',
+                            '#BEBEEA', '#C7C8ED', '#D0D1F0'],
+                            lineTension: 0.1,
+                        }
+                    ]
+                },
+                options: {
+                   legend: {
+                       position: 'left',
+                   },
+                   animation:{
+                       duration: 0
+                   },
+                   responsive: false,
+                   plugins: {
+                       datalabels: {
+                           color: '#00000',
+                       }
+                   }
+                },
+            });
+        </script>
+        <!-- pie chart details -->
+        <p id="graphDesc">Percentage for Positive, Negative, and Neutral from Comment Summary</p>
+        <!-- end of line for the pie chart -->
+        <hr>
+        <!-- line of code for the bar chart -->
+        <canvas id="lineChart" width="900" height="300"></canvas>
+        <script>
+            var ctx = document.getElementById("lineChart").getContext("2d");
+            var lineChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: {{ labels | safe }},
+                    datasets: [
+                        {
+                            label:"Averages",
+                            data: {{ values | safe }},
+                            fill: false,
+                            backgroundColor: [ '#ccddff', '#ccddff', '#ccddff',
+                            '#ccddff', '#ccddff', '#ccddff'],
+                            lineTension: 0.1,
+                        }
+                    ]
+                },
+                
+                options: {
+                    responsive: false,
+                    animation: {
+                        duration: 0
+                    },
+                    // plugins: {
+                    //     title: {
+                    //         display: true,
+                    //         text: 'test'
+                    //     }
+
+                    // }
+                },
+                // this line of code is for display the labels each bar
+                // but dili mushow ang chart sa pdf if ishow siyag apil
+                // plugins: [ChartDataLabels],
+                // options: {
+
+                // }
+            });
+        </script>
+        <!-- pie chart details -->
+        <p id="graphDesc">Average of each section from numerical feedback and comment</p>
+        <!-- end of line for the bar chart -->
+        <hr>
+        <!-- table of the averages and overall average -->
+        <div id="divForOverallAve">
+            <table id="tblForOverallAve">
+                <thead>
+                    <tr id="tblHead">
+                        <th id="colEvalResult">EVALUATION RESULT</th>
+                        <th id="colAve">AVERAGE</th>
+                        <th id="colAve"> % </th>
+                        <th id="colStatus">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>SECTION 1: Preparation (15%)</td>
+                        <td>{{data.Section1}}</td>
+                        <td>{{ "%.2f"|format(data.Section1|float * 0.15) }}</td>
+                        <td>
+                            {% set secrateavg = data.Section1| float %}
+                            {% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						    {% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						    {% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						    {% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						    {% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						    {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SECTION 2: Teaching and Learning Process (35%)</td>
+                        <td>{{data.Section2}}</td>
+                        <td>{{ "%.2f"|format(data.Section2|float * 0.35) }}</td>
+                        <td>
+                            {% set secrateavg = data.Section2| float %}
+                            {% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						    {% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						    {% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						    {% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						    {% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						    {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SECTION 3: Assessment (25%)</td>
+                        <td>{{data.Section3}}</td>
+                        <td>{{ "%.2f"|format(data.Section3|float * 0.25) }}</td>
+                        <td>
+                            {% set secrateavg3 = data.Section3 | float %}
+                            {% set secrateavg = secrateavg3 %}
+                            {% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						    {% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						    {% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						    {% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						    {% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						    {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SECTION 4: Online Learning Environment (10%)</td>
+                        <td>{{data.Section4}}</th>
+                        <td>{{ "%.2f"|format(data.Section4|float * 0.10) }}</td>
+                        <td>
+                            {% set secrateavg = data.Section4| float %}
+                            {% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						    {% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						    {% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						    {% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						    {% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						    {% endif %}	
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SECTION 5: Teacher's Professionalism (15%)</td>
+                        <td>{{data.Section5}}</th>
+                        <td>{{ "%.2f"|format(data.Section5|float * 0.15) }}</td>
+                        <td>
+                            {% set secrateavg = data.Section5 | float %}
+                            {% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						    {% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						    {% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						    {% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						    {% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						    {% endif %}	
+                        </td>
+                    </tr>
+                    <tr id="ratingResult">
+                        <th id="colEvalResult">RATING RESULT (70%)</th>
+                        {% set percSection1 = "%.2f"|format(data.Section1|float * 0.15)|float %}
+                        {% set percSection2 = "%.2f"|format(data.Section2|float * 0.35)|float %}
+                        {% set percSection3 = "%.2f"|format(data.Section3|float * 0.25)|float %}
+                        {% set percSection4 = "%.2f"|format(data.Section4|float * 0.10)|float %}
+                        {% set percSection5 = "%.2f"|format(data.Section5|float * 0.15)|float %}
+                        {% set percRating = "%.2f"|format(percSection1+percSection2+percSection3+percSection4+percSection5)|float %}
+                        <th id="colAve"></th>
+                        <th id="colAve">{{percRating}}</th>
+                        <th id="colStatus">
+                            {% set secrateavg = percRating | float %}
+                            {% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						    {% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						    {% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						    {% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						    {% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						    {% endif %}	
+                        </th>
+                    </tr>
+                    <tr id="commentResult">
+                        <th id="colEvalResult">COMMENT RESULT (30%)</th>
+                        <th id="colAve"></th>
+                        <th id="colAve">{{data.Comments}}</th>
+                        <th id="colStatus">
+                            {% set secrateavg = data.Comments | float %}
+                            {% set commentResult = secrateavg %}
+                            {% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						    {% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						    {% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						    {% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						    {% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						    {% endif %}	
+                        </th>
+                    </tr>
+                    <tr id="tblHead">
+                        <th id="colEvalResult">OVERALL EVALUATION SCORE</th>
+                        {% set overallResult = "%.2f"|format(percRating * 0.70 + commentResult * 0.30) |float %}
+                        <th id="colAve"></th>
+                        <th id="colAve">{{overallResult}}</th>
+                        <th id="colStatus">
+                            {% set secrateavg = overallResult | float %}
+                            {% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						    {% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						    {% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						    {% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						    {% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						    {% endif %}	
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- end for table of the averages and overall average -->
+    <hr>
+    <h6 style="text-align: center;"> ---------- END OF FILE ---------- </h6>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    </body>
+</html>

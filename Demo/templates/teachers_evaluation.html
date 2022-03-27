@@ -218,6 +218,7 @@
 	
 	{% set allsecsum = namespace(value = 0) %}
 	{% set countsec = namespace(value = 0) %}
+	{% set arrayAve =[] %}
 	<!-- assign var secallavg = 0 (all section averages) -->
 
 
@@ -277,6 +278,9 @@
 						{% set count = namespace(value=0) %}
 					{% endif %}
 				{% endfor %}
+				<text style="display: none;">
+					{{ arrayAve.append("%.2f"|format(secavg.value/counter.value)|float) }}
+				</text>
 				<!-- RATING AVG -->
 				<tr class="sectiondata">
 					<td class="scenario" bgcolor="#ccddff"> <b> Rating Average </b> </td>
@@ -288,7 +292,7 @@
 					{% set secrateavg = "%.2f"|format(secavg.value/counter.value)|float %}
 					{% set allsecsum.value =  allsecsum.value + (secavg.value/counter.value) %}
 					{% set countsec.value = countsec.value + 1 %}
-
+					
 
 					</td>
 					<td class="rates" id="rate" style="text-align: center;" colspan="100" bgcolor="#ccddff"> 				
@@ -305,7 +309,6 @@
 						{% endif %}						
 					</td>
 				</tr>
-
 			</tbody>
 
 		</table>
@@ -373,7 +376,6 @@
 						{% elif comrateavg >= 1.0 and comrateavg <= 1.79 %}
 							{{"Needs Improvement"}}
 						{% endif %}
-
 					</td>
 				</tr>
 			</tbody>
@@ -386,7 +388,7 @@
 	<table id="section">
 		<tbody>
 			<tr class="sectioncolumn" >
-				<td > <b> EVALUATION RESULT </b></td>
+				<td > <b> EVALUATION RESULT </b> </td>
 				<td class="sentimentValues"> <b> Average </b></td>
 				<td class="sentimentValues"> <b> Status </b></td>
 			</tr>
@@ -411,8 +413,11 @@
 			<tr class="sectiondata">
 				<td class="scenario"> Comment (30%)</td>
 
-
+				
 				{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
+				<text style="display: none;">
+					{{arrayAve.append(comavg)}}
+				</text>
 				<td class="sentimentValues"> {{ comavg }} </td>
 				<td class="sentimentValues">
 					{% if comavg >= 4.2 and comavg <= 5.0 %}
@@ -507,7 +512,14 @@
 	</div>
 </div>
 <div>
-	<a href="/generateReport"> Generate Report</a>
+		 <button>
+			<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}"
+				style="text-decoration: none; color: black;"
+			>
+			 Generate Report
+			</a>
+		</button>
+	
 </div>
 </form>
 
