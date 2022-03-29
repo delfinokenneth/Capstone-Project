@@ -31,6 +31,8 @@
 	#rating 
 	{
 		width: 500px;
+		margin-left: -10px;
+		margin-top: 20px;
 	}
 	#detailsandlegend
 	{
@@ -459,7 +461,7 @@
 		</tbody>
 	</table>
 </div>
-</div>
+
 
 <!-- 
 		 {{evalsecans[0][0]}} | {{evalsecans[0][0].split(",")[0] }} |
@@ -510,16 +512,61 @@
 			</tbody>
 		</table>
 	</div>
+		<!--STYLE FOR GENERATE REPORT BUTTON-->
+<style>
+	#divgenerate
+	{
+		margin-bottom: 20px;
+		padding-bottom: 50px;
+		margin-top: 7px;
+	}
+	@media screen and (min-width: 1200px)
+	{
+		#btngenerate
+		{
+			height: 30px;
+			background-color: #00cc00;
+			width: 130px;
+			color: white;
+			border: none;
+			float:right;
+			margin-right: 15;
+			margin-top: 30px;
+			border-radius: 3px;
+			text-align: center;
+			text-decoration: none;
+			vertical-align: middle;
+			
+		}
+	}
+	@media screen and (max-width: 1200px)
+	{
+
+		#btngenerate
+		{
+			height: 30px;
+			background-color: #00cc00;
+			width: 130px;
+			color: white;
+			border: none;
+			float:right;
+			margin-right: 15px;
+			margin-top: 10px;
+			border-radius: 3px;
+			text-align: center;
+			text-decoration: none;
+			vertical-align: middle;
+		}
+	}
+</style>
+<div id="divgenerate">
+	<button id="btngenerate" >
+	<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}" style="text-decoration: none; color: white;" >
+		Generate Report
+	</a>
+	</button>
 </div>
-<div>
-		 <button>
-			<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}"
-				style="text-decoration: none; color: black;"
-			>
-			 Generate Report
-			</a>
-		</button>
-	
+</div>
 </div>
 </form>
 
