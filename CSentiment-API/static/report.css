@@ -82,3 +82,17 @@
 #rating tr:nth-child(even){
     background-color: #f2f2f2;
 }
+
+#titlePdf
+{
+    font-size: 17px;
+    font-weight: bold;
+}
+#divForPdfTitle{
+    text-align: center;
+    margin-bottom: 15px;
+}
+#footerText{
+    text-align: center;
+    color: #595959;
+}

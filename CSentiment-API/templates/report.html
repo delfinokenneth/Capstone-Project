@@ -20,7 +20,9 @@
     </head>
     <body>
         {% include 'header.html' %}
-        
+        <div id="divForPdfTitle">
+            <label id="titlePdf">EVALUATION REPORT FOR SCHOOL YEAR 2021-2022 1st SEMESTER</label>
+        </div>
         <div id="divTeacherInfo_Legend">
             <!-- line of code for the teacher information -->
             <div id="divTeacherInfo">
@@ -336,7 +338,7 @@
         </div>
         <!-- end for table of the averages and overall average -->
     <hr>
-    <h6 style="text-align: center;">- SCHOOL YEAR 2021-2022 (Second Semester)-</h6>
+    <h6 id="footerText">Powered by <span style="color: blue;">CSentiment</span> Ⓒ Team Cramcoding</h6>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
