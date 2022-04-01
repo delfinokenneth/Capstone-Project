@@ -7,6 +7,9 @@ from xml.dom.minidom import Document
 from xml.dom.minidom import Element
 from h11 import Data
 
+#for language detection
+from langdetect import detect
+
 import nltk
 from flask import Flask, request, json, jsonify, make_response, render_template
 from flask_cors import CORS
@@ -56,8 +59,8 @@ new_vader ={
 #get cebuano token and sentiment rating from csv
 newvaderdata = pd.read_csv('cebuanonewword.csv')
 print("number of data ", newvaderdata.shape)
-new_vader = newvaderdata.set_index('token')['rating'].to_dict()
-
+new_vader.update(newvaderdata.set_index('token')['rating'].to_dict())
+print (new_vader)
 #global variables
 vdpos = 0
 vdneu = 0
@@ -102,24 +105,20 @@ def sentiment_scores(sentence):
 
     print("Sentence Overall Rated As", end = " ") 
     
-    #tweak the downpoints of the vader
-    #check if "no" exist in the comment
-    hasNo = False
-    for word in sentence.split():
-        if word == "no":
-            hasNo = True
-            break
-        
-    if(hasNo):
-        return NB_Classify(sentence)
+    #detect language used
+    langUsed = detect(sentence)
+    print("language used: ", langUsed)
     # decide sentiment as positive, negative and neutral 
-    elif sentiment_dict['compound'] >= 0.05 : 
+    if sentiment_dict['compound'] >= 0.05 : 
         return "positive" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
   
     elif sentiment_dict['compound'] <= -0.05 :
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
-    else :
+    elif (langUsed == "tl" or langUsed == "en" or langUsed == "fr"):
+        return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
+        
+    else:
         return NB_Classify(sentence)
 
 def FinalSentiment(sentence): 
@@ -187,6 +186,9 @@ def NB_Classify(comment):
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
 
+#isNeutralDefaultVal(pos,neu,neg): 
+
+# ------------------------------------------------------------------------------------------ END FOR NAIVE BAYES
 #convert 2d list into dictionary
 def toDict(data):
     labels = [row[0] for row in data]
