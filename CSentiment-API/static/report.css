@@ -35,16 +35,64 @@
 {
     background-color: #f2f2f2;
 }
-#pieChart{
+#pieChart, #lineChart{
     padding: 10px;
-    padding-left: 15%;
     width: 100%;
-    border: solid 2px  #ccddff;
+    height: 250px;
+    border: solid 2px  #f2f2f2;
     border-radius: 5px;
+}
+#pieChart
+{
+    padding-left: 15%;
+    font-size: 15px;
 }
 #lineChart{
     width: 100%;
 }
 #graphDesc{
     text-align: center;
+}
+#divTeacherInfo_Legend
+{
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 5px;
+}
+#divTeacherInfo{   
+    width: 50%;
+    float: left;
+}
+#legend
+{   
+    width: 50%;
+    float:left;
+    margin-bottom: 15px;
+    padding: 5px;
+    border-radius: 5px;
+}
+#rating{
+    width: 100%;
+    border-left: 5px #f2f2f2 solid;
+    border-radius: 5px;
+}
+.lblLegend{
+    padding-left: 5px;
+}
+#rating tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+#titlePdf
+{
+    font-size: 17px;
+    font-weight: bold;
+}
+#divForPdfTitle{
+    text-align: center;
+    margin-bottom: 15px;
+}
+#footerText{
+    text-align: center;
+    color: #595959;
 }

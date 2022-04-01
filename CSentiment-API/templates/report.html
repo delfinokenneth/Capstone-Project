@@ -19,15 +19,52 @@
         <title>Summary Report</title>
     </head>
     <body>
-        <h3 class="title">Report Summary</h3>
-        <!-- line of code for the teacher information -->
-        <div>
-            <label class="holders"> Teacher </label><text>: {{ data['Teacher'] }}</text><br>
-            <label class="holders"> Subject </label><text>: {{ data['Subject'] }} </text><br>
-            <label class="holders"> Respondents </label><text>: {{ data['Respondents'] }} </text>
-            <hr>
+        {% include 'header.html' %}
+        <div id="divForPdfTitle">
+            <label id="titlePdf">EVALUATION REPORT FOR SCHOOL YEAR 2021-2022 1st SEMESTER</label>
         </div>
-        <!-- end line of code for the teacher information -->
+        <div id="divTeacherInfo_Legend">
+            <!-- line of code for the teacher information -->
+            <div id="divTeacherInfo">
+                <label class="holders"> Teacher </label><text>: {{ data['Teacher'] }}</text><br>
+                <label class="holders"> Subject </label><text>: {{ data['Subject'] }} </text><br>
+                <label class="holders"> Respondents </label><text>: {{ data['Respondents'] }} </text>
+            </div>
+            <!-- end line of code for the teacher information -->
+            <!-- div for legend -->
+                <div id="legend">
+                    <table id ="rating">
+                        <tbody>
+                            <tr>
+                                <td class="lblLegend">Excellent </td>
+                                <td>4.20 - 5.00</td>
+            
+                            </tr>
+                            <tr>
+                                <td class="lblLegend">Very Satisfactory</td>
+                                <td>3.40 - 4.19</td>
+            
+                            </tr>
+                            <tr>
+                                <td class="lblLegend">Satisfactory</td>
+                                <td>2.60 - 3.39</td>
+            
+                            </tr>
+                            <tr>
+                                <td class="lblLegend">Poor </td>
+                                <td>1.80 - 2.59</td>
+            
+                            </tr>
+                            <tr>
+                                <td class="lblLegend">Needs Improvement</td>
+                                <td>1.00 - 1.79</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- end of line for div for legend -->
+        </div>
+        <hr>
         <!-- line of code for the pie chart -->
         <canvas id="pieChart" width="900" height="300"></canvas>
         <script>
@@ -44,7 +81,7 @@
             var label = [posAve,negAve,neuAve]
             console.log({{sentimentAve}})
             var lineChart = new Chart(ctx, {
-                type: "pie",
+                type: "doughnut",
                 data: {
                     labels: label,
                     datasets: [
@@ -301,7 +338,7 @@
         </div>
         <!-- end for table of the averages and overall average -->
     <hr>
-    <h6 style="text-align: center;"> ---------- END OF FILE ---------- </h6>
+    <h6 id="footerText">Powered by <span style="color: blue;">CSentiment</span> Ⓒ Team Cramcoding</h6>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
