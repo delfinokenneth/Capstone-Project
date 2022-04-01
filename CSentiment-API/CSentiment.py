@@ -84,9 +84,12 @@ def sentiment_scores(sentence):
     print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative")
     print("sentence was rated as ", sentiment_dict['neu']*100, "% Neutral") 
     print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive")
-    vdpos = round(sentiment_dict['pos']*100,2)
-    vdneu = round(sentiment_dict['neu']*100,2)
-    vdneg = round(sentiment_dict['neg']*100,2)
+    vdpos = sentiment_dict['pos']*100
+    print(vdpos)
+    vdneu = sentiment_dict['neu']*100
+    print(vdneu)
+    vdneg = sentiment_dict['neg']*100
+    print(vdneg)
 
     #if vd sentiment is not positive or negative
     if sentiment_dict['compound'] >= 0.05 and sentiment_dict['compound'] <= - 0.05:
@@ -162,9 +165,12 @@ def NB_Classify(comment):
     print("positive",round(prob.prob("positive"),2))
     print("negative", round(prob.prob("negative"),2))
     print("neutral",round(prob.prob("neutral"),2))
-    nbpos = round(prob.prob("positive")*100,2)
-    nbneu = round(prob.prob("neutral")*100, 2)
-    nbneg = round(prob.prob("negative")*100, 2)
+    nbpos = prob.prob("positive")*100
+    print(nbpos)
+    nbneu = prob.prob("neutral")*100
+    print(nbneu)
+    nbneg = prob.prob("negative")*100
+    print(nbneg)
     print(comment_blob.classify())
 
     #if neutral value is greater than both positive and negative value, then com us "-"
