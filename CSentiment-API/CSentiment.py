@@ -43,7 +43,6 @@ cors = CORS(app)
 
 #this is to modify the SentimentIntensityAnalyzer
 new_vader ={
-    'strict': -4,
     'absent': -5,
     'high': 1,
     'understands': 2,
@@ -59,8 +58,7 @@ new_vader ={
 #get cebuano token and sentiment rating from csv
 newvaderdata = pd.read_csv('cebuanonewword.csv')
 print("number of data ", newvaderdata.shape)
-new_vader.update(newvaderdata.set_index('token')['rating'].to_dict())
-print (new_vader)
+new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 #global variables
 vdpos = 0
 vdneu = 0
@@ -172,6 +170,10 @@ def NB_Classify(comment):
     print(nbneg)
     print(comment_blob.classify())
 
+    if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
+        nbpos = 0
+        nbneu = 100
+        nbneg = 0
     #if neutral value is greater than both positive and negative value, then com us "-"
     #if(nbneu > nbpos and nbneu > nbneg):
 
@@ -192,8 +194,15 @@ def NB_Classify(comment):
 # comment = input("enter comment here: ")
 # print(sentiment_scores(comment))
 
-#isNeutralDefaultVal(pos,neu,neg): 
-
+def isNeutralDefaultVal(pos,neu,neg): 
+    neu = round(neu,3)
+    pos = round(pos,3)
+    neg = round(neg,3)
+    defNeu = round(48.155958914548414,3)
+    defPos = round(31.30770431115813,3)
+    defNeg = round(20.536336774293343,3)
+    if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
+        return True
 # ------------------------------------------------------------------------------------------ END FOR NAIVE BAYES
 #convert 2d list into dictionary
 def toDict(data):
