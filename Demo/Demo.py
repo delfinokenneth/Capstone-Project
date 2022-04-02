@@ -9,7 +9,7 @@ from textblob import TextBlob
 #nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from textblob.classifiers import NaiveBayesClassifier
-import enchant
+
 import string
 
 import pdfkit
