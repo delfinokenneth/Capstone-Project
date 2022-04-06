@@ -160,7 +160,7 @@ def evaluate(teacher, subject):
 	global G_TEACHER_ID
 	global G_SUBJECT_ID
 
-	G_TEACHER_ID = 18013672
+	G_TEACHER_ID = teacher
 	G_SUBJECT_ID = subject
 	G_TEACHER_NAME = getSelectedTeacherName(teacher)
 	G_SUBJECT_NAME = getSelectedSubjectTitle(teacher,subject)
@@ -372,22 +372,22 @@ def getPositiveAverage():
 	#if default
 	#if no teacher is selected, and no subject select (no filter)
 	if((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
-		cur.execute("SELECT AVG(pos) from evaluation score IS NOT NULL LIMIT 1")
+		cur.execute("SELECT AVG(pos) from evaluation WHERE score IS NOT NULL ")
 		posAve = cur.fetchall()[0]
 		return posAve
 	#if not default
 	else: 
 		#if a teacher is selected, but no subject is selected (teacher + all subjects)
 		if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
-			sql = "SELECT AVG(pos) from evaluation where idteacher = %s and score IS NOT NULL  LIMIT 1"
+			sql = "SELECT AVG(pos) from evaluation where idteacher = %s and score IS NOT NULL "
 			val = (teacher,)
 		#if a teacher is selected, and a subject is selected (teacher + subject)	
 		elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
-			sql =  "SELECT AVG(pos) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL  LIMIT 1"
+			sql =  "SELECT AVG(pos) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
 			val = (teacher,subject,)
 		#else (if there is no teacher selected and a subject is selected)
 		else:
-			sql = "SELECT AVG(pos) from evaluation where edpCode = %s and score IS NOT NULL  LIMIT 1"
+			sql = "SELECT AVG(pos) from evaluation where edpCode = %s and score IS NOT NULL "
 			val = (subject,)
 
 		cur.execute(sql,val)
@@ -402,22 +402,22 @@ def getNegativeAverage():
 	#if default
 	#if no teacher is selected, and no subject select (no filter)
 	if((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
-		cur.execute("SELECT AVG(neg) from evaluation score IS NOT NULL LIMIT 1")
+		cur.execute("SELECT AVG(neg) from evaluation WHERE score IS NOT NULL ")
 		negAve = cur.fetchall()[0]
 		return negAve
 	#if not default
 	else: 
 		#if a teacher is selected, but no subject is selected (teacher + all subjects)
 		if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
-			sql = "SELECT AVG(neg) from evaluation where idteacher = %s and score IS NOT NULL  LIMIT 1"
+			sql = "SELECT AVG(neg) from evaluation where idteacher = %s and score IS NOT NULL"
 			val = (teacher,)
 		#if a teacher is selected, and a subject is selected (teacher + subject)	
 		elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
-			sql =  "SELECT AVG(neg) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL  LIMIT 1"
+			sql =  "SELECT AVG(neg) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL"
 			val = (teacher,subject,)
 		#else (if there is no teacher selected and a subject is selected)
 		else:
-			sql = "SELECT AVG(neg) from evaluation where edpCode = %s and score IS NOT NULL  LIMIT 1"
+			sql = "SELECT AVG(neg) from evaluation where edpCode = %s and score IS NOT NULL"
 			val = (subject,)
 
 		cur.execute(sql,val)
@@ -432,22 +432,22 @@ def getNeutralAverage():
 	#if default
 	#if no teacher is selected, and no subject select (no filter)
 	if((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
-		cur.execute("SELECT AVG(neu) from evaluation score IS NOT NULL  LIMIT 1")
+		cur.execute("SELECT AVG(neu) from evaluation WHERE score IS NOT NULL")
 		neuAve = cur.fetchall()[0]
 		return neuAve
 	#if not default
 	else: 
 		#if a teacher is selected, but no subject is selected (teacher + all subjects)
 		if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
-			sql = "SELECT AVG(neu) from evaluation where idteacher = %s and score IS NOT NULL  LIMIT 1"
+			sql = "SELECT AVG(neu) from evaluation where idteacher = %s and score IS NOT NULL "
 			val = (teacher,)
 		#if a teacher is selected, and a subject is selected (teacher + subject)	
 		elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
-			sql =  "SELECT AVG(neu) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL  LIMIT 1"
+			sql =  "SELECT AVG(neu) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
 			val = (teacher,subject,)
 		#else (if there is no teacher selected and a subject is selected)
 		else:
-			sql = "SELECT AVG(neu) from evaluation where edpCode = %s and score IS NOT NULL  LIMIT 1"
+			sql = "SELECT AVG(neu) from evaluation where edpCode = %s and score IS NOT NULL"
 			val = (subject,)
 
 		cur.execute(sql,val)

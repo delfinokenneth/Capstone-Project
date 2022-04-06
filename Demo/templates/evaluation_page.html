@@ -92,12 +92,23 @@
 			width: 100%;
 		}
 	}
+	.detailsLabel{
+		width: 80px;
+		margin: 5px;
+	}
+	#msgSelectTeacher{
+		color: red;
+	}
+	#selectTeacher, #selectSubject{
+		font-size: 14px;
+	}
 </style>
 
 <div id="detailsandlegend">
 	<div id="details">
 	 <h6 style="font-weight: bolder;"> EVALUATION FOR </h6>
-		<b> Teacher : </b> 
+	 <p id="msgSelectTeacher">Please select a teacher to evaluate</p>
+		<label class="detailsLabel"><b> Teacher : </b> </label>
 		<SELECT name="teachers" id="selectTeacher">
 			{% for teacher in teachers %}
 				{% if teacher[0] != 0 %}
@@ -106,8 +117,8 @@
 					<OPTION value={{teacher[0]}}>{{teacher[1]}}</OPTION>
 				{% endif%}	
 			{% endfor %}
-		</SELECT>
-		<b> Subjects : </b> 
+		</SELECT><br>
+		<label class="detailsLabel"><b> Subjects : </b></label>
 		<SELECT name="teachers" id="selectSubject">
 			{% for subject in subjects %}
 				<OPTION value={{subject[0]}}>{{subject[2]}}</OPTION>
@@ -238,7 +249,7 @@
 	}
 
 </style>
-<form method="POST">
+<form method="POST" id="evaluationForm">
 <div id="questionaire">
 	<div id="section1" class="sections">
 		<table id="section">
@@ -461,14 +472,14 @@
 <script>
 	let selected_teacher = document.getElementById("selectTeacher");
 	let selected_subject = document.getElementById("selectSubject");
-
+	let evaluation_Form = document.getElementById("evaluationForm");
+	let msg_SelectTeacher = document.getElementById("msgSelectTeacher");
 	selected_teacher.onchange = function()
 	{
 		// disable subject dropdown if teacher is in default
 		if (selected_teacher.value == 0){
-			window.location='/evaluation/all/all';		
+			window.location='/evaluation/all/all';	
 		}
-		
 		else{
 			window.location='/evaluation/'+ selected_teacher.value + "/0";	
 		}
@@ -479,7 +490,13 @@
 	}
 	if (selected_teacher.value == 0){
 			selected_subject.disabled = true;
+			evaluation_Form.style.display = "none";
+			msg_SelectTeacher.style.display = "relative";
 	}
+	else{
+		msg_SelectTeacher.style.display = "none";
+	}
+	
 </script>
 
 {% endblock %}
