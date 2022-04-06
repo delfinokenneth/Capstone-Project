@@ -188,24 +188,41 @@
 		<table id="section">
 			<tbody>
 				<tr class="sectioncolumn">
-					<td class="scenario" style="padding-bottom: 20px; padding-top: 20px"> 	<center> <b>UNIVERSITY OF CEBU LAPU-LAPU AND MANDAUE <br>
-														2nd Semester S.Y 2020 - 2021 <br>
+					<td class="scenario" style="padding-bottom: 20px; padding-top: 20px"> 
+							<center> <b>UNIVERSITY OF CEBU LAPU-LAPU AND MANDAUE <br>
+													2nd Semester S.Y 2020 - 2021 <br>
 														TEACHERS EVALUATION </b>
-											</center> </td>
+										
+							</center> </td>
 				</tr>
+
 				<!-- RATING AVG -->
 				<tr class="sectiondata">
-					<td class="scenario">  <b> Teacher : </b> NAMOC, BRYAN   </td>
+					<td class="scenario">  
+						<b> Teacher : </b> 
+						<SELECT name="teachers" id="selectTeacher">
+							{% for teacher in teachers %}
+								{% if teacher[0] != 0 %}
+									<OPTION value={{teacher[0]}}>{{teacher[2]}}, {{teacher[1]}}</OPTION>
+								{% else %}
+									<OPTION value={{teacher[0]}}>{{teacher[1]}}</OPTION>
+								{% endif%}	
+							{% endfor %}
+						</SELECT>
+					</td>
+				</tr>
+				<tr class="sectiondata" >
+					<td class="scenario">  
+						<b> Subject : </b> 
+						<SELECT name="teachers" id="selectSubject">
+							{% for subject in subjects %}
+								<OPTION value={{subject[0]}}>{{subject[0]}}-{{subject[2]}}</OPTION>
+							{% endfor %}
+						</SELECT>
+					</td>
 				</tr>
 				<tr class="sectiondata">
-					<td class="scenario">  <b> Subject : </b> Math 101   </td>
-				</tr>
-				<tr class="sectiondata">
-
-					<!-- get total number of rows from evaluation table-->
-					{% for row in countrespondents %}
-					<td class="scenario">  <b> Respondents : </b> {{row.0}} </td>
-					{% endfor %}
+					<td class="scenario">  <b> Respondents : </b> {{countrespondents}} </td>
 				</tr>
 				<tr class="sectiondata">
 					<td class="scenario" style="padding-top: 15px;">    </td>
@@ -249,29 +266,38 @@
 
 				<!-- assign var count = 0-->							
 						{% set count = namespace(value=0) %}
-				<!-- evalsecans[0][5] (TOTAL NUMBER OF SECTIONS) ex: (so 0, 5)-->	
+				
+					{% if evalsecans|length > 0 %}
+						<!-- evalsecans[0][5] (TOTAL NUMBER OF SECTIONS) ex: (so 0, 5)-->	
 						{% for y in range(0, evalsecans[0][5]) %}
-				<!-- evalsecans[y=NUMBER-OF-ROWS-IN-EVALUATION][n=NUMBER-OF-SECTIONS].split(",")[counter.value-1=UNSA-NUMBER-SIYA-SA-QUESTION]-->							
-							{% set count.value = count.value + evalsecans[y][n].split(",")[counter.value - 1]|float %}
-
+						<!-- evalsecans[y=NUMBER-OF-ROWS-IN-EVALUATION][n=NUMBER-OF-SECTIONS].split(",")[counter.value-1=UNSA-NUMBER-SIYA-SA-QUESTION]-->							
+						{% set count.value = count.value + evalsecans[y][n].split(",")[counter.value - 1]|float %}
 						{% endfor %}
-				<!-- SUM/evalsecans[0][5](TOTAL NUM OF SECTIONS)-->	
-				<!-- AVERAGE PER NUMBER IN EVERY SECTIONS-->
+						
+						<!-- SUM/evalsecans[0][5](TOTAL NUM OF SECTIONS)-->	
+						<!-- AVERAGE PER NUMBER IN EVERY SECTIONS-->
 						{{ "%.1f"|format(count.value/evalsecans[0][5])|float }}
 
 						{% set secavg.value = secavg.value + count.value/evalsecans[0][5]|float %}
+						{% set final = namespace(value = 0) %}
+						{% set final.value = count.value/evalsecans[0][5]|float %}
+					{% else %}
+						{% set count.value = 0 %}	
+						{% set secavg.value = 0 %}	
+						{% set final = namespace(value = 0) %}	
+					{% endif %}
 							</td>  	<!-- average -->
 							<td class="rates" id="rate" style="text-align: center;" colspan="100"> 
 							
-							{% if count.value/evalsecans[0][5] >= 4.2 and count.value/evalsecans[0][5] <= 5.0 %}
+							{% if final.value >= 4.2 and final.value <= 5.0 %}
 								{{"Excellent"}}
-							{% elif count.value/evalsecans[0][5] >= 3.4 and count.value/evalsecans[0][5] <= 4.19 %}
+							{% elif final.value >= 3.4 and final.value <= 4.19 %}
 								{{"Very Satisfactory"}}
-							{% elif count.value/evalsecans[0][5] >= 2.6 and count.value/evalsecans[0][5] <= 3.39 %}
+							{% elif final.value >= 2.6 and final.value <= 3.39 %}
 								{{"Satisfactory"}}
-							{% elif count.value/evalsecans[0][5] >= 1.8 and count.value/evalsecans[0][5] <= 2.59 %}
+							{% elif final.value >= 1.8 and final.value <= 2.59 %}
 								{{"Poor"}}
-							{% elif count.value/evalsecans[0][5] >= 1.0 and count.value/evalsecans[0][5] <= 1.79 %}
+							{% elif final.value >= 1.0 and final.value <= 1.79 %}
 								{{"Needs Improvement"}}								
 							{% endif %}
 							</td> <!-- rating -->
@@ -362,9 +388,13 @@
 					<td class="scenario" bgcolor="#ccddff"></td>
 					<td class="scenario" bgcolor="#ccddff"></td>
 					<td class="scenario" bgcolor="#ccddff"></td>
-
-
-					{% set comrateavg = "%.2f"|format(commentsum.value/counter.value)|float %}
+					
+					{% if commentsum.value != 0 or counter.value != 0 %}
+						{% set comrateavg = "%.2f"|format(commentsum.value/counter.value)|float %}
+					{% else %}
+						{% set comrateavg = 0 %}
+					{% endif %}
+					
 					<td class="scenario" bgcolor="#ccddff"> {{ comrateavg }}</td>
 					<td class="scenario" bgcolor="#ccddff" colspan="200" style="text-align: left; padding-left: 15px;">
 						{% if comrateavg >= 4.2 and comrateavg <= 5.0 %}
@@ -415,8 +445,12 @@
 			<tr class="sectiondata">
 				<td class="scenario"> Comment (30%)</td>
 
+				{% if commentsum.value != 0 or counter.value != 0 %}
+					{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
+				{% else %}
+					{% set comavg = 0 %}
+				{% endif %}
 				
-				{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
 				<text style="display: none;">
 					{{arrayAve.append(comavg)}}
 				</text>
@@ -461,23 +495,6 @@
 		</tbody>
 	</table>
 </div>
-
-
-<!-- 
-		 {{evalsecans[0][0]}} | {{evalsecans[0][0].split(",")[0] }} |
-
-	{{  evalsecans[0][5] }} |
-
-	{% set count = namespace(value=0) %}
-	{% for y in range(0, evalsecans[0][5]) %}
-		{% set count.value = count.value + evalsecans[0][0].split(",")[0]|float %}
-		{{ count.value }}
-	{% endfor %}
-
-	AVG is {{ count.value/evalsecans[0][5] }}
-	{% set count = namespace(value=0) %}
-
--->
 	<div id="detailsandlegend">
 	<div id="legend">
 		<table id ="rating">
@@ -557,7 +574,8 @@
 </style>
 <div id="divgenerate">
 	<button id="btngenerate" >
-	<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}" style="text-decoration: none; color: white;" >
+	<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}" 
+		style="text-decoration: none; color: white;" >
 		Generate Report
 	</a>
 	</button>
@@ -566,5 +584,24 @@
 </div>
 </form>
 
+<script>
+	let selected_teacher = document.getElementById("selectTeacher");
+	let selected_subject = document.getElementById("selectSubject");
+
+	selected_teacher.onchange = function()
+	{
+		// disable subject dropdown if teacher is in default
+		if (selected_teacher.value == 0){
+			window.location='/teachersevaluation/all/all';		
+		}
+		else{
+			window.location='/teachersevaluation/'+ selected_teacher.value + "/0";	
+		}
+	}
+	selected_subject.onchange = function()
+	{
+		window.location='/teachersevaluation/'+ selected_teacher.value + "/" + selected_subject.value;	
+	}
+</script>
 {% endblock %}
 
