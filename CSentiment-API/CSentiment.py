@@ -105,10 +105,13 @@ def sentiment_scores(sentence):
         vdscore = round(vdscore, 2)
 
     print("Sentence Overall Rated As", end = " ") 
-    
+
+    try:
+        langUsed = detect(sentence)
+    except Exception as e:
+        langUsed = ""
     #detect language used
-    langUsed = detect(sentence)
-    print("language used: ", langUsed)
+
     # decide sentiment as positive, negative and neutral 
     if sentiment_dict['compound'] >= 0.05 : 
         return "positive" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
@@ -118,7 +121,7 @@ def sentiment_scores(sentence):
 
     elif (langUsed == "tl" or langUsed == "en" or langUsed == "fr"):
         return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
-        
+
     else:
         return NB_Classify(sentence)
 
@@ -191,16 +194,13 @@ def NB_Classify(comment):
 
     return comment_blob.classify() + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
-# comment = input("enter comment here: ")
-# print(sentiment_scores(comment))
-
 def isNeutralDefaultVal(pos,neu,neg): 
-    neu = round(neu,3)
-    pos = round(pos,3)
-    neg = round(neg,3)
-    defNeu = round(48.155958914548414,3)
-    defPos = round(31.30770431115813,3)
-    defNeg = round(20.536336774293343,3)
+    neu = round(neu,2)
+    pos = round(pos,2)
+    neg = round(neg,2)
+    defNeu = round(47.844433987356894,2)
+    defPos = round(31.34820078980048,2)
+    defNeg = round(20.8073652228426,2)
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
 # ------------------------------------------------------------------------------------------ END FOR NAIVE BAYES
