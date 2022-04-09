@@ -92,13 +92,38 @@
 			width: 100%;
 		}
 	}
+	.detailsLabel{
+		width: 80px;
+		margin: 5px;
+	}
+	#msgSelectTeacher{
+		color: red;
+	}
+	#selectTeacher, #selectSubject{
+		font-size: 14px;
+	}
 </style>
 
 <div id="detailsandlegend">
 	<div id="details">
 	 <h6 style="font-weight: bolder;"> EVALUATION FOR </h6>
-	 	<label class="info_details" id="tname"><label class="evaluatee">Teacher's Name </label> <label id="info_tname"> Bryan Namoc </label></label><br>
-		<label class="info_details" ><label class="evaluatee">Subject </label> <label id="info_sub"> 18823 | Math 101 </label></label>
+	 <p id="msgSelectTeacher">Please select a teacher to evaluate</p>
+		<label class="detailsLabel"><b> Teacher : </b> </label>
+		<SELECT name="teachers" id="selectTeacher">
+			{% for teacher in teachers %}
+				{% if teacher[0] != 0 %}
+					<OPTION value={{teacher[0]}}>{{teacher[2]}}, {{teacher[1]}}</OPTION>
+				{% else %}
+					<OPTION value={{teacher[0]}}>{{teacher[1]}}</OPTION>
+				{% endif%}	
+			{% endfor %}
+		</SELECT><br>
+		<label class="detailsLabel"><b> Subjects : </b></label>
+		<SELECT name="teachers" id="selectSubject">
+			{% for subject in subjects %}
+				<OPTION value={{subject[0]}}>{{subject[2]}}</OPTION>
+			{% endfor %}
+		</SELECT>
 	</div>
 	<div id="legend">
 		<table id ="rating">
@@ -224,7 +249,7 @@
 	}
 
 </style>
-<form method="POST">
+<form method="POST" id="evaluationForm">
 <div id="questionaire">
 	<div id="section1" class="sections">
 		<table id="section">
@@ -441,8 +466,38 @@
 	}
 </style>
 <div id="divsubmit">
-	<input type="submit" id="btnsubmit" href="/teachersevaluation">
+	<input type="submit" id="btnsubmit" href="/teachersevaluation/all/all">
 </div>
 </form>
+<script>
+	let selected_teacher = document.getElementById("selectTeacher");
+	let selected_subject = document.getElementById("selectSubject");
+	let evaluation_Form = document.getElementById("evaluationForm");
+	let msg_SelectTeacher = document.getElementById("msgSelectTeacher");
+	selected_teacher.onchange = function()
+	{
+		// disable subject dropdown if teacher is in default
+		if (selected_teacher.value == 0){
+			window.location='/evaluation/all/all';	
+		}
+		else{
+			window.location='/evaluation/'+ selected_teacher.value + "/0";	
+		}
+	}
+	selected_subject.onchange = function()
+	{
+		window.location='/evaluation/'+ selected_teacher.value + "/" + selected_subject.value;	
+	}
+	if (selected_teacher.value == 0){
+			selected_subject.disabled = true;
+			evaluation_Form.style.display = "none";
+			msg_SelectTeacher.style.display = "relative";
+	}
+	else{
+		msg_SelectTeacher.style.display = "none";
+	}
+	
+</script>
+
 {% endblock %}
 
