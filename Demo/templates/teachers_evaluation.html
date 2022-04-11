@@ -321,6 +321,7 @@
 					{% set secrateavg = "%.2f"|format(secavg.value/counter.value)|float %}
 
 					<!-- GETTING  PERCENTAGE PER SECTION -->
+
 					{% set sum =0 %}
 					
 					{% if n == 0 %}
@@ -348,7 +349,7 @@
 					{% set sum = sum + sec5per %}
 					{% endif %}
 
-					<!-- GETTING TOTAL PERCENTAGE OF ALL SECTIONs -->
+					<!-- GETTING TOTAL PERCENTAGE OF ALL SECTIONS -->
 
 					{% set allsecsum.value =  allsecsum.value + sum %}
 					
