@@ -317,7 +317,6 @@ def evaluation(teacher, subject):
 		neg_val = getsentiment(comment).split(" ")[3]
 		score_val = getsentiment(comment).split(" ")[4]
 		sen_val = getsentiment(comment).split(" ")[0]
-
 		#if sentiment is neutral then score = null
 		if sen_val == 'neutral':
 			score_val = None
@@ -343,7 +342,7 @@ def evaluation(teacher, subject):
 			#else input comment is empty
 			else:
 				sql = "INSERT INTO evaluation (idteacher,idstudent,edpCode,section1,section2,section3,section4,section5)\
-							 VALUES (%s,%s,%s,%s,%s,%s,%s);"
+							 VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 				val = (teacher,"18013672",subject, sec1_string, sec2_string, sec3_string, sec4_string, sec5_string)
 			cur.execute(sql,val)
 			mysql.connection.commit()
@@ -364,7 +363,6 @@ def evaluation(teacher, subject):
 
 # getting average for positive, negative and neutral
 def getPositiveAverage():
-	print("G_TEACHER_ID: ", G_TEACHER_ID)
 	teacher= G_TEACHER_ID
 	subject= G_SUBJECT_ID
 
@@ -461,7 +459,7 @@ def generateReport(sec1,sec2,sec3,sec4,sec5,comment):
 		negAve = getNegativeAverage()
 		neuAve = getNeutralAverage()
 		resp = printReport(sec1,sec2,sec3,sec4,sec5,comment,posAve[0],negAve[0],neuAve[0] )
-		return resp
+		return resp #anhi na part ma download ang summary report nga pdf
 	except Exception as e:
 		print(e)
 		return "Can't print report"
@@ -486,9 +484,9 @@ with app.app_context():
 			("Section4", sec4),
 			("Section5", sec5),
 			("Comments", comment),
-			("Teacher", G_TEACHER_NAME), #static value
-			("Subject", G_SUBJECT_NAME), #static value
-			("Respondents", G_NUMBER_OF_RESPONDENTS), #static value
+			("Teacher", G_TEACHER_NAME), 
+			("Subject", G_SUBJECT_NAME), 
+			("Respondents", G_NUMBER_OF_RESPONDENTS), 
 			("posAve", posAve),
 			("negAve", negAve),
 			("neuAve", neuAve),
