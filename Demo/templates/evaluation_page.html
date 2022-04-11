@@ -247,10 +247,20 @@
 			min-width: 200px;
 		}
 	}
-
+	#btnAutoSelect{
+		float:right;
+		background-color: #00cc00;
+		border-radius: 5px;
+		border: none;
+		color: white;
+		padding: 5px;
+		width: 100px;
+		margin: 5px;
+	}
 </style>
 <form method="POST" id="evaluationForm">
 <div id="questionaire">
+	<button id="btnAutoSelect" type="button">Auto select</button>
 	<div id="section1" class="sections">
 		<table id="section">
 			<thead>
@@ -474,6 +484,23 @@
 	let selected_subject = document.getElementById("selectSubject");
 	let evaluation_Form = document.getElementById("evaluationForm");
 	let msg_SelectTeacher = document.getElementById("msgSelectTeacher");
+	let radioButtons = document.getElementsByTagName("input");
+	let btnAutoSelect = document.getElementById("btnAutoSelect");
+
+	function getRandomNumber() {
+		let arr = [1,2,3,4,5]
+		let rand = (Math.floor(Math.random() * 5)+ 1)* 1;
+		return arr[rand-1];
+	}
+	btnAutoSelect.onclick = function(){
+		for(i =0; i< radioButtons.length; i++){
+			let randomNum = (Math.floor(Math.random() * 5)+ 1)
+			console.log(randomNum)
+			if(radioButtons[i].type=='radio' && radioButtons[i].value == 5 ||radioButtons[i].value == randomNum ){
+				radioButtons[i].checked = true;
+			}
+		}
+	}
 	selected_teacher.onchange = function()
 	{
 		// disable subject dropdown if teacher is in default
