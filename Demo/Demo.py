@@ -459,7 +459,7 @@ def generateReport(sec1,sec2,sec3,sec4,sec5,comment):
 		negAve = getNegativeAverage()
 		neuAve = getNeutralAverage()
 		resp = printReport(sec1,sec2,sec3,sec4,sec5,comment,posAve[0],negAve[0],neuAve[0] )
-		return resp
+		return resp #anhi na part ma download ang summary report nga pdf
 	except Exception as e:
 		print(e)
 		return "Can't print report"
@@ -484,9 +484,9 @@ with app.app_context():
 			("Section4", sec4),
 			("Section5", sec5),
 			("Comments", comment),
-			("Teacher", G_TEACHER_NAME), #static value
-			("Subject", G_SUBJECT_NAME), #static value
-			("Respondents", G_NUMBER_OF_RESPONDENTS), #static value
+			("Teacher", G_TEACHER_NAME), 
+			("Subject", G_SUBJECT_NAME), 
+			("Respondents", G_NUMBER_OF_RESPONDENTS), 
 			("posAve", posAve),
 			("negAve", negAve),
 			("neuAve", neuAve),
