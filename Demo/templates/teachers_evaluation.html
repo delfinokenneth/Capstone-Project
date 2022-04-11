@@ -236,6 +236,7 @@
 	<!-- ~~~~~~~~~~~~ global var ~~~~~~~~~~~~ -->
 	
 	{% set allsecsum = namespace(value = 0) %}
+	{% set secper = namespace(value = 0) %}
 	{% set countsec = namespace(value = 0) %}
 	{% set arrayAve =[] %}
 	<!-- assign var secallavg = 0 (all section averages) -->
@@ -313,15 +314,44 @@
 				<tr class="sectiondata">
 					<td class="scenario" bgcolor="#ccddff"> <b> Rating Average </b> </td>
 					<td class="rates" id="rate" style="text-align: right;" colspan="" bgcolor="#ccddff"> 
-					
 					<!-- GETTING AVG PER SECTION -->
-					<!-- TOTAL SUM OF RATE PER NUM IN SECTION / TOTAL NUMBER OF QUESTIONS -->	
+					<!-- TOTAL SUM OF RATE PER NUM IN SECTION / TOTAL NUMBER OF QUESTIONS -->
+					
 					{{ "%.2f"|format(secavg.value/counter.value) }}
 					{% set secrateavg = "%.2f"|format(secavg.value/counter.value)|float %}
-					{% set allsecsum.value =  allsecsum.value + (secavg.value/counter.value) %}
-					{% set countsec.value = countsec.value + 1 %}
-					
 
+					<!-- GETTING  PERCENTAGE PER SECTION -->
+
+					{% set sum =0 %}
+					
+					{% if n == 0 %}
+					{% set sec1per = (secavg.value/counter.value * 0.15) %}
+					{% set sum = sum + sec1per %}
+					{% endif %}
+
+					{% if n == 1 %}
+					{% set sec2per = (secavg.value/counter.value * 0.35) %}
+					{% set sum = sum + sec2per %}
+					{% endif %}
+
+					{% if n == 2 %}
+					{% set sec3per = (secavg.value/counter.value * 0.25) %}
+					{% set sum = sum + sec3per %}
+					{% endif %}
+
+					{% if n == 3 %}
+					{% set sec4per = (secavg.value/counter.value * 0.10) %}
+					{% set sum = sum + sec4per %}
+					{% endif %}
+
+					{% if n == 4 %}
+					{% set sec5per = (secavg.value/counter.value * 0.15) %}
+					{% set sum = sum + sec5per %}
+					{% endif %}
+
+					<!-- GETTING TOTAL PERCENTAGE OF ALL SECTIONS -->
+					{% set allsecsum.value =  allsecsum.value + sum %}
+					
 					</td>
 					<td class="rates" id="rate" style="text-align: center;" colspan="100" bgcolor="#ccddff"> 				
 						{% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
@@ -426,7 +456,7 @@
 			</tr>
 			<tr class="sectiondata">
 				<td class="scenario"> Numerical (70%) </td>
-				{% set numavg = "%.2f"|format(allsecsum.value/countsec.value)|float  %}
+				{% set numavg = "%.2f"|format(allsecsum.value)|float  %}
 				<td class="sentimentValues"> {{ numavg }}  </td>
 				<td class="sentimentValues">
 					{% if numavg >= 4.2 and numavg <= 5.0 %}
