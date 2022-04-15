@@ -24,48 +24,33 @@ newbooster = vaderconstants.set_index('booster-key')['booster-value'].to_dict()
 nltk.sentiment.vader.VaderConstants.NEGATE = newnegate
 nltk.sentiment.vader.VaderConstants.BOOSTER_DICT = newbooster
 
+#wkhtmltopdf
+import pdfkit
+import os, sys, subprocess, platform
+#if not in deployment
+if platform.system() == "Windows":
+        config = pdfkit.configuration(wkhtmltopdf=os.environ.get('WKHTMLTOPDF_BINARY', 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'))
+#if in deployment
+else:
+        os.environ['PATH'] += os.pathsep + os.path.dirname(sys.executable)
+        WKHTMLTOPDF_CMD = subprocess.Popen(['which', os.environ.get('WKHTMLTOPDF_BINARY', 'wkhtmltopdf')],
+            stdout=subprocess.PIPE).communicate()[0].strip()
+        config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
 #Naive bayes imports
 from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 import string
 
-import pdfkit
-
-path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
-
 app = Flask(__name__)
 
 #this is to allow cross-origin to the backend
 cors = CORS(app)
 
-#this is to modify the SentimentIntensityAnalyzer
-new_vader ={
-    'absent': -5,
-    'high': 1,
-    'understands': 2,
-    'understand': 2,
-    'late': -4,
-    'on time': 2,
-    'ontime': 2,
-    'on-time': 2,
-    'approachable': 4,
-    'without': -2,
-}
-
 #get cebuano token and sentiment rating from csv
 newvaderdata = pd.read_csv('cebuanonewword.csv')
 print("number of data ", newvaderdata.shape)
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
-#global variables
-vdpos = 0
-vdneu = 0
-vdneg = 2
-nbpos = 0
-nbneu = 0
-nbneg = 0
 
 #ALGORITHM 1
 # function to print sentiments 
@@ -166,11 +151,8 @@ def NB_Classify(comment):
     print("negative", round(prob.prob("negative"),2))
     print("neutral",round(prob.prob("neutral"),2))
     nbpos = prob.prob("positive")*100
-    print(nbpos)
     nbneu = prob.prob("neutral")*100
-    print(nbneu)
     nbneg = prob.prob("negative")*100
-    print(nbneg)
     print(comment_blob.classify())
 
     if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
@@ -268,16 +250,18 @@ def generateReport():
     sentimentAve = posNegNeuAve(dataDict)
     print("sentiment Averages: ", sentimentAve)
     rendered = render_template("report.html", labels = averageLabel, values=averageValues, data = dataDict, sentimentAve = sentimentAve)
-    pdf = pdfkit.from_string(rendered, configuration=config)
+    options = {'page-size': 'A4', 'encoding': 'utf-8', 'margin-top': '0.5cm', 'margin-bottom': '0.5cm', 'margin-left': '0.5cm', 'margin-right': '0.5cm'}
+    pdf = pdfkit.from_string(rendered, options=options, configuration=config)
 
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'inline; filename=summary.pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
 
     return response
 
 if __name__ == '__main__':
-    app.run(host="127.0.0.6", port=8000, debug=True)
+    app.run(debug=True)
+#    app.run(host="127.0.0.6", port=8000, debug=True)
     #app.run(host="0.0.0.0", port=5000, debug=True)
 #    app.run(debug=True)
 
