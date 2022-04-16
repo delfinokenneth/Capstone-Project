@@ -34,6 +34,20 @@ import pdfkit
 
 path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
 config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+wk_options = {
+    'page-size': 'Letter',
+    'orientation': 'landscape',
+    # In order to specify command-line options that are simple toggles
+    # using this dict format, we give the option the value None
+    'no-outline': None,
+    'disable-javascript': None,
+    'encoding': 'UTF-8',
+    'margin-left': '0.1cm',
+    'margin-right': '0.1cm',
+    'margin-top': '0.1cm',
+    'margin-bottom': '0.1cm',
+    'lowquality': None,
+}
 pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
 
 app = Flask(__name__)
@@ -71,6 +85,10 @@ nbneg = 0
 # function to print sentiments 
 # of the sentence.
 def sentiment_scores(sentence): 
+    toRemoveWords=["miss","Miss","yes","Yes", "idk"]
+    for word in toRemoveWords:
+        sentence = sentence.replace(word,"")
+    #
     # Create a SentimentIntensityAnalyzer object.
     sid_obj = SentimentIntensityAnalyzer()
     sid_obj.lexicon.update(new_vader)

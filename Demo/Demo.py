@@ -469,7 +469,8 @@ with app.app_context():
 	def getsentiment(comment):
 		import requests
 		dictToSend = {'comment': comment}
-		res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
+		#res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
+		res = requests.post('https://csentiment.herokuapp.com/getSentiment', json=dictToSend)
 		print('response from server:', res.text)
 		dictFromServer = res.json()
 		return str(dictFromServer)
@@ -491,7 +492,8 @@ with app.app_context():
 			("negAve", negAve),
 			("neuAve", neuAve),
 		]
-		resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = data, stream=True)
+		#resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = data, stream=True)
+		resp = requests.post('http://csentiment.herokuapp.com/reportGeneration', json = data, stream=True)
 		return resp.raw.read(), resp.status_code, resp.headers.items()
 
 if __name__ == "__main__":
