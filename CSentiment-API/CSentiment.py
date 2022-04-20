@@ -17,6 +17,11 @@ import pandas as pd
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
+#for NB
+from sklearn.feature_extraction.text import CountVectorizer
+import pickle
+from sklearn.model_selection import train_test_split
+
 #replace negate and booster tuples in nltk from csv
 vaderconstants = pd.read_csv('vaderconstants.csv')
 newnegate = tuple(vaderconstants['negate'])
@@ -84,15 +89,24 @@ nbneg = 0
 #ALGORITHM 1
 # function to print sentiments 
 # of the sentence.
-def sentiment_scores(sentence): 
-    toRemoveWords=["miss","Miss","yes","Yes", "idk"]
+def sentiment_scores(sentence):
+    #lowercase the  sentence for uniformity
+    sentence = sentence.lower() 
+    #words to be remove from the comment
+    toRemoveWords=["miss","yes", "idk"]
+    #words to remove from vader dict
+    toRemoveFromVader = ["weakness","weaknesses","no","natural","serious"]
+
     for word in toRemoveWords:
         sentence = sentence.replace(word,"")
-    #
+    
     # Create a SentimentIntensityAnalyzer object.
     sid_obj = SentimentIntensityAnalyzer()
-    sid_obj.lexicon.update(new_vader)
 
+    for word in toRemoveFromVader:
+        sid_obj.lexicon.pop(word)
+
+    sid_obj.lexicon.update(new_vader)
     # polarity_scores method of SentimentIntensityAnalyzer
     # oject gives a sentiment dictionary.
     # which contains pos, neg, neu, and compound scores.
@@ -164,42 +178,59 @@ def FinalSentiment(sentence):
 
 
 #this is to allow cross-origin to the backend
-
-#reading the dataset
-data = pd.read_csv('Comments.csv')
-print("number of data ", data.shape)
-print(data)
-training = data[['comment','label']]
-#convert comments and label dataFrame into list
-list_commentsAndLabel = training.values.tolist()
-
-classifier = NaiveBayesClassifier(list_commentsAndLabel)
+def preprocess_data(data):
+    # Remove package name as it's not relevant
+    data = data.drop('language', axis=1)
+    
+    # Convert text to lowercase
+    data['comment'] = data['comment'].str.strip().str.lower()
+    return data
 
 def NB_Classify(comment):
-    comment_blob = TextBlob(comment, classifier=classifier)
+    #reading the dataset
+    data = pd.read_csv('Comments.csv')
+    print("number of data ", data.shape)
+    data.head()
 
-    prob = classifier.prob_classify(comment)
+    data = preprocess_data(data)
+
+    # Split into training and testing data
+    x = data['comment']
+    y = data['label']
+
+    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.25, random_state=50)
+
+    # Vectorize text reviews to numbers
+    vec = CountVectorizer(stop_words='english')
+    x = vec.fit_transform(x).toarray()
+    x_test = vec.transform(x_test).toarray()
+
+    #load the model
+    model = pickle.load(open('NB_Model.pkl', 'rb'))
+    result = model.predict_proba((vec.transform([comment])))
+    classification = model.predict(vec.transform([comment]))[0]
     print("")
-    print("positive",round(prob.prob("positive"),2))
-    print("negative", round(prob.prob("negative"),2))
-    print("neutral",round(prob.prob("neutral"),2))
-    nbpos = prob.prob("positive")*100
+    print("positive",round(result[0][2],2))
+    print("negative", round(result[0][0],2))
+    print("neutral",round(result[0][1],2))
+    nbpos = result[0][2]*100
     print(nbpos)
-    nbneu = prob.prob("neutral")*100
+    nbneu = result[0][1]*100
     print(nbneu)
-    nbneg = prob.prob("negative")*100
+    nbneg = result[0][0]*100
     print(nbneg)
-    print(comment_blob.classify())
+    print(classification)
 
     if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
         nbpos = 0
         nbneu = 100
         nbneg = 0
+        classification ="neutral"
     #if neutral value is greater than both positive and negative value, then com us "-"
     #if(nbneu > nbpos and nbneu > nbneg):
 
     # if nb sentiment is  neutral
-    if comment_blob.classify() == 'neutral':
+    if classification == 'neutral':
         nbscore = '-'
     # if nb sentiment is positive or negative
     else:
@@ -210,15 +241,15 @@ def NB_Classify(comment):
         nbscore = abs(nbscore)*5
         nbscore = round (nbscore, 2)
 
-    return comment_blob.classify() + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
+    return classification + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
 def isNeutralDefaultVal(pos,neu,neg): 
     neu = round(neu,2)
     pos = round(pos,2)
     neg = round(neg,2)
-    defNeu = round(47.844433987356894,2)
-    defPos = round(31.34820078980048,2)
-    defNeg = round(20.8073652228426,2)
+    defNeu = round(23.385689354275733,2)
+    defPos = round(42.233856893542765,2)
+    defNeg = round(34.380453752181495,2)
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
 # ------------------------------------------------------------------------------------------ END FOR NAIVE BAYES

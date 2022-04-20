@@ -18,7 +18,9 @@ training = data[['comment','label']]
 list_commentsAndLabel = training.values.tolist()
 
 classifier = NaiveBayesClassifier(list_commentsAndLabel)
-
+blob = TextBlob("She always miss the class", classifier=classifier)
+sentiment = blob.classify()
+print(sentiment)
 #function to get how many items in the dataset will be classified  correctly
 def getAccuracy():
     correct = 0
@@ -106,9 +108,9 @@ def getLanguageAccuracy():
     print("english ", countEnglish, " correct english guess ", eng_correct)
 
 #call the methods
-getAccuracy()
-getPosNegNeuAccuracy()
-getLanguageAccuracy()
+# getAccuracy()
+# getPosNegNeuAccuracy()
+# getLanguageAccuracy()
 
 while(True):
     text = input("Enter: ")

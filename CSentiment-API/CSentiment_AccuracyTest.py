@@ -12,7 +12,7 @@ list_commentsAndLabel = training.values.tolist()
 
 def getSentiment(sampleComment):
     dictToSend = {'comment': sampleComment}
-    res = requests.post('https://csentiment.herokuapp.com/displaydata', json=dictToSend)
+    res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
     print('response from server:', res.text)
     dictFromServer = res.json()
     return str(dictFromServer)
