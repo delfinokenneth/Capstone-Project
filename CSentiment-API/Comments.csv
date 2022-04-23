@@ -1,43 +1,44 @@
 comment,label,language
-permi musulod on time.,positive,cebuano
-musabot permi sa mga students. keep it up miss,positive,cebuano
-dili stricta sa mga students. thank you miss,positive,cebuano
-dako muhatag ug grado,positive,cebuano
-kugihan mutudlo sa mga students. keep it up miss baluarte,positive,cebuano
-always enter the class on time,positive,english
-understands her students. keep it up,positive,english
-she is not a strict teacher to us. thank you miss,positive,english
-she is a kind teacher and she make sure that her students understands the lesson,positive,english
-she is good in teaching and a master of her subject,positive,english
+Permi musulod on time.,positive,cebuano
+Musabot permi sa mga students. Keep it up miss,positive,cebuano
+dili stricta sa mga students. Thank you miss,positive,cebuano
+Dako muhatag ug grado,positive,cebuano
+kugihan mutudlo sa mga students. Keep it up miss Baluarte,positive,cebuano
+Always enter the class on time,positive,english
+Understands her students. Keep it up,positive,english
+She is not a strict teacher to us. Thank you miss,positive,english
+She is a kind teacher and she make sure that her students understands the lesson,positive,english
+She is good in teaching and a master of her subject,positive,english
 ambot lang,neutral,cebuano
 wa koy ma say aning maestraha,neutral,cebuano
-ok,positive,cebuano
+Ok,positive,cebuano
 k,neutral,cebuano
 ambot,neutral,cebuano
 yes,neutral,english
 okay,positive,english
 idk,neutral,english
+???,neutral,english
 "dili kahibaw mutudlo, mura ug di kahibaw sa iyang subject",negative,cebuano
 "tapulan pagkamaestra, sige lag hatag buhatonon unya walay klase2",negative,cebuano
 magsige lag hatag ug buhatonon unya di magdiscuss,negative,cebuano
 murag walay alam,negative,cebuano
-panagsa ra musulod sa klase,negative,cebuano
-"she doesn't know how to teacher, she looks like she have no idea on her subject",negative,english
-she seldom enter the class,negative,english
-she only enters the class sometimes,negative,english
-"not a good teacher, she is not good in her subject",negative,english
-she gives a lot of task without discussing them,negative,english
+Panagsa ra musulod sa klase,negative,cebuano
+"She doesn't know how to teacher, she looks like she have no idea on her subject",negative,english
+She seldom enter the class,negative,english
+She only enters the class sometimes,negative,english
+"Not a good teacher, she is not good in her subject",negative,english
+She gives a lot of task without discussing them,negative,english
 "but.an kaayo nga maestro, thank you sir",positive,cebuano
 "dali ra ma approach, dili masuko",positive,cebuano
 "kugihan kaayo mutudlo, keep it up sir",positive,cebuano
 thank you sir,positive,cebuano
-good job,positive,cebuano
-kind and good teacher,positive,english
-he always came into class to teach us. thank you sir,positive,english
+Good job,positive,cebuano
+Kind and good teacher,positive,english
+he always came into class to teach us. Thank you sir,positive,english
 he give us high grades,positive,english
 he is a approachable teacher,positive,english
 he seldom absent,positive,english
-ok,neutral,cebuano
+Ok,positive,cebuano
 uwu,neutral,cebuano
 hi,neutral,english
 hello,neutral,english
@@ -47,13 +48,13 @@ walay klaro muhatag ug instructions,negative,cebuano
 boring mutudlo hahahah,negative,cebuano
 mutopic ug bastos usahay hahaha,negative,cebuano
 magpatan.aw rag youtube sa klase usahay nya lag pajud,negative,cebuano
-gives us small grades,negative,english
-he does not give clear instructions,negative,english
-he does not discuss the lessons properly but instead only show us videos,negative,english
-his lessons are sometime irrelevant,negative,english
-"he is not a good teacher, he is boring to listen",negative,english
-maayo mutudlo,positive,cebuano
-stricta si miss but naa jud kay ma learn,positive,cebuano
+Gives us small grades,negative,english
+He does not give clear instructions,negative,english
+He does not discuss the lessons properly but instead only show us videos,negative,english
+His lessons are sometime irrelevant,negative,english
+"He is not a good teacher, he is boring to listen",negative,english
+Maayo mutudlo,positive,cebuano
+Stricta si miss but naa jud kay ma learn,positive,cebuano
 stricta per makat.on jud ka,positive,cebuano
 ganahan jud si miss makalearn iyang students,positive,cebuano
 ganahan kaayo ko nimo miss bisag stricta kayka kay na force jud ko ug kat.on sa lessons hahaha,positive,cebuano
@@ -63,7 +64,6 @@ good job miss,positive,english
 she is scary but she teaches the students well,positive,english
 she is good in teaching especially in her lessons,positive,english
 ambot,neutral,cebuano
-not sure,negative,cebuano
 edi wow,positive,english
 ulol,neutral,english
 wala koy masulti hahahha,neutral,english
@@ -72,7 +72,7 @@ ma pressure ang student nimo miss,negative,cebuano
 grabe kaayo ka makadala ug pressure sa students miss,negative,cebuano
 sakit kaayo ka manulti miss,negative,cebuano
 dili kahibaw musabot ug student if maglibog,negative,cebuano
-you put so much pressure to us,negative,english
+You put so much pressure to us,negative,english
 give us small grades,negative,english
 doesn't give students another chance,negative,english
 too strict,negative,english
@@ -89,35 +89,34 @@ sayon ra sabton ang explanation sa iyang discussion,positive,cebuano
 muhatag og simple alternatives para mapasayon ang lesson.,positive,cebuano
 fine at teaching,positive,english
 no problems at all,positive,english
-i have no concerns to deal,neutral,english
-just indifferent. no concerns at all,neutral,english
+I have no concerns to deal,neutral,english
 im cool with her as my teacher in this subject.,positive,english
 oks raman,neutral,cebuano
 madala rag smile,positive,cebuano
 ge lang,neutral,cebuano
-sakto ra mutudlo,neutral,cebuano
+sakto ra mutudlo,positive,cebuano
 masabtan ra nay uban lisod,positive,cebuano
 ill tempered at most occasion,negative,english
-very strict in every exam,neutral,english
-doesn't consider close to correct answers,neutral,english
+very strict in every exam,negative,english
+doesn't consider close to correct answers,negative,english
 inconsiderate at most time,negative,english
 sometimes doesn't dismiss students on time,negative,english
 maldita usahay,negative,cebuano
 dili mu consider og uban answer,negative,cebuano
 di masabtan mutudlo,negative,cebuano
 paspas kaayo mudiscuss,neutral,cebuano
-taas kaayo muhatag og short quiz,neutral,cebuano
-gives good remarks to students who strive,positive,english
-gives decent grades as long as you comply,positive,english
-not very demanding with requirements,positive,english
-"gives reasonable, not too hard questionnaires during exams",positive,english
-approachable when asked with concerns,positive,english
-dili kaayo strict sa klase,neutral,cebuano
+taas kaayo muhatag og short quiz,negative,cebuano
+Gives good remarks to students who strive,positive,english
+Gives decent grades as long as you comply,positive,english
+Not very demanding with requirements,positive,english
+"Gives reasonable, not too hard questionnaires during exams",positive,english
+Approachable when asked with concerns,positive,english
+dili kaayo strict sa klase,positive,cebuano
 ma approach ra og naa mi concern,positive,cebuano
-dili kaayo grabe muhatag og buhatonon,neutral,cebuano
+dili kaayo grabe muhatag og buhatonon,positive,cebuano
 mu consider og answers na close to correct,positive,cebuano
-di ra kaayo bun.og muhatag og activities,neutral,cebuano
-i have no concerns with her teaching,neutral,english
+di ra kaayo bun.og muhatag og activities,positive,cebuano
+I have no concerns with her teaching,neutral,english
 no problems with her,positive,english
 just about right with her teaching strategy,neutral,english
 not that bad,positive,english
@@ -125,10 +124,10 @@ oks lang man,neutral,english
 mada rag smile,positive,cebuano
 ok ra mutudlo,positive,cebuano
 ocakes lodicakes,neutral,cebuano
-ambot lang,neutral,cebuano
+ambot sad,neutral,cebuano
 ok ra man,positive,cebuano
 doesn't understand her lessons,negative,english
-doesn't teach her students well but atleast she tries,negative,english
+doesn't teach her students well but atleast she tries,neutral,english
 her discussions are so hard to understand,negative,english
 gives tests that aren't discussed well.,negative,english
 very incompetent as a teacher,negative,english
@@ -136,26 +135,24 @@ di kibaw mutudlo,negative,cebuano
 way klaro mutudlo,negative,cebuano
 wa kasabot sa iyang discussion,negative,cebuano
 lisod sabton og mu discuss,negative,cebuano
-sig salig sa notes og mag discuss,neutral,cebuano
 interactive with his students during discussion,positive,english
 explains his discussions very well.,positive,english
 knows his lessons very well,positive,english
 always comes on time in his class,positive,english
 very outgoing as a teacher,positive,english
-maayo mutudlo,positive,cebuano
 dili kaayo strikto,positive,cebuano
 mu correct sa sayop sa among research,positive,cebuano
 tarong mu explain,positive,cebuano
 musulod on time sa iyang klase,positive,cebuano
 he's fine as a teacher,positive,english
-no problems with his way of teaching so far,neutral,english
+no problems with his way of teaching so far,positive,english
 nothing really to say,neutral,english
 not problems with him,positive,english
 okay,positive,english
 mada rag smile,positive,cebuano
 ok ra mutudlo,positive,cebuano
 ocakes lodicakes,neutral,cebuano
-ambot lang,neutral,cebuano
+ambot sad,neutral,cebuano
 ok ra man,positive,cebuano
 not good at teaching,negative,english
 doesn't dismiss us on time,negative,english
@@ -166,25 +163,24 @@ sig ka late,negative,cebuano
 di masabtan usahay,negative,cebuano
 way klaro mu discuss,negative,cebuano
 di musud klase usahay,negative,cebuano
-daghag pabuhat,neutral,cebuano
+daghag pabuhat,negative,cebuano
 very vigorous at teaching.,positive,english
 very gregarious while discussing,positive,english
 approachable when asked for clarifications,positive,english
 considerate to close correct answers,positive,english
-not very strict,positive,english
+not very strict,neutral,english
 dako muhatag og grado,positive,cebuano
 jamming na pagka maestro,positive,cebuano
 dili strikto,positive,cebuano
 maayo mu discuss,positive,cebuano
 masabtan ra ang lessons,positive,cebuano
-i have no problems with how he teaches us,positive,english
+I have no problems with how he teaches us,positive,english
 just fine as an overall teacher,positive,english
-i have no concerns,neutral,english
-i have undecided remarks,neutral,english
-"fair enough, i have no words",positive,english
+I have no concerns,neutral,english
+"fair enough, I have no words",positive,english
 ok ra na pagka maestro,positive,cebuano
 madala rag smile,positive,cebuano
-wala ra koy problema nya mutudlo,neutral,cebuano
+wala ra koy problema nya mutudlo,positive,cebuano
 cge lods,neutral,cebuano
 wala na koy blema,neutral,cebuano
 bad at discussion,negative,english
@@ -199,7 +195,7 @@ daghan pabuhat,negative,cebuano
 way sudlanay klase,negative,cebuano
 di mo tudlo,negative,cebuano
 di mo discuss,negative,cebuano
-tagsa ra mo tudlo,neutral,cebuano
+tagsa ra mo tudlo,negative,cebuano
 wa kasabot sa iya ge discuss,negative,cebuano
 dili kabalo mo tudlo,negative,cebuano
 lazy,negative,english
@@ -227,21 +223,20 @@ maayo mo tudlo,positive,cebuano
 maayo mo tudlo nga maestra,positive,cebuano
 mo sabot nga maestra,positive,cebuano
 kabalo mo sabot nga maestra,positive,cebuano
-taas ug garbo,negative,cebuano
-strict nga maestra,negative,cebuano
+strict nga maestra,neutral,cebuano
 dili mo adjust sa iyang students,negative,cebuano
 dili maminaw sa iyang students,negative,cebuano
 dili kabalo mo sabot,negative,cebuano
 uninteresting teacher,negative,english
 uninteresting instructor,negative,english
-high ego,negative,english
-strict teacher,negative,english
+high ego,positive,english
+strict teacher,neutral,english
 does not adjust to her student,negative,english
-sakto ra nga maestra,neutral,cebuano
+sakto ra nga maestra,positive,cebuano
 okay ra,positive,cebuano
 wala koy ma sturya,neutral,cebuano
 oks ra,neutral,cebuano
-sakto sakto ra mo tudlo,neutral,cebuano
+sakto sakto ra mo tudlo,positive,cebuano
 nothing,neutral,english
 none,neutral,english
 none so far,neutral,english
@@ -254,24 +249,24 @@ best teacher in ccs,positive,english
 best instructor in css,positive,english
 butan nga maestra,positive,cebuano
 dali ra ka makasabot,positive,cebuano
-mo hatag ug time sa student niya,positive,cebuano
+mo hatag ug time sa student niya,neutral,cebuano
 buotan nga maestra,positive,cebuano
 maayo mo explain,positive,cebuano
 walay klaro mo tudlo,negative,cebuano
 walay klaro mo hatag instructions,negative,cebuano
 dili mo check sa activity,negative,cebuano
 dili mo check sa assignment,negative,cebuano
-gamay mo hatag grado,negative,cebuano
-does not check assignments,negative,english
-does not check activities,negative,english
+gamay mo hatag grado,neutral,cebuano
+does not check assignments,neutral,english
+does not check activities,neutral,english
 does not give clear instructions,negative,english
 does not give high grades,negative,english
 does not teach well,negative,english
-sakto ra nga mestro,neutral,cebuano
-ok ra nga maestro,neutral,cebuano
+sakto ra nga mestro,positive,cebuano
+ok ra nga maestro,positive,cebuano
 wala ra,neutral,cebuano
 natural ra mo tudlo,neutral,cebuano
-sakto ra jud mo tudlo,neutral,cebuano
+sakto ra jud mo tudlo,positive,cebuano
 cannot really say much,neutral,english
 nothing to comment,neutral,english
 average teacher,neutral,english
@@ -295,10 +290,10 @@ she is very understanding,positive,english
 masinabtanun na maestra,positive,cebuano
 very good instructor to her students,positive,english
 maayo nga maestra sa iyang mga estudyante,positive,cebuano
-dagko muhatag ug grado,positive,cebuano
+dagko muhatag ug grado,neutral,cebuano
 she's a nice teacher,positive,english
 okay ra,positive,cebuano
-sakto ra,neutral,cebuano
+sakto ra,positive,cebuano
 so fine,positive,english
 serious type,neutral,english
 so far nice,positive,english
@@ -309,33 +304,33 @@ wakoy ma ingun,neutral,cebuano
 okay ra man siya,positive,cebuano
 di mo tudlo,negative,cebuano
 bati motudlo,negative,cebuano
-tagsa ra mag discuss,negative,cebuano
+tagsa ra mag discuss,neutral,cebuano
 inactive,negative,english
 she doesn't teach her students well,negative,english
 di kamao mo explain,negative,cebuano
 bati sige rag pa notes,negative,cebuano
 not discussing,negative,english
 not good in teaching,negative,english
-not so much to teach,negative,english
+not so much to teach,neutral,english
 but.an,positive,cebuano
 very good teacher to her students,positive,english
 mo discuss jud pirmi,positive,cebuano
 considerate,positive,english
 responsible instructor,positive,english
 friendly teacher,positive,english
-mutubag jud ug pangutan.on,positive,cebuano
+mutubag jud ug pangutan.on,neutral,cebuano
 he helps students regarding activities,positive,english
 mutabang ug studyante nga nag-lisud,positive,english
 salamat kaayo sir,positive,cebuano
 fair instructor,positive,english
 motudlo ra,neutral,cebuano
-okay ra siya,neutral,cebuano
+okay ra siya,positive,cebuano
 wakoy ika ingun,neutral,cebuano
 fine teacher,positive,english
-maayo raman,neutral,cebuano
+maayo raman,positive,cebuano
 formal,neutral,english
 none,neutral,english
-okay ra,neutral,cebuano
+okay ra,positive,cebuano
 nothing,neutral,english
 libug sabtun,negative,cebuano
 way klaru mo hatag grado,negative,cebuano
@@ -353,26 +348,26 @@ she discuss the lesson until you understand,positive,english
 she is so good in programming,positive,english
 she explained the discussion very well,positive,english
 one of the best instructor in the ccs department,positive,english
-she compliment me quite sometime when doing programming task and i'm flattered as a student who really not good in coding,positive,english
+she compliment me quite sometime when doing programming task and I'm flattered as a student who really not good in coding,positive,english
 dali ra makasabut kung naa kay mga pangutana,positive,cebuano
 maayo siya nga maestra,positive,cebuano
-dagko muhatag grado,positive,cebuano
+dagko muhatag grado,neutral,cebuano
 i have nothing to say,neutral,english
 no comment,neutral,english
 none so far,neutral,english
-okay lang,neutral,cebuano
-nice raman pud siya,neutral,cebuano
+okay lang,positive,cebuano
+nice raman pud siya,positive,cebuano
 nothing,neutral,english
 reasonable,neutral,english
-sakto rasad,neutral,cebuano
+sakto rasad,positive,cebuano
 wala koy ma comment,neutral,cebuano
-maayo raman,neutral,cebuano
+maayo raman,positive,cebuano
 strikta kaayo,negative,cebuano
-very strict,negative,english
+very strict,neutral,english
 inconsiderate,negative,english
-not adjusting to her students,negative,english
+not adjusting to her students,neutral,english
 cannot accept error,negative,english
-grabi ug garbo,negative,cebuano
+grabi ug garbo,neutral,cebuano
 self-conceit,negative,english
 maldita,negative,cebuano
 di masinabtanon,negative,cebuano
@@ -381,7 +376,7 @@ she teach well until you understand.,positive,english
 gives complement if you did well.,positive,english
 listen to your opinions.,positive,english
 gives good and high grade.,positive,english
-strict and proud.,negative,english
+strict and proud.,positive,english
 kamao sa iyang expertise.,positive,cebuano
 boutan nga maesta.,positive,cebuano
 mo consider basta sakto imo idea.,positive,cebuano
@@ -389,24 +384,24 @@ jolly og maka jamming ra nmu.,positive,cebuano
 maayo nga pagka maestra.,positive,cebuano
 gives a lot of work activities.,neutral,english
 she has very high expectations of the students.,positive,english
-sometimes she never teach but gives a quiz.,negative,english
+Sometimes she never teach but gives a quiz.,negative,english
 sometimes can't control emotions.,negative,english
-her mood can affect the class.,neutral,english
+her mood can affect the class.,negative,english
 dali ra masuko basta dka maminaw sa discussions.,negative,cebuano
 kahadlokan nga maestra.,negative,cebuano
 mang look down.,negative,cebuano
 dali ra samokan.,negative,cebuano
-di ka e treat og sakto basta di sya ganahan nimo.,negative,cebuano
+dika e treat og sakto basta di sya ganahan nimo.,negative,cebuano
 ok.,positive,english
 never mind.,neutral,english
 fair.,positive,english
-sure.,positive,english
-she's bad and also good.,negative,english
+sure.,neutral,english
+she's bad and also good.,neutral,english
 ambot.,neutral,cebuano
 wara koy ma sulti.,neutral,cebuano
 cguro.,neutral,cebuano
 seyoso.,neutral,cebuano
-di ko sure.,negative,cebuano
+di ko sure.,neutral,cebuano
 he teach well.,positive,english
 gives complement if you did well.,positive,english
 listen to your opinions.,positive,english
@@ -417,26 +412,26 @@ boutan nga maesta.,positive,cebuano
 mo consider ra sa imo situations.,positive,cebuano
 maka jamming ra nmu.,positive,cebuano
 maayo nga pagka maestra.,positive,cebuano
-gives a lot of work activities.,neutral,english
+gives a lot of work activities.,negative,english
 has a high expectations in students.,positive,english
-sometimes she never teach but gives a quiz.,negative,english
+Sometimes she never teach but gives a quiz.,negative,english
 lazy teacher.,negative,english
-tagaan rakag link ikaw nay mo search.,neutral,english
+tagaan rakag link ikaw nay mo search.,negative,english
 way pake og dmu maminaw.,negative,cebuano
-basta lang naay matudlo.,neutral,cebuano
+basta lang naay matudlo.,negative,cebuano
 mang criticize.,negative,cebuano
 di mo discuss og maayo.,negative,cebuano
 dali ra mahi ubos.,negative,cebuano
 ok.,positive,english
 nothing i can say.,neutral,english
 fair enough.,positive,english
-sure.,positive,english
+sure.,neutral,english
 good but lazy.,negative,english
-good nga diko ganahan.,positive,cebuano
+good nga diko ganahan.,neutral,cebuano
 okay ra.,positive,cebuano
 madara nga maestro.,neutral,cebuano
 seyoso.,neutral,cebuano
-di ko sure.,negative,cebuano
+di ko sure.,neutral,cebuano
 she's a good teacher.,positive,english
 gives complement.,positive,english
 listen to your opinions.,positive,english
@@ -453,20 +448,20 @@ she doesn't understand her topic.,negative,english
 her mind goes blank sometimes.,negative,english
 di kamao mo discuss.,negative,english
 way pake og dmu maminaw.,negative,cebuano
-basta lang naay matudlo.,neutral,cebuano
+basta lang naay matudlo.,negative,cebuano
 mag lisod og explain sa student about sa iya topic.,negative,cebuano
 di mo discuss og maayo.,negative,cebuano
 gahi pasabton.,negative,cebuano
 dumb.,negative,english
 nothing i can say.,neutral,english
-fair enough.,positive,english
-sure.,positive,english
+fair enough.,neutral,english
+sure.,neutral,english
 good but lazy.,negative,english
-good nga diko ganahan.,positive,cebuano
-okay ra.,positive,cebuano
-madara nga maestro.,positive,cebuano
-seryoso pero dili suited.,negative,cebuano
-di ko sure.,negative,cebuano
+good nga diko ganahan.,neutral,cebuano
+okay ra.,neutral,cebuano
+madara nga maestro.,neutral,cebuano
+seryoso pero dili suited.,neutral,cebuano
+di ko sure.,neutral,cebuano
 gamay muhatag ug grado,negative,cebuano
 kamao mutudlo,positive,cebuano
 dili musulod on time,negative,cebuano
@@ -481,11 +476,11 @@ very lazy,negative,english
 does not listen to his students,negative,english
 does not explain the lessons well,negative,english
 does not make his own resources,negative,english
-sakto ra,neutral,cebuano
-sakto ra gud,neutral,cebuano
+sakto ra,positive,cebuano
+sakto ra gud,positive,cebuano
 normal ra,neutral,cebuano
 dili nindot dili sad bati,neutral,cebuano
-buotan pero tapulan,negative,cebuano
+buotan pero tapulan,positive,cebuano
 fair,positive,english
 typical,neutral,english
 good but lazy,negative,english
@@ -503,22 +498,21 @@ not boring,positive,english
 thankyou sir,positive,english
 dili mo reply,negative,cebuano
 dili considerate,negative,cebuano
-dili mo basa og message,negative,cebuano
+dili mo basa og message,neutral,cebuano
 sige ug ka late,negative,cebuano
 dili mo tabang,negative,cebuano
 ignores message,negative,english
-does not reply to my concern,negative,english
+does not care to my concern,negative,english
 not considerate,negative,english
-does not reply to my message,negative,english
+does not care to my message,negative,english
 always late,negative,english
 wala ra koy comment,neutral,cebuano
 wala ra koy ma sturya,neutral,cebuano
-walay libog,neutral,cebuano
-dili subra dili sad kuwang,neutral,cebuano
+walay libog,positive,cebuano
 ambot,neutral,cebuano
 i do not have a comment,neutral,english
 nothing,neutral,english
-nothing to share,neutral,english
+nothing to share,negative,english
 nothing to comment,neutral,english
 i do not have any concern,neutral,english
 daghang salamat miss,positive,cebuano
@@ -541,9 +535,9 @@ tedious,negative,english
 uninteresting,negative,english
 not interactive,negative,english
 not confident,negative,english
-sakto ra mo hatag grado,neutral,cebuano
-sakto ra gud,neutral,cebuano
-sakto mo discuss,neutral,cebuano
+sakto ra mo hatag grado,positive,cebuano
+sakto ra gud,positive,cebuano
+sakto mo discuss,positive,cebuano
 kalma nga maestra,neutral,cebuano
 kalma mo tudlo,neutral,cebuano
 just right,neutral,english
@@ -556,7 +550,7 @@ matinabangon,positive,cebuano
 dali maduolan,positive,cebuano
 grabe ka buotan,positive,cebuano
 approachable nga maestra,positive,cebuano
-not strict,positive,english
+not strict,neutral,english
 helpful,positive,english
 approachable,positive,english
 very kind,positive,english
@@ -564,17 +558,13 @@ very humble,positive,english
 dili mo tudlo,negative,cebuano
 dili mo tudlo sa iyahang students,negative,cebuano
 dili klaro mo tudlo,negative,cebuano
-pirme mo gawas sa klase,negative,cebuano
-sige lang ug gawas sa room,negative,cebuano
 does not teach,negative,english
 does not know how to teach,negative,english
 does not teach her students,negative,english
-always go out,negative,english
-always go out of the class,negative,english
 madala dala ra,neutral,cebuano
-madala ra ug smile,neutral,cebuano
-masabtan ra,neutral,cebuano
-ok ra jud,neutral,cebuano
+madala ra ug smile,positive,cebuano
+masabtan ra,positive,cebuano
+ok ra jud,positive,cebuano
 oki,neutral,cebuano
 k,neutral,english
 unbiased,neutral,english
@@ -602,12 +592,12 @@ dili tihik muhatag ug grado basta mupass lang,positive,cebuano
 musabut sa iyang mga estudyante kung di ka pass dayun,positive,cebuano
 mutodlo sa studyante kung naglibug,positive,cebuano
 chill,neutral,english
-wala ray problema,neutral,cebuano
+wala ray problema,positive,cebuano
 good,positive,english
 waley ra,neutral,cebuano
 none,neutral,english
 di mutodlo sa iyang klasi,negative,cebuano
-segi lang ug pareport,negative,cebuano
+segi lang ug pareport,neutral,cebuano
 exam nga way tudlotudlo,negative,cebuano
 daghan kaayog ipabuhat nga wa mi alamag,negative,cebuano
 tagsa ra musod sa klasi,negative,cebuano
@@ -615,9 +605,9 @@ pressure his students,negative,english
 sleepy in class,negative,english
 always absent,negative,english
 don't discuss,negative,english
-make his students report instead of him,negative,english
+make his students report instead of him,neutral,english
 very generous instructor,positive,english
-she is very considerate teacher i've known,positive,english
+she is very considerate teacher I've known,positive,english
 she looks nice and approachable,positive,english
 help her students in a positive way,positive,english
 she is so creative,positive,english
@@ -629,9 +619,8 @@ mutodlo hantud makamao ang studyante sa gi discuss,positive,cebuano
 keep it up,neutral,english
 hahaha,neutral,english
 ay nalang ta,neutral,cebuano
-maayo ma'am,neutral,cebuano
+maayo ma'am,positive,cebuano
 murag wala,neutral,cebuano
-segi lang pa tanaw bidyu,negative,cebuano
 di kamao mo explain usahay,negative,cebuano
 way klaru muhatag instruction sa lms,negative,cebuano
 di muhatag ug sakto nga tubag pangutan.on,negative,cebuano
@@ -641,7 +630,7 @@ i don't like her ways of teaching,negative,english
 she doesn't explain further when she discuss a lesson,negative,english
 she provide confusing instruction,negative,english
 boring kaayu iya klasi,negative,cebuano
-very approachable and jamming instructor,positive,english
+Very approachable and jamming instructor,positive,english
 cool teacher because she gives time to students,positive,english
 she gives a very satisfying grades,positive,english
 she always give her students a short break after major exams,positive,english
@@ -661,7 +650,6 @@ walay discussay,negative,cebuano
 daghan pansweran,negative,cebuano
 segi lag film showing,negative,cebuano
 dili madoulan kung nay kinahanglan,negative,cebuano
-sometimes she's out of nowhere,negative,english
 i can't understand her discussion because she doesn't elaborate,negative,english
 i don't like her because she is so timid,negative,english
 she left us with a task that we don't know how to do it,negative,english
@@ -676,14 +664,14 @@ jamming na pagka maestro,positive,cebuano
 dili strikto,positive,cebuano
 maayo mu discuss,positive,cebuano
 masabtan ra ang lessons,positive,cebuano
-i have no problems with how he teaches us,neutral,english
+I have no problems with how he teaches us,positive,english
 just fine as an overall teacher,positive,english
-i have no concerns,neutral,english
-i have undecided remarks,neutral,english
-"fair enough, i have no words",neutral,english
-ok ra na pagka maestro,neutral,cebuano
-madala rag smile,neutral,cebuano
-wala ra koy problema nya mutudlo,neutral,cebuano
+I have no concerns,neutral,english
+I have undecided remarks,negative,english
+"fair enough, I have no words",neutral,english
+ok ra na pagka maestro,positive,cebuano
+madala rag smile,positive,cebuano
+wala ra koy problema nya mutudlo,positive,cebuano
 cge lods,neutral,cebuano
 wala na koy blema,neutral,cebuano
 bad at discussion,negative,english
@@ -693,28 +681,27 @@ keeps giving us reports to discuss without follow up discussion,negative,english
 very complicated in discussing,negative,english
 di kibaw mutudlo,negative,cebuano
 way klaro mu discuss,negative,cebuano
-dali2on pirmi ang klase,negative,cebuano
 daghan pabuhat,negative,cebuano
 way sudlanay klase,negative,cebuano
 never gets late in class,positive,english
 understandable discussion,positive,english
-very approachable when i have concerns,positive,english
-not very strict,positive,english
+very approachable when I have concerns,positive,english
+not very strict,neutral,english
 makes good examples to elaborate programming problems in real life situations,positive,english
 maayo mutudlo,positive,cebuano
 dili ma late sa klase,positive,cebuano
 klaro ra mu discuss,positive,cebuano
-di kaayo daghag ipabuhat,positive,cebuano
+di kaayo daghag ipabuhat,neutral,cebuano
 approachable ra og naa mi mga concern,positive,cebuano
 i have no concerns about her way of teaching,neutral,english
-no problems encountered so far,neutral,english
+no problems encountered so far,positive,english
 just cool with my concerns of her as a teacher,positive,english
-"im even-minded at state right now, nothing really to comment",neutral,english
+"Im even-minded at state right now, nothing really to comment",neutral,english
 "just about right, nothing much to comment here.",neutral,english
 oks ra,neutral,cebuano
 mada rag smile,positive,cebuano
-wala ra ko problema sa iyang pag handle,neutral,cebuano
-okay ra mutudlo,neutral,cebuano
+wala ra ko problema sa iyang pag handle,positive,cebuano
+okay ra mutudlo,positive,cebuano
 wala ra koy ma tell,neutral,cebuano
 not that well at teaching,negative,english
 not really outgoing with her students,negative,english
@@ -736,12 +723,12 @@ gives a lot of activities,negative,english
 not a good example as a teacher.,negative,english
 does not give high grades,negative,english
 he does not teach well and lazy,negative,english
-sakto ra nga mestro,neutral,cebuano
+sakto ra nga mestro,positive,cebuano
 way kurat nga maestro,neutral,cebuano
 wala ra,neutral,cebuano
 natural ra mo tudlo,neutral,cebuano
 payts ra pag ka maestro,neutral,cebuano
-i cannot really say that much.,neutral,english
+I cannot really say that much.,neutral,english
 no comment,neutral,english
 average teacher,neutral,english
 good person,positive,english
@@ -758,8 +745,25 @@ responsible as a teacher,positive,english
 gives high grades,positive,english
 bogo nga maestra,negative,cebuano
 dili muabsent,positive,cebuano
-she is like a teacher with no idea of what is happening in the class,negative,english
 she is no good for us,negative,english
 she has no idea of her lesson,negative,english
-d kbalo mtudlo,negative,cebuano
-maayu nlang gni kay kbalo mutudlo,positive,cebuano
+ganahan ko ni miss mutudlo,positive,cebuano
+maayo mutudlo,positive,cebuano
+dili maayo mutudlo,negative,cebuano
+dili maayo,negative,cebuano
+kahibalo mutudlo,negative,cebuano
+kahibaw mutudlo,positive,cebuano
+kudos,positive,cebuano
+kahibaw mutudlo,positive,cebuano
+she always understand her students,positive,english
+i like you,positive,english
+she always miss the class,negative,english
+looks like she don't understand the lesson really well,negative,english
+don't understand,negative,english
+i dont like you,negative,english
+i do really like you miss because you always understand your students,positive,english
+thank you kaayo miss kay dili mi nimo i pressure,positive,cebuano
+kusog kaayo mang pressure sa iyang students,negative,cebuano
+dili i pressure iyang student,positive,cebuano
+dili ko ganahan aning maestraha kay di kahibaw mutudlo,negative,cebuano
+okay lang nga maestra kay kahibaw pud mutudlo,positive,cebuano

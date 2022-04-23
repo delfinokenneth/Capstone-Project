@@ -56,7 +56,6 @@ wouldnt,kind-of,-0.293
 won't,less,-0.293
 wouldn't,little,-0.293
 rarely,marginally,-0.293
-seldom,occasionally,-0.293
 despite,partly,-0.293
 di,scarcely,-0.293
 dili,slightly,-0.293
@@ -69,9 +68,11 @@ bisan,grabe,0.293
 no,hingpit,0.293
 way,desidido,0.293
 wa,lawom,0.293
-,bug-os,0.293
+seldom,bug-os,0.293
+sometimes,sometimes,-0.733
+sobraan,sobraan,-0.733
+without,ilabina,0.293
 ,labina,0.293
-,ilabina,0.293
 ,talagsaon,0.293
 ,hilabihan,0.293
 ,labing,0.293
@@ -89,9 +90,12 @@ wa,lawom,0.293
 ,hapit,-0.733
 ,halos,-0.733
 ,igo,-0.733
-,gamay,-0.733
 ,menos,-0.733
 ,usahay,-0.733
 ,panalagsa,-0.733
 ,bahin,-0.733
 ,daw,-0.733
+,panagsa,-0.733
+,seldom,-0.733
+,occasionally,-0.293
+,too,-0.293

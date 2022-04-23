@@ -22,28 +22,28 @@ data = preprocess_data(data)
 x = data['comment']
 y = data['label']
 
-x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.25, random_state=50)
+x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.15, random_state=45)
 
 # Vectorize text reviews to numbers
 vec = CountVectorizer(stop_words='english')
 x = vec.fit_transform(x).toarray()
 x_test = vec.transform(x_test).toarray()
 
-# from sklearn.naive_bayes import MultinomialNB                                                 
+from sklearn.naive_bayes import MultinomialNB                                                 
 
-# model = MultinomialNB()
-# model.fit(x, y)
+model = MultinomialNB()
+model.fit(x, y)
 
-# accuracy = model.score(x_test, y_test)
+accuracy = model.score(x_test, y_test)
 
 #print(model.predict(vec.transform(['dili kahibaw mutudlo, mura ug di kahibaw sa iyang subject'])))
 
 #save model
-# pickle.dump(model, open('NB_Model.pkl', 'wb'))
+pickle.dump(model, open('NB_Model.pkl', 'wb'))
 
 #load the model
 pickled_model = pickle.load(open('NB_Model.pkl', 'rb'))
-comment= "dili maayo kaayo"
+comment= "yes"
 print(pickled_model.predict((vec.transform([comment]))))
 
 print(pickled_model.score(x_test,y_test))

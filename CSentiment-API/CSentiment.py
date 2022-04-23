@@ -93,9 +93,9 @@ def sentiment_scores(sentence):
     #lowercase the  sentence for uniformity
     sentence = sentence.lower() 
     #words to be remove from the comment
-    toRemoveWords=["miss","yes", "idk"]
+    toRemoveWords=["miss"]
     #words to remove from vader dict
-    toRemoveFromVader = ["weakness","weaknesses","no","natural","serious"]
+    toRemoveFromVader = ["weakness","weaknesses","no","natural","serious","hahaha","chance","yes","idk"]
 
     for word in toRemoveWords:
         sentence = sentence.replace(word,"")
@@ -151,10 +151,11 @@ def sentiment_scores(sentence):
     elif sentiment_dict['compound'] <= -0.05 :
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
-    elif (langUsed == "tl" or langUsed == "en" or langUsed == "fr"):
+    elif (langUsed == "tl" or langUsed == "en" or langUsed == "fr" or langUsed == "ro" or sentence == ""):
         return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
     else:
+        print("pass to NB, langused: ", langUsed)
         return NB_Classify(sentence)
 
 def FinalSentiment(sentence): 
@@ -183,7 +184,10 @@ def preprocess_data(data):
     data = data.drop('language', axis=1)
     
     # Convert text to lowercase
-    data['comment'] = data['comment'].str.strip().str.lower()
+    try:
+        data['comment'] = data['comment'].str.strip().str.lower()
+    except Exception as e:
+        print(e)
     return data
 
 def NB_Classify(comment):
@@ -198,7 +202,7 @@ def NB_Classify(comment):
     x = data['comment']
     y = data['label']
 
-    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.25, random_state=50)
+    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.15, random_state=45)
 
     # Vectorize text reviews to numbers
     vec = CountVectorizer(stop_words='english')
@@ -247,9 +251,9 @@ def isNeutralDefaultVal(pos,neu,neg):
     neu = round(neu,2)
     pos = round(pos,2)
     neg = round(neg,2)
-    defNeu = round(23.385689354275733,2)
-    defPos = round(42.233856893542765,2)
-    defNeg = round(34.380453752181495,2)
+    defNeu = round(20.85889570552148,2)
+    defPos = round(46.472392638036794,2)
+    defNeg = round(32.66871165644173,2)
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
 # ------------------------------------------------------------------------------------------ END FOR NAIVE BAYES
