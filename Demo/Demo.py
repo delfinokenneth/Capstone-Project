@@ -1,32 +1,28 @@
-
-from asyncio import create_subprocess_exec
-from operator import truediv
-from tkinter import E
-import nltk
-import pandas as pd
-from flask import Flask, jsonify, make_response, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for
 from flask_mysqldb import MySQL
-from googletrans import Translator
-from textblob import TextBlob
-
-#nltk.download('vader_lexicon')
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from textblob.classifiers import NaiveBayesClassifier
-import enchant
-import string
-
-import pdfkit
-
-path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
-pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
+import platform
 
 app = Flask(__name__)
 
-app.config['MYSQL_HOST'] = 'localhost';
-app.config['MYSQL_USER'] = 'root';
-app.config['MYSQL_PASSWORD'] = '';
-app.config['MYSQL_DB'] = 'isent';
+
+#if not in deployment
+if platform.system() == "Windows":
+	app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
+	app.config['MYSQL_USER'] = 'dbuser';
+	app.config['MYSQL_PASSWORD'] = 'dbuser123';
+	app.config['MYSQL_DB'] = 'isent';
+	app.config['MYSQL_PORT'] = 14859;
+	#app.config['MYSQL_HOST'] = 'localhost';
+	#app.config['MYSQL_USER'] = 'root';
+	#app.config['MYSQL_PASSWORD'] = '';
+	#app.config['MYSQL_DB'] = 'isent';
+#not in deployment
+else:
+	app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
+	app.config['MYSQL_USER'] = 'dbuser';
+	app.config['MYSQL_PASSWORD'] = 'dbuser123';
+	app.config['MYSQL_DB'] = 'isent';
+	app.config['MYSQL_PORT'] = '14859';
 
 mysql = MySQL(app)
 
@@ -497,5 +493,6 @@ with app.app_context():
 		return resp.raw.read(), resp.status_code, resp.headers.items()
 
 if __name__ == "__main__":
-	app.run(host='127.0.0.1', port=8080, debug=True)
-	#app.run(debug =True)
+	app.run(debug =True)
+	#app.run(host='127.0.0.1', port=8080, debug=True)
+
