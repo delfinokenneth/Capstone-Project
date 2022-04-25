@@ -64,18 +64,25 @@ def sentiment_scores(sentence):
     # oject gives a sentiment dictionary.
     # which contains pos, neg, neu, and compound scores.
     sentiment_dict = sid_obj.polarity_scores(sentence)
-    print(sentiment_dict)
-    print("word: ", sentence)
-    print("Overall sentiment dictionary is : ", sentiment_dict) 
-    print("sentence was rated as ", sentiment_dict['neg']*100, "% Negative")
-    print("sentence was rated as ", sentiment_dict['neu']*100, "% Neutral") 
-    print("sentence was rated as ", sentiment_dict['pos']*100, "% Positive")
+    if sentiment_dict['compound'] >= 0.05:
+        sentiment_output = "positive"
+    elif sentiment_dict['compound'] <= -0.05:
+        sentiment_output = "negative"
+    else:
+        sentiment_output = "neutral"
+
     vdpos = sentiment_dict['pos']*100
-    print(vdpos)
     vdneu = sentiment_dict['neu']*100
-    print(vdneu)
     vdneg = sentiment_dict['neg']*100
-    print(vdneg)
+    print("word: ", sentence)
+    print("Overall sentiment dictionary is : ", sentiment_dict)
+    print("----------------------------")
+    print("VADER : ",  sentiment_output)
+    print("sentence was rated as ", vdpos, "% Positive")
+    print("sentence was rated as ", vdneu, "% Neutral")
+    print("sentence was rated as ", vdneg, "% Negative")
+    print("----------------------------")
+
 
     #if vd sentiment is not positive or negative
     if sentiment_dict['compound'] >= 0.05 and sentiment_dict['compound'] <= - 0.05:
@@ -88,8 +95,6 @@ def sentiment_scores(sentence):
         vdscore = vdscore/100
         vdscore = abs(vdscore) * 5
         vdscore = round(vdscore, 2)
-
-    print("Sentence Overall Rated As", end = " ") 
 
     try:
         langUsed = detect(sentence)
@@ -127,7 +132,7 @@ def FinalSentiment(sentence):
     else :
         return NB_Classify(sentence)
 
-#--------------------------------------------------------------------------------------- NAIVE BAYES
+#------------------------ NAIVE BAYES
 
 
 #this is to allow cross-origin to the backend
@@ -146,14 +151,14 @@ def NB_Classify(comment):
     comment_blob = TextBlob(comment, classifier=classifier)
 
     prob = classifier.prob_classify(comment)
-    print("")
-    print("positive",round(prob.prob("positive"),2))
-    print("negative", round(prob.prob("negative"),2))
-    print("neutral",round(prob.prob("neutral"),2))
+    print("NAIVE BAYES : ", comment_blob.classify())
     nbpos = prob.prob("positive")*100
     nbneu = prob.prob("neutral")*100
     nbneg = prob.prob("negative")*100
-    print(comment_blob.classify())
+    print("sentence was rated as ", nbpos, "% Positive")
+    print("sentence was rated as ", nbneu, "% Neutral")
+    print("sentence was rated as ", nbneg, "% Negative")
+
 
     if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
         nbpos = 0
@@ -232,7 +237,6 @@ def averageChartValues(dataDict):
 def sentimentAnalyis():
     #get the data from the payload
     comment = request.get_json(force=True)
-    print("sentiment scores below : ")
     result = sentiment_scores(comment.get("comment"))
     return jsonify(result)
 
