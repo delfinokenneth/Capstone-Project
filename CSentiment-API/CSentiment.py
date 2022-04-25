@@ -251,9 +251,9 @@ def isNeutralDefaultVal(pos,neu,neg):
     neu = round(neu,2)
     pos = round(pos,2)
     neg = round(neg,2)
-    defNeu = round(20.85889570552148,2)
-    defPos = round(46.472392638036794,2)
-    defNeg = round(32.66871165644173,2)
+    defNeu = round(20.276497695852534,2)
+    defPos = round(46.85099846390171,2)
+    defNeg = round(32.87250384024577,2)
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
 # ------------------------------------------------------------------------------------------ END FOR NAIVE BAYES

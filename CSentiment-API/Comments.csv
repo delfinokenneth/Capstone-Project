@@ -256,7 +256,7 @@ walay klaro mo tudlo,negative,cebuano
 walay klaro mo hatag instructions,negative,cebuano
 dili mo check sa activity,negative,cebuano
 dili mo check sa assignment,negative,cebuano
-gamay mo hatag grado,neutral,cebuano
+gamay mo hatag grado,negative,cebuano
 does not check assignments,neutral,english
 does not check activities,neutral,english
 does not give clear instructions,negative,english
@@ -290,7 +290,7 @@ she is very understanding,positive,english
 masinabtanun na maestra,positive,cebuano
 very good instructor to her students,positive,english
 maayo nga maestra sa iyang mga estudyante,positive,cebuano
-dagko muhatag ug grado,neutral,cebuano
+dagko muhatag ug grado,positive,cebuano
 she's a nice teacher,positive,english
 okay ra,positive,cebuano
 sakto ra,positive,cebuano
@@ -311,7 +311,6 @@ di kamao mo explain,negative,cebuano
 bati sige rag pa notes,negative,cebuano
 not discussing,negative,english
 not good in teaching,negative,english
-not so much to teach,neutral,english
 but.an,positive,cebuano
 very good teacher to her students,positive,english
 mo discuss jud pirmi,positive,cebuano
@@ -323,7 +322,7 @@ he helps students regarding activities,positive,english
 mutabang ug studyante nga nag-lisud,positive,english
 salamat kaayo sir,positive,cebuano
 fair instructor,positive,english
-motudlo ra,neutral,cebuano
+motudlo ra,positive,cebuano
 okay ra siya,positive,cebuano
 wakoy ika ingun,neutral,cebuano
 fine teacher,positive,english
@@ -351,7 +350,7 @@ one of the best instructor in the ccs department,positive,english
 she compliment me quite sometime when doing programming task and I'm flattered as a student who really not good in coding,positive,english
 dali ra makasabut kung naa kay mga pangutana,positive,cebuano
 maayo siya nga maestra,positive,cebuano
-dagko muhatag grado,neutral,cebuano
+dagko muhatag grado,positive,cebuano
 i have nothing to say,neutral,english
 no comment,neutral,english
 none so far,neutral,english
@@ -385,8 +384,8 @@ maayo nga pagka maestra.,positive,cebuano
 gives a lot of work activities.,neutral,english
 she has very high expectations of the students.,positive,english
 Sometimes she never teach but gives a quiz.,negative,english
-sometimes can't control emotions.,negative,english
-her mood can affect the class.,negative,english
+can't control emotions.,negative,english
+her mood can affect the class.,neutral,english
 dali ra masuko basta dka maminaw sa discussions.,negative,cebuano
 kahadlokan nga maestra.,negative,cebuano
 mang look down.,negative,cebuano
@@ -395,13 +394,13 @@ dika e treat og sakto basta di sya ganahan nimo.,negative,cebuano
 ok.,positive,english
 never mind.,neutral,english
 fair.,positive,english
-sure.,neutral,english
+sure.,positive,english
 she's bad and also good.,neutral,english
 ambot.,neutral,cebuano
 wara koy ma sulti.,neutral,cebuano
 cguro.,neutral,cebuano
 seyoso.,neutral,cebuano
-di ko sure.,neutral,cebuano
+di ko sure.,negative,cebuano
 he teach well.,positive,english
 gives complement if you did well.,positive,english
 listen to your opinions.,positive,english
@@ -425,13 +424,13 @@ dali ra mahi ubos.,negative,cebuano
 ok.,positive,english
 nothing i can say.,neutral,english
 fair enough.,positive,english
-sure.,neutral,english
+sure.,positive,english
 good but lazy.,negative,english
 good nga diko ganahan.,neutral,cebuano
 okay ra.,positive,cebuano
 madara nga maestro.,neutral,cebuano
 seyoso.,neutral,cebuano
-di ko sure.,neutral,cebuano
+di ko sure.,negative,cebuano
 she's a good teacher.,positive,english
 gives complement.,positive,english
 listen to your opinions.,positive,english
@@ -455,13 +454,13 @@ gahi pasabton.,negative,cebuano
 dumb.,negative,english
 nothing i can say.,neutral,english
 fair enough.,neutral,english
-sure.,neutral,english
+sure.,positive,english
 good but lazy.,negative,english
 good nga diko ganahan.,neutral,cebuano
 okay ra.,neutral,cebuano
 madara nga maestro.,neutral,cebuano
 seryoso pero dili suited.,neutral,cebuano
-di ko sure.,neutral,cebuano
+di ko sure.,negative,cebuano
 gamay muhatag ug grado,negative,cebuano
 kamao mutudlo,positive,cebuano
 dili musulod on time,negative,cebuano
