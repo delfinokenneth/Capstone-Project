@@ -18,16 +18,12 @@ import pandas as pd
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-<<<<<<< HEAD
 #for NB
 from sklearn.feature_extraction.text import CountVectorizer
 import pickle
 from sklearn.model_selection import train_test_split
 
 #replace negate and booster tuples in nltk from csv
-=======
-# replace negate and booster tuples in nltk from csv
->>>>>>> main
 vaderconstants = pd.read_csv('vaderconstants.csv')
 newnegate = tuple(vaderconstants['negate'])
 newbooster = vaderconstants.set_index('booster-key')['booster-value'].to_dict()
@@ -54,7 +50,6 @@ from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 import string
 
-<<<<<<< HEAD
 import pdfkit
 
 path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
@@ -75,8 +70,6 @@ wk_options = {
 }
 pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
 
-=======
->>>>>>> main
 app = Flask(__name__)
 
 # this is to allow cross-origin to the backend
@@ -92,7 +85,6 @@ new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 # function to print sentiments 
 # of the sentence.
 def sentiment_scores(sentence):
-<<<<<<< HEAD
     #lowercase the  sentence for uniformity
     sentence = sentence.lower() 
     #words to be remove from the comment
@@ -103,8 +95,6 @@ def sentiment_scores(sentence):
     for word in toRemoveWords:
         sentence = sentence.replace(word,"")
     
-=======
->>>>>>> main
     # Create a SentimentIntensityAnalyzer object.
     sid_obj = SentimentIntensityAnalyzer()
 
@@ -188,7 +178,6 @@ def FinalSentiment(sentence):
 # ------------------------ NAIVE BAYES
 
 
-<<<<<<< HEAD
 #this is to allow cross-origin to the backend
 def preprocess_data(data):
     # Remove package name as it's not relevant
@@ -208,23 +197,11 @@ def NB_Classify(comment):
     data.head()
 
     data = preprocess_data(data)
-=======
-# this is to allow cross-origin to the backend
-
-# reading the dataset
-data = pd.read_csv('Comments.csv')
-print("number of data ", data.shape)
-print(data)
-training = data[['comment', 'label']]
-# convert comments and label dataFrame into list
-list_commentsAndLabel = training.values.tolist()
->>>>>>> main
 
     # Split into training and testing data
     x = data['comment']
     y = data['label']
 
-<<<<<<< HEAD
     x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.15, random_state=45)
 
     # Vectorize text reviews to numbers
@@ -255,27 +232,6 @@ list_commentsAndLabel = training.values.tolist()
         classification ="neutral"
     #if neutral value is greater than both positive and negative value, then com us "-"
     #if(nbneu > nbpos and nbneu > nbneg):
-=======
-
-def NB_Classify(comment):
-    comment_blob = TextBlob(comment, classifier=classifier)
-
-    prob = classifier.prob_classify(comment)
-    print("NAIVE BAYES : ", comment_blob.classify())
-    nbpos = prob.prob("positive") * 100
-    nbneu = prob.prob("neutral") * 100
-    nbneg = prob.prob("negative") * 100
-    print("sentence was rated as ", nbpos, "% Positive")
-    print("sentence was rated as ", nbneu, "% Neutral")
-    print("sentence was rated as ", nbneg, "% Negative")
-
-    if (isNeutralDefaultVal(nbpos, nbneu, nbneg)):
-        nbpos = 0
-        nbneu = 100
-        nbneg = 0
-    # if neutral value is greater than both positive and negative value, then com us "-"
-    # if(nbneu > nbpos and nbneu > nbneg):
->>>>>>> main
 
     # if nb sentiment is  neutral
     if classification == 'neutral':
@@ -291,7 +247,6 @@ def NB_Classify(comment):
 
     return classification + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
-<<<<<<< HEAD
 def isNeutralDefaultVal(pos,neu,neg): 
     neu = round(neu,2)
     pos = round(pos,2)
@@ -299,16 +254,6 @@ def isNeutralDefaultVal(pos,neu,neg):
     defNeu = round(20.276497695852534,2)
     defPos = round(46.85099846390171,2)
     defNeg = round(32.87250384024577,2)
-=======
-
-def isNeutralDefaultVal(pos, neu, neg):
-    neu = round(neu, 2)
-    pos = round(pos, 2)
-    neg = round(neg, 2)
-    defNeu = round(47.844433987356894, 2)
-    defPos = round(31.34820078980048, 2)
-    defNeg = round(20.8073652228426, 2)
->>>>>>> main
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
 
@@ -369,11 +314,9 @@ def sentimentAnalyis():
     result = sentiment_scores(comment.get("comment"))
     return jsonify(result)
 
-
-@app.route("/displaydata", methods=['GET'])
-def displayData():
-    return jsonify(list_commentsAndLabel)
-
+# @app.route("/displaydata", methods=['GET'])
+# def displayData():
+#     return jsonify(list_commentsAndLabel)
 
 # Report Generation
 @app.route("/reportGeneration", methods=["POST", "GET"])
