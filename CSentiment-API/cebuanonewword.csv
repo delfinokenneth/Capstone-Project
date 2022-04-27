@@ -1,4 +1,4 @@
-token,rating,standarddeviation,rawrating
+﻿token,rating,standarddeviation,rawrating
 Hago,1.2,0.4,"[1, 2, 1, 1, 1, 2, 1, 1, 1, 1]"
 hak,1.9,0.7,"[3, 1, 2, 2, 1, 2, 3, 2, 1, 2]"
 kamot,2.2,0.87178,"[2, 2, 1, 3, 2, 3, 4, 1, 2, 2]"
