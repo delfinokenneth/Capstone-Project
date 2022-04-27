@@ -18,7 +18,12 @@ import pandas as pd
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-# replace negate and booster tuples in nltk from csv
+#for NB
+from sklearn.feature_extraction.text import CountVectorizer
+import pickle
+from sklearn.model_selection import train_test_split
+
+#replace negate and booster tuples in nltk from csv
 vaderconstants = pd.read_csv('vaderconstants.csv')
 newnegate = tuple(vaderconstants['negate'])
 newbooster = vaderconstants.set_index('booster-key')['booster-value'].to_dict()
@@ -45,6 +50,26 @@ from textblob import TextBlob
 from textblob.classifiers import NaiveBayesClassifier
 import string
 
+import pdfkit
+
+path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
+config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+wk_options = {
+    'page-size': 'Letter',
+    'orientation': 'landscape',
+    # In order to specify command-line options that are simple toggles
+    # using this dict format, we give the option the value None
+    'no-outline': None,
+    'disable-javascript': None,
+    'encoding': 'UTF-8',
+    'margin-left': '0.1cm',
+    'margin-right': '0.1cm',
+    'margin-top': '0.1cm',
+    'margin-bottom': '0.1cm',
+    'lowquality': None,
+}
+pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
+
 app = Flask(__name__)
 
 # this is to allow cross-origin to the backend
@@ -60,10 +85,23 @@ new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 # function to print sentiments 
 # of the sentence.
 def sentiment_scores(sentence):
+    #lowercase the  sentence for uniformity
+    sentence = sentence.lower() 
+    #words to be remove from the comment
+    toRemoveWords=["miss"]
+    #words to remove from vader dict
+    toRemoveFromVader = ["weakness","weaknesses","no","natural","serious","hahaha","chance","yes","idk"]
+
+    for word in toRemoveWords:
+        sentence = sentence.replace(word,"")
+    
     # Create a SentimentIntensityAnalyzer object.
     sid_obj = SentimentIntensityAnalyzer()
-    sid_obj.lexicon.update(new_vader)
 
+    for word in toRemoveFromVader:
+        sid_obj.lexicon.pop(word)
+
+    sid_obj.lexicon.update(new_vader)
     # polarity_scores method of SentimentIntensityAnalyzer
     # oject gives a sentiment dictionary.
     # which contains pos, neg, neu, and compound scores.
@@ -112,10 +150,11 @@ def sentiment_scores(sentence):
     elif sentiment_dict['compound'] <= -0.05:
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
-    elif (langUsed == "tl" or langUsed == "en" or langUsed == "fr"):
+    elif (langUsed == "tl" or langUsed == "en" or langUsed == "fr" or langUsed == "ro" or sentence == ""):
         return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
     else:
+        print("pass to NB, langused: ", langUsed)
         return NB_Classify(sentence)
 
 
@@ -139,40 +178,63 @@ def FinalSentiment(sentence):
 # ------------------------ NAIVE BAYES
 
 
-# this is to allow cross-origin to the backend
-
-# reading the dataset
-data = pd.read_csv('Comments.csv')
-print("number of data ", data.shape)
-print(data)
-training = data[['comment', 'label']]
-# convert comments and label dataFrame into list
-list_commentsAndLabel = training.values.tolist()
-
-classifier = NaiveBayesClassifier(list_commentsAndLabel)
-
+#this is to allow cross-origin to the backend
+def preprocess_data(data):
+    # Remove package name as it's not relevant
+    data = data.drop('language', axis=1)
+    
+    # Convert text to lowercase
+    try:
+        data['comment'] = data['comment'].str.strip().str.lower()
+    except Exception as e:
+        print(e)
+    return data
 
 def NB_Classify(comment):
-    comment_blob = TextBlob(comment, classifier=classifier)
+    #reading the dataset
+    data = pd.read_csv('Comments.csv')
+    print("number of data ", data.shape)
+    data.head()
 
-    prob = classifier.prob_classify(comment)
-    print("NAIVE BAYES : ", comment_blob.classify())
-    nbpos = prob.prob("positive") * 100
-    nbneu = prob.prob("neutral") * 100
-    nbneg = prob.prob("negative") * 100
-    print("sentence was rated as ", nbpos, "% Positive")
-    print("sentence was rated as ", nbneu, "% Neutral")
-    print("sentence was rated as ", nbneg, "% Negative")
+    data = preprocess_data(data)
 
-    if (isNeutralDefaultVal(nbpos, nbneu, nbneg)):
+    # Split into training and testing data
+    x = data['comment']
+    y = data['label']
+
+    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.15, random_state=45)
+
+    # Vectorize text reviews to numbers
+    vec = CountVectorizer(stop_words='english')
+    x = vec.fit_transform(x).toarray()
+    x_test = vec.transform(x_test).toarray()
+
+    #load the model
+    model = pickle.load(open('NB_Model.pkl', 'rb'))
+    result = model.predict_proba((vec.transform([comment])))
+    classification = model.predict(vec.transform([comment]))[0]
+    print("")
+    print("positive",round(result[0][2],2))
+    print("negative", round(result[0][0],2))
+    print("neutral",round(result[0][1],2))
+    nbpos = result[0][2]*100
+    print(nbpos)
+    nbneu = result[0][1]*100
+    print(nbneu)
+    nbneg = result[0][0]*100
+    print(nbneg)
+    print(classification)
+
+    if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
         nbpos = 0
         nbneu = 100
         nbneg = 0
-    # if neutral value is greater than both positive and negative value, then com us "-"
-    # if(nbneu > nbpos and nbneu > nbneg):
+        classification ="neutral"
+    #if neutral value is greater than both positive and negative value, then com us "-"
+    #if(nbneu > nbpos and nbneu > nbneg):
 
     # if nb sentiment is  neutral
-    if comment_blob.classify() == 'neutral':
+    if classification == 'neutral':
         nbscore = '-'
     # if nb sentiment is positive or negative
     else:
@@ -183,16 +245,15 @@ def NB_Classify(comment):
         nbscore = abs(nbscore) * 5
         nbscore = round(nbscore, 2)
 
-    return comment_blob.classify() + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
+    return classification + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
-
-def isNeutralDefaultVal(pos, neu, neg):
-    neu = round(neu, 2)
-    pos = round(pos, 2)
-    neg = round(neg, 2)
-    defNeu = round(47.844433987356894, 2)
-    defPos = round(31.34820078980048, 2)
-    defNeg = round(20.8073652228426, 2)
+def isNeutralDefaultVal(pos,neu,neg): 
+    neu = round(neu,2)
+    pos = round(pos,2)
+    neg = round(neg,2)
+    defNeu = round(20.276497695852534,2)
+    defPos = round(46.85099846390171,2)
+    defNeg = round(32.87250384024577,2)
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
 
@@ -253,11 +314,9 @@ def sentimentAnalyis():
     result = sentiment_scores(comment.get("comment"))
     return jsonify(result)
 
-
-@app.route("/displaydata", methods=['GET'])
-def displayData():
-    return jsonify(list_commentsAndLabel)
-
+# @app.route("/displaydata", methods=['GET'])
+# def displayData():
+#     return jsonify(list_commentsAndLabel)
 
 # Report Generation
 @app.route("/reportGeneration", methods=["POST", "GET"])

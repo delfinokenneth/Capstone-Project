@@ -218,6 +218,6 @@ def getPosNegNeuAccuracy():
     print("negative ", countNegatives, " correct neg guess ", neg_correct)
     print("neutral ", countNeutral, " correct neu guess ", neu_correct)
 
-getAccuracy()
-getLanguageAccuracy()
-getPosNegNeuAccuracy()
+#getAccuracy()
+#getLanguageAccuracy()
+#getPosNegNeuAccuracy()
