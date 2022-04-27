@@ -116,17 +116,9 @@ def sentiment_scores(sentence):
     vdpos = sentiment_dict['pos'] * 100
     vdneu = sentiment_dict['neu'] * 100
     vdneg = sentiment_dict['neg'] * 100
-    print("word: ", sentence)
-    print("Overall sentiment dictionary is : ", sentiment_dict)
-    print("----------------------------")
-    print("VADER : ", sentiment_output)
-    print("sentence was rated as ", vdpos, "% Positive")
-    print("sentence was rated as ", vdneu, "% Neutral")
-    print("sentence was rated as ", vdneg, "% Negative")
-    print("----------------------------")
 
     # if vd sentiment is not positive or negative
-    if sentiment_dict['compound'] >= 0.05 and sentiment_dict['compound'] <= - 0.05:
+    if  not sentiment_dict['compound'] >= 0.05 and not sentiment_dict['compound'] <= -0.05:
         vdscore = '-'
     # if vd sentiment is positive or negative
     else:
@@ -136,6 +128,17 @@ def sentiment_scores(sentence):
         vdscore = vdscore / 100
         vdscore = abs(vdscore) * 5
         vdscore = round(vdscore, 2)
+
+    print("word: ", sentence)
+    print("Overall sentiment dictionary is : ", sentiment_dict)
+    print("----------------------------")
+    print("VADER : ", sentiment_output, "|", vdscore)
+    print("sentence was rated as ", vdpos, "% Positive")
+    print("sentence was rated as ", vdneu, "% Neutral")
+    print("sentence was rated as ", vdneg, "% Negative")
+    print("----------------------------")
+
+
 
     try:
         langUsed = detect(sentence)
@@ -154,7 +157,7 @@ def sentiment_scores(sentence):
         return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
     else:
-        print("pass to NB, langused: ", langUsed)
+        #print("pass to NB, langused: ", langUsed)
         return NB_Classify(sentence)
 
 
@@ -193,7 +196,7 @@ def preprocess_data(data):
 def NB_Classify(comment):
     #reading the dataset
     data = pd.read_csv('Comments.csv')
-    print("number of data ", data.shape)
+    #print("number of data ", data.shape)
     data.head()
 
     data = preprocess_data(data)
@@ -213,25 +216,10 @@ def NB_Classify(comment):
     model = pickle.load(open('NB_Model.pkl', 'rb'))
     result = model.predict_proba((vec.transform([comment])))
     classification = model.predict(vec.transform([comment]))[0]
-    print("")
-    print("positive",round(result[0][2],2))
-    print("negative", round(result[0][0],2))
-    print("neutral",round(result[0][1],2))
-    nbpos = result[0][2]*100
-    print(nbpos)
-    nbneu = result[0][1]*100
-    print(nbneu)
-    nbneg = result[0][0]*100
-    print(nbneg)
-    print(classification)
 
-    if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
-        nbpos = 0
-        nbneu = 100
-        nbneg = 0
-        classification ="neutral"
-    #if neutral value is greater than both positive and negative value, then com us "-"
-    #if(nbneu > nbpos and nbneu > nbneg):
+    nbpos = result[0][2]*100
+    nbneu = result[0][1]*100
+    nbneg = result[0][0]*100
 
     # if nb sentiment is  neutral
     if classification == 'neutral':
@@ -245,15 +233,31 @@ def NB_Classify(comment):
         nbscore = abs(nbscore) * 5
         nbscore = round(nbscore, 2)
 
+    print("NAIVE BAYES : ", classification, "|", nbscore)
+    print("sentence was rated as ", nbpos, "% Positive")
+    print("sentence was rated as ", nbneu, "% Neutral")
+    print("sentence was rated as ", nbneg, "% Negative")
+    print("----------------------------")
+
+    if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
+        nbpos = 0
+        nbneu = 100
+        nbneg = 0
+        classification ="neutral"
+    #if neutral value is greater than both positive and negative value, then com us "-"
+    #if(nbneu > nbpos and nbneu > nbneg):
+
+
+
     return classification + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
 def isNeutralDefaultVal(pos,neu,neg): 
     neu = round(neu,2)
     pos = round(pos,2)
     neg = round(neg,2)
-    defNeu = round(20.276497695852534,2)
-    defPos = round(46.85099846390171,2)
-    defNeg = round(32.87250384024577,2)
+    defPos = round(47.311827956989234,2)
+    defNeu = round(19.508448540706606,2)
+    defNeg = round(33.179723502304164,2)
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
 
