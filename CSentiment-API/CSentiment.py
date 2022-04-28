@@ -80,7 +80,14 @@ newvaderdata = pd.read_csv('cebuanonewword.csv')
 print("number of data ", newvaderdata.shape)
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 
-
+#check if the language used is cebuano or english
+def isEnglishOrCebuano(langUsed):
+    if (langUsed == "tl" or 
+        langUsed == "en" or
+        langUsed == "fr" or
+        langUsed == "ro" or
+        langUsed == "so"):
+        return True
 # ALGORITHM 1
 # function to print sentiments 
 # of the sentence.
@@ -150,7 +157,7 @@ def sentiment_scores(sentence):
     elif sentiment_dict['compound'] <= -0.05:
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
-    elif (langUsed == "tl" or langUsed == "en" or langUsed == "fr" or langUsed == "ro" or sentence == ""):
+    elif (isEnglishOrCebuano(langUsed) or sentence == ""):
         return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
     else:
@@ -251,9 +258,9 @@ def isNeutralDefaultVal(pos,neu,neg):
     neu = round(neu,2)
     pos = round(pos,2)
     neg = round(neg,2)
-    defNeu = round(20.276497695852534,2)
-    defPos = round(46.85099846390171,2)
-    defNeg = round(32.87250384024577,2)
+    defNeu = round(18.89400921658985,2)
+    defPos = round(47.926267281105986,2)
+    defNeg = round(33.17972350230416,2)
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
 
