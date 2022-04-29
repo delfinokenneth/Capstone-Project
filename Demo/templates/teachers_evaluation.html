@@ -205,7 +205,7 @@
 								{% if teacher[0] != 0 %}
 									<OPTION value={{teacher[0]}}>{{teacher[2]}}, {{teacher[1]}}</OPTION>
 								{% else %}
-									<OPTION value={{teacher[0]}}>{{teacher[1]}}</OPTION>
+									<OPTION value = "0"> All </OPTION>
 								{% endif%}	
 							{% endfor %}
 						</SELECT>
@@ -216,7 +216,11 @@
 						<b> Subject : </b> 
 						<SELECT name="teachers" id="selectSubject">
 							{% for subject in subjects %}
-								<OPTION value={{subject[0]}}>{{subject[0]}}-{{subject[2]}}</OPTION>
+								{% if subject[0] == 0 %}
+									<OPTION value="0">All</OPTION>
+								{% else %}
+									<OPTION value={{subject[0]}}>{{subject[0]}}-{{subject[2]}}</OPTION>
+								{% endif %}
 							{% endfor %}
 						</SELECT>
 					</td>
