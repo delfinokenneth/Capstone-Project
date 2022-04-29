@@ -1,6 +1,5 @@
-# imports for flask
-# import SentimentIntensityAnalyzer class
 
+# IMPORTS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 # noinspection PyUnresolvedReferences
 from xml.dom.minidom import Document
 # noinspection PyUnresolvedReferences
@@ -9,6 +8,8 @@ from h11 import Data
 
 # for language detection
 from langdetect import detect
+#for pdf report generation
+import pdfkit
 
 import nltk
 from flask import Flask, request, json, jsonify, make_response, render_template
@@ -18,42 +19,41 @@ import pandas as pd
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-#for NB
+#this imports are for the NaiveBayes Model
 from sklearn.feature_extraction.text import CountVectorizer
 import pickle
 from sklearn.model_selection import train_test_split
+#IMPORTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-#replace negate and booster tuples in nltk from csv
+# note: TO FURTHER UNDERSTAND THIS SECTION PLEASE OPEN THE vaderconstants.csv and make sure to check the column names
+# reads the vaderconstants.csv file (naa diri ang custom negate and boosters nga word)
 vaderconstants = pd.read_csv('vaderconstants.csv')
+#get the negate words from vaderconstants
 newnegate = tuple(vaderconstants['negate'])
+#get the booster-key(word) and the booster-value from vaderconstants
 newbooster = vaderconstants.set_index('booster-key')['booster-value'].to_dict()
+# note: "nltk" mao ni gigamit sa pagkuhas scores naa diri ang bag of words, negate and booster
+#set nltk.NEGATE with the newnegate values
 nltk.sentiment.vader.VaderConstants.NEGATE = newnegate
+#set nltk.BOOSTER with the newbooster values
 nltk.sentiment.vader.VaderConstants.BOOSTER_DICT = newbooster
 
 # wkhtmltopdf
 import pdfkit
 import os, sys, subprocess, platform
 
-# if not in deployment
+# note: "wkhtmltopdf" exe file. mao ni gamit para pag print sa pdf file
+# if not in deployment (meaning sa local ra gipadagan,  mao ni nga path gamiton para sa wkhtmltopdf)
 if platform.system() == "Windows":
     config = pdfkit.configuration(
         wkhtmltopdf=os.environ.get('WKHTMLTOPDF_BINARY', 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'))
-# if in deployment
+# if in deployment nag run (if deployed na mao ni nga path gamiton para sa wkhtmltopdf)
 else:
     os.environ['PATH'] += os.pathsep + os.path.dirname(sys.executable)
     WKHTMLTOPDF_CMD = subprocess.Popen(['which', os.environ.get('WKHTMLTOPDF_BINARY', 'wkhtmltopdf')],
                                        stdout=subprocess.PIPE).communicate()[0].strip()
     config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
-# Naive bayes imports
-from textblob import TextBlob
-from textblob.classifiers import NaiveBayesClassifier
-import string
-
-import pdfkit
-
-path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 wk_options = {
     'page-size': 'Letter',
     'orientation': 'landscape',
@@ -75,12 +75,17 @@ app = Flask(__name__)
 # this is to allow cross-origin to the backend
 cors = CORS(app)
 
-# get cebuano token and sentiment rating from csv
+# note: TO FURTHER UNDERSTAND THIS SECTION OPEN THHE cebuanonewword.csv
+# get cebuano words and its weight/values -> vaders
 newvaderdata = pd.read_csv('cebuanonewword.csv')
+# this is to print the number of rows and columns sa cebuanonewword.csv
 print("number of data ", newvaderdata.shape)
+# get the token(word) and rating(weight/value) only and store to new_vader nga variable
+# new_vader variable will be used to update the nltk.VADER later
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 
 #check if the language used is cebuano or english
+#disregard other language code basta the thought here is to check either english or cebuano ang comment
 def isEnglishOrCebuano(langUsed):
     if (langUsed == "tl" or 
         langUsed == "en" or
@@ -88,15 +93,17 @@ def isEnglishOrCebuano(langUsed):
         langUsed == "ro" or
         langUsed == "so"):
         return True
+
 # ALGORITHM 1
 # function to print sentiments 
 # of the sentence.
 def sentiment_scores(sentence):
     #lowercase the  sentence for uniformity
     sentence = sentence.lower() 
-    #words to be remove from the comment
+    #words to be remove from the comment because it can cause wrong result
     toRemoveWords=["miss"]
     #words to remove from vader dict
+    #some words/vaders are not applicable for teacher's evaluation 
     toRemoveFromVader = ["weakness","weaknesses","no","natural","serious","hahaha","chance","yes","idk"]
 
     for word in toRemoveWords:
@@ -105,6 +112,7 @@ def sentiment_scores(sentence):
     # Create a SentimentIntensityAnalyzer object.
     sid_obj = SentimentIntensityAnalyzer()
 
+    #each word naa sa toRemoveFromVader which is declared above is i remove siya from vader nga dictionary
     for word in toRemoveFromVader:
         sid_obj.lexicon.pop(word)
 
