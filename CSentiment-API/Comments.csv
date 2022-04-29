@@ -453,13 +453,13 @@ di mo discuss og maayo.,negative,cebuano
 gahi pasabton.,negative,cebuano
 dumb.,negative,english
 nothing i can say.,neutral,english
-fair enough.,neutral,english
+fair enough.,positive,english
 sure.,positive,english
 good but lazy.,negative,english
 good nga diko ganahan.,neutral,cebuano
-okay ra.,neutral,cebuano
+okay ra.,positive,cebuano
 madara nga maestro.,neutral,cebuano
-seryoso pero dili suited.,neutral,cebuano
+seryoso pero dili suited.,negative,cebuano
 di ko sure.,negative,cebuano
 gamay muhatag ug grado,negative,cebuano
 kamao mutudlo,positive,cebuano
@@ -537,8 +537,8 @@ not confident,negative,english
 sakto ra mo hatag grado,positive,cebuano
 sakto ra gud,positive,cebuano
 sakto mo discuss,positive,cebuano
-kalma nga maestra,neutral,cebuano
-kalma mo tudlo,neutral,cebuano
+kalma nga maestra,positive,cebuano
+kalma mo tudlo,positive,cebuano
 just right,neutral,english
 average,neutral,english
 moderate,neutral,english
@@ -555,7 +555,7 @@ approachable,positive,english
 very kind,positive,english
 very humble,positive,english
 dili mo tudlo,negative,cebuano
-dili mo tudlo sa iyahang students,negative,cebuano
+dili motudlo sa iyahang students,negative,cebuano
 dili klaro mo tudlo,negative,cebuano
 does not teach,negative,english
 does not know how to teach,negative,english
@@ -566,7 +566,7 @@ masabtan ra,positive,cebuano
 ok ra jud,positive,cebuano
 oki,neutral,cebuano
 k,neutral,english
-unbiased,neutral,english
+unbiased,positive,english
 alright,positive,english
 acceptable,positive,english
 fine,positive,english
@@ -641,8 +641,8 @@ nindut siya kay musabay sa iyang estudyante,positive,cebuano
 dagko mohatag ug grades si miss naa pajuy plus points,positive,cebuano
 she nice,positive,english
 chillin',neutral,english
-kalma,neutral,cebuano
-okay raman siya way problema,neutral,cebuano
+kalma,positive,cebuano
+okay raman siya way problema,positive,cebuano
 okey keyooo,neutral,cebuano
 bati segi lag pa answer,negative,cebuano
 walay discussay,negative,cebuano
@@ -667,7 +667,7 @@ I have no problems with how he teaches us,positive,english
 just fine as an overall teacher,positive,english
 I have no concerns,neutral,english
 I have undecided remarks,negative,english
-"fair enough, I have no words",neutral,english
+"fair enough, I have no words",positive,english
 ok ra na pagka maestro,positive,cebuano
 madala rag smile,positive,cebuano
 wala ra koy problema nya mutudlo,positive,cebuano
@@ -750,7 +750,7 @@ ganahan ko ni miss mutudlo,positive,cebuano
 maayo mutudlo,positive,cebuano
 dili maayo mutudlo,negative,cebuano
 dili maayo,negative,cebuano
-kahibalo mutudlo,negative,cebuano
+kahibalo mutudlo,positive,cebuano
 kahibaw mutudlo,positive,cebuano
 kudos,positive,cebuano
 kahibaw mutudlo,positive,cebuano
