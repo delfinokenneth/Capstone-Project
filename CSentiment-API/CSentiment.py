@@ -1,14 +1,7 @@
-# imports for flask
-# import SentimentIntensityAnalyzer class
-
-# noinspection PyUnresolvedReferences
-from xml.dom.minidom import Document
-# noinspection PyUnresolvedReferences
-from xml.dom.minidom import Element
-from h11 import Data
-
 # for language detection
 from langdetect import detect
+#for pdf report generation
+import pdfkit
 
 import nltk
 from flask import Flask, request, json, jsonify, make_response, render_template
@@ -18,42 +11,34 @@ import pandas as pd
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-#for NB
+
 from sklearn.feature_extraction.text import CountVectorizer
 import pickle
 from sklearn.model_selection import train_test_split
 
-#replace negate and booster tuples in nltk from csv
 vaderconstants = pd.read_csv('vaderconstants.csv')
 newnegate = tuple(vaderconstants['negate'])
 newbooster = vaderconstants.set_index('booster-key')['booster-value'].to_dict()
 nltk.sentiment.vader.VaderConstants.NEGATE = newnegate
+#set nltk.BOOSTER with the newbooster values
 nltk.sentiment.vader.VaderConstants.BOOSTER_DICT = newbooster
 
 # wkhtmltopdf
 import pdfkit
 import os, sys, subprocess, platform
 
-# if not in deployment
+# note: "wkhtmltopdf" exe file. mao ni gamit para pag print sa pdf file
+# if not in deployment (meaning sa local ra gipadagan,  mao ni nga path gamiton para sa wkhtmltopdf)
 if platform.system() == "Windows":
     config = pdfkit.configuration(
         wkhtmltopdf=os.environ.get('WKHTMLTOPDF_BINARY', 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'))
-# if in deployment
+# if in deployment nag run (if deployed na mao ni nga path gamiton para sa wkhtmltopdf)
 else:
     os.environ['PATH'] += os.pathsep + os.path.dirname(sys.executable)
     WKHTMLTOPDF_CMD = subprocess.Popen(['which', os.environ.get('WKHTMLTOPDF_BINARY', 'wkhtmltopdf')],
                                        stdout=subprocess.PIPE).communicate()[0].strip()
     config = pdfkit.configuration(wkhtmltopdf=WKHTMLTOPDF_CMD)
 
-# Naive bayes imports
-from textblob import TextBlob
-from textblob.classifiers import NaiveBayesClassifier
-import string
-
-import pdfkit
-
-path_wkhtmltopdf = 'C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe'
-config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
 wk_options = {
     'page-size': 'Letter',
     'orientation': 'landscape',
@@ -72,15 +57,12 @@ pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
 
 app = Flask(__name__)
 
-# this is to allow cross-origin to the backend
 cors = CORS(app)
 
-# get cebuano token and sentiment rating from csv
 newvaderdata = pd.read_csv('cebuanonewword.csv')
 print("number of data ", newvaderdata.shape)
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 
-#check if the language used is cebuano or english
 def isEnglishOrCebuano(langUsed):
     if (langUsed == "tl" or 
         langUsed == "en" or
@@ -88,15 +70,17 @@ def isEnglishOrCebuano(langUsed):
         langUsed == "ro" or
         langUsed == "so"):
         return True
+
 # ALGORITHM 1
 # function to print sentiments 
 # of the sentence.
 def sentiment_scores(sentence):
     #lowercase the  sentence for uniformity
     sentence = sentence.lower() 
-    #words to be remove from the comment
+    #words to be remove from the comment because it can cause wrong result
     toRemoveWords=["miss"]
     #words to remove from vader dict
+    #some words/vaders are not applicable for teacher's evaluation 
     toRemoveFromVader = ["weakness","weaknesses","no","natural","serious","hahaha","chance","yes","idk"]
 
     for word in toRemoveWords:
@@ -109,9 +93,7 @@ def sentiment_scores(sentence):
         sid_obj.lexicon.pop(word)
 
     sid_obj.lexicon.update(new_vader)
-    # polarity_scores method of SentimentIntensityAnalyzer
-    # oject gives a sentiment dictionary.
-    # which contains pos, neg, neu, and compound scores.
+
     sentiment_dict = sid_obj.polarity_scores(sentence)
     if sentiment_dict['compound'] >= 0.05:
         sentiment_output = "positive"
@@ -145,8 +127,6 @@ def sentiment_scores(sentence):
     print("sentence was rated as ", vdneg, "% Negative")
     print("----------------------------")
 
-
-
     try:
         langUsed = detect(sentence)
     except Exception as e:
@@ -168,26 +148,7 @@ def sentiment_scores(sentence):
         return NB_Classify(sentence)
 
 
-def FinalSentiment(sentence):
-    # Create a SentimentIntensityAnalyzer object.
-    sid_obj = SentimentIntensityAnalyzer()
-    sid_obj.lexicon.update(new_vader)
-    sentiment_dict = sid_obj.polarity_scores(sentence)
-
-    # decide sentiment as positive, negative and neutral
-    if sentiment_dict['compound'] >= 0.05:
-        return "positive"
-
-    elif sentiment_dict['compound'] <= - 0.05:
-        return "negative"
-
-    else:
-        return NB_Classify(sentence)
-
-
 # ------------------------ NAIVE BAYES
-
-
 #this is to allow cross-origin to the backend
 def preprocess_data(data):
     # Remove package name as it's not relevant
@@ -348,7 +309,7 @@ def generateReport():
 
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'inline; filename=summary.pdf'
+    response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
 
     return response
 
