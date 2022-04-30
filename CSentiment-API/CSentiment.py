@@ -194,26 +194,7 @@ def sentiment_scores(sentence):
         return NB_Classify(sentence)
 
 
-def FinalSentiment(sentence):
-    # Create a SentimentIntensityAnalyzer object.
-    sid_obj = SentimentIntensityAnalyzer()
-    sid_obj.lexicon.update(new_vader)
-    sentiment_dict = sid_obj.polarity_scores(sentence)
-
-    # decide sentiment as positive, negative and neutral
-    if sentiment_dict['compound'] >= 0.05:
-        return "positive"
-
-    elif sentiment_dict['compound'] <= - 0.05:
-        return "negative"
-
-    else:
-        return NB_Classify(sentence)
-
-
 # ------------------------ NAIVE BAYES
-
-
 #this is to allow cross-origin to the backend
 def preprocess_data(data):
     # Remove package name as it's not relevant
