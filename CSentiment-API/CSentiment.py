@@ -1,11 +1,3 @@
-
-# IMPORTS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# noinspection PyUnresolvedReferences
-from xml.dom.minidom import Document
-# noinspection PyUnresolvedReferences
-from xml.dom.minidom import Element
-from h11 import Data
-
 # for language detection
 from langdetect import detect
 #for pdf report generation
@@ -19,21 +11,14 @@ import pandas as pd
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-#this imports are for the NaiveBayes Model
+
 from sklearn.feature_extraction.text import CountVectorizer
 import pickle
 from sklearn.model_selection import train_test_split
-#IMPORTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# note: TO FURTHER UNDERSTAND THIS SECTION PLEASE OPEN THE vaderconstants.csv and make sure to check the column names
-# reads the vaderconstants.csv file (naa diri ang custom negate and boosters nga word)
 vaderconstants = pd.read_csv('vaderconstants.csv')
-#get the negate words from vaderconstants
 newnegate = tuple(vaderconstants['negate'])
-#get the booster-key(word) and the booster-value from vaderconstants
 newbooster = vaderconstants.set_index('booster-key')['booster-value'].to_dict()
-# note: "nltk" mao ni gigamit sa pagkuhas scores naa diri ang bag of words, negate and booster
-#set nltk.NEGATE with the newnegate values
 nltk.sentiment.vader.VaderConstants.NEGATE = newnegate
 #set nltk.BOOSTER with the newbooster values
 nltk.sentiment.vader.VaderConstants.BOOSTER_DICT = newbooster
@@ -72,20 +57,12 @@ pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
 
 app = Flask(__name__)
 
-# this is to allow cross-origin to the backend
 cors = CORS(app)
 
-# note: TO FURTHER UNDERSTAND THIS SECTION OPEN THHE cebuanonewword.csv
-# get cebuano words and its weight/values -> vaders
 newvaderdata = pd.read_csv('cebuanonewword.csv')
-# this is to print the number of rows and columns sa cebuanonewword.csv
 print("number of data ", newvaderdata.shape)
-# get the token(word) and rating(weight/value) only and store to new_vader nga variable
-# new_vader variable will be used to update the nltk.VADER later
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 
-#check if the language used is cebuano or english
-#disregard other language code basta the thought here is to check either english or cebuano ang comment
 def isEnglishOrCebuano(langUsed):
     if (langUsed == "tl" or 
         langUsed == "en" or
@@ -112,14 +89,11 @@ def sentiment_scores(sentence):
     # Create a SentimentIntensityAnalyzer object.
     sid_obj = SentimentIntensityAnalyzer()
 
-    #each word naa sa toRemoveFromVader which is declared above is i remove siya from vader nga dictionary
     for word in toRemoveFromVader:
         sid_obj.lexicon.pop(word)
 
     sid_obj.lexicon.update(new_vader)
-    # polarity_scores method of SentimentIntensityAnalyzer
-    # oject gives a sentiment dictionary.
-    # which contains pos, neg, neu, and compound scores.
+
     sentiment_dict = sid_obj.polarity_scores(sentence)
     if sentiment_dict['compound'] >= 0.05:
         sentiment_output = "positive"
@@ -153,8 +127,6 @@ def sentiment_scores(sentence):
     print("sentence was rated as ", vdneg, "% Negative")
     print("----------------------------")
 
-
-
     try:
         langUsed = detect(sentence)
     except Exception as e:
@@ -176,26 +148,7 @@ def sentiment_scores(sentence):
         return NB_Classify(sentence)
 
 
-def FinalSentiment(sentence):
-    # Create a SentimentIntensityAnalyzer object.
-    sid_obj = SentimentIntensityAnalyzer()
-    sid_obj.lexicon.update(new_vader)
-    sentiment_dict = sid_obj.polarity_scores(sentence)
-
-    # decide sentiment as positive, negative and neutral
-    if sentiment_dict['compound'] >= 0.05:
-        return "positive"
-
-    elif sentiment_dict['compound'] <= - 0.05:
-        return "negative"
-
-    else:
-        return NB_Classify(sentence)
-
-
 # ------------------------ NAIVE BAYES
-
-
 #this is to allow cross-origin to the backend
 def preprocess_data(data):
     # Remove package name as it's not relevant
