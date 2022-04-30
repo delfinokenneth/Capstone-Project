@@ -106,36 +106,54 @@ def sentiment_scores(sentence):
     #some words/vaders are not applicable for teacher's evaluation 
     toRemoveFromVader = ["weakness","weaknesses","no","natural","serious","hahaha","chance","yes","idk"]
 
+    #for each word naa toRemoveWords nga variable iyang i remove sa sentence
     for word in toRemoveWords:
         sentence = sentence.replace(word,"")
     
     # Create a SentimentIntensityAnalyzer object.
     sid_obj = SentimentIntensityAnalyzer()
 
-    #each word naa sa toRemoveFromVader which is declared above is i remove siya from vader nga dictionary
+    #each word naa sa toRemoveFromVader which is declared above is i remove siya from NLTK.vader nga dictionary
     for word in toRemoveFromVader:
         sid_obj.lexicon.pop(word)
 
+    #new_vader? naa diri ang cebuanonewwords nato nga vader.
+    #then this line is to add atong customize vader sa nltk nga vader
     sid_obj.lexicon.update(new_vader)
+
     # polarity_scores method of SentimentIntensityAnalyzer
     # oject gives a sentiment dictionary.
     # which contains pos, neg, neu, and compound scores.
     sentiment_dict = sid_obj.polarity_scores(sentence)
+
+    #if compound score is greater than or equal to 0.05 -> sentiment is positive
     if sentiment_dict['compound'] >= 0.05:
         sentiment_output = "positive"
+    #if compound score is less than or equal to -0.05 -> sentiment is negative
     elif sentiment_dict['compound'] <= -0.05:
         sentiment_output = "negative"
+    #else sentiment is neutral
     else:
         sentiment_output = "neutral"
 
+    #in default, sentiment scores values kay in between 0 -1
+    # example ------------------
+    # pos = 0.19091231829
+    # neg = 0.29091231829
+    # neu = 0.39091231829
+    # --------------------------
+    #so times 100 to make it something like this -> 19.09... which is more preferable to display as percentage
     vdpos = sentiment_dict['pos'] * 100
     vdneu = sentiment_dict['neu'] * 100
     vdneg = sentiment_dict['neg'] * 100
 
     # if vd sentiment is not positive or negative
+    # if vd is neutral, score is null or presented as "-"
     if  not sentiment_dict['compound'] >= 0.05 and not sentiment_dict['compound'] <= -0.05:
         vdscore = '-'
+
     # if vd sentiment is positive or negative
+    # this is the formula for score
     else:
         vdscore = vdpos + -abs(vdneg)
         vdscore = vdscore + 100
@@ -144,6 +162,7 @@ def sentiment_scores(sentence):
         vdscore = abs(vdscore) * 5
         vdscore = round(vdscore, 2)
 
+    #this part is more on pag print sa console nga format
     print("word: ", sentence)
     print("Overall sentiment dictionary is : ", sentiment_dict)
     print("----------------------------")
@@ -153,21 +172,20 @@ def sentiment_scores(sentence):
     print("sentence was rated as ", vdneg, "% Negative")
     print("----------------------------")
 
-
-
+    # detect the language used in the sentence
     try:
         langUsed = detect(sentence)
     except Exception as e:
         langUsed = ""
-    # detect language used
 
     # decide sentiment as positive, negative and neutral
+    #if compound score is greater than or equal to 0.05 -> return positive and its pos,neg,neu, score values
     if sentiment_dict['compound'] >= 0.05:
         return "positive" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
-
+    #if compound score is less than or equal to -0.05 -> return  negative and its pos,neg,neu, score values
     elif sentiment_dict['compound'] <= -0.05:
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
-
+    #if the sentence is cebuano or english or sentence is empty return neutral and its pos,neg,neu, score values
     elif (isEnglishOrCebuano(langUsed) or sentence == ""):
         return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
