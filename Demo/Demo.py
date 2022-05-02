@@ -87,14 +87,15 @@ def getNumberOfRespondents(teacher, subject):
         if ((teacher != "0" or teacher != "all") and (subject == "0" or subject == "all")):
             sql = "SELECT count(*) from evaluation WHERE idTeacher = %s"
             val = (teacher,)
+        # else (if there is no teacher selected and a subject is selected)
+        elif ((teacher == "0" or teacher == "all") and (subject != "0" or subject != "all")):
+            sql = "SELECT count(*) from evaluation WHERE edpCode = %s"
+            val = (subject,)
         # if a teacher is selected, and a subject is selected (teacher + subject)
         elif ((teacher != "0" or teacher != "all") and (subject != "0" or subject != "all")):
             sql = "SELECT count(*) from evaluation WHERE idTeacher = %s and edpCode = %s"
             val = (teacher, subject,)
-        # else (if there is no teacher selected and a subject is selected)
-        else:
-            sql = "SELECT count(*) from evaluation WHERE edpCode = %s"
-            val = (subject,)
+
 
         cur.execute(sql, val)
         result = cur.fetchall()
