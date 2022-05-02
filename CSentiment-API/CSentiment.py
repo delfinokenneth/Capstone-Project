@@ -188,16 +188,18 @@ def sentiment_scores(sentence):
     #if the sentence is cebuano or english or sentence is empty return neutral and its pos,neg,neu, score values
     elif (isEnglishOrCebuano(langUsed) or sentence == ""):
         return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
-
+    #else pass to Naive Bayes Model
     else:
-        #print("pass to NB, langused: ", langUsed)
         return NB_Classify(sentence)
 
 
 # ------------------------ NAIVE BAYES
-#this is to allow cross-origin to the backend
+
+#Pre-process data: remove unnecessary data from the dataset like the "language" column
+#data was converted into lowercase for uniformity
 def preprocess_data(data):
-    # Remove package name as it's not relevant
+    #Remove the column language from comment.csv since it will not be used
+    #axis = 1 : 1 means 'columns', it is to specify that "language" is a "column"
     data = data.drop('language', axis=1)
     
     # Convert text to lowercase
@@ -205,40 +207,63 @@ def preprocess_data(data):
         data['comment'] = data['comment'].str.strip().str.lower()
     except Exception as e:
         print(e)
+
+    #return the data after removing the language column and converting it into lowercase     
     return data
 
+#Classifying the comment using the NaiveBayes Model
 def NB_Classify(comment):
+
     #reading the dataset
     data = pd.read_csv('Comments.csv')
-    #print("number of data ", data.shape)
+
+    #print the head of the data to check if it was read successfully
     data.head()
 
+    #preprocess the data
+    # TO FURTHER UNDERSTAND THIS LINE, CHECK THE preprocess_data FUNCTION
     data = preprocess_data(data)
 
     # Split into training and testing data
+    # x = the data under the comment columns
     x = data['comment']
+    # y = the data under the label columns
     y = data['label']
 
-    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.15, random_state=45)
+    #this is to split the data 
+    # test size was 30% so training size was 70%
+    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.30, random_state=50)
 
-    # Vectorize text reviews to numbers
+    # TRAINIG PART >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    # Vectorize text reviews to numbers (converting text into numbers)
+    # stop_words = words that carry a litter meaning so it is ignored or removed
     vec = CountVectorizer(stop_words='english')
     x = vec.fit_transform(x).toarray()
     x_test = vec.transform(x_test).toarray()
-
+    # TRAINING PART <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+    
     #load the model
     model = pickle.load(open('NB_Model.pkl', 'rb'))
+    # predict the comment using the model
+    # get the proba values: numerical values for pos, neu, and neg
     result = model.predict_proba((vec.transform([comment])))
+    #get the classification: "positve", "neutral", "negative"
     classification = model.predict(vec.transform([comment]))[0]
 
+    #get the numerical values for pos,neu,neg the multiply by 100
+    #sample: values returned are 0.4887 so multiply 100 to make it 48.87.
     nbpos = result[0][2]*100
     nbneu = result[0][1]*100
     nbneg = result[0][0]*100
 
     # if nb sentiment is  neutral
     if classification == 'neutral':
+        # score is null and represented as '-' instead of returning 2.5 value
+        # note: you can ask kenneth or bryan for the explaination in this line
         nbscore = '-'
-    # if nb sentiment is positive or negative
+
+    # if nb sentiment is positive or negative\
+    # this is the formula for score
     else:
         nbscore = nbpos + -abs(nbneg)
         nbscore = nbscore + 100
@@ -247,24 +272,27 @@ def NB_Classify(comment):
         nbscore = abs(nbscore) * 5
         nbscore = round(nbscore, 2)
 
+    #this part is more on pag print sa console nga format
     print("NAIVE BAYES : ", classification, "|", nbscore)
     print("sentence was rated as ", nbpos, "% Positive")
     print("sentence was rated as ", nbneu, "% Neutral")
     print("sentence was rated as ", nbneg, "% Negative")
     print("----------------------------")
 
+    #if returned values are default values of Neutral, pos,neu,neg numerical values and classification should be values below
+    # TO UNDERSTAND MORE IN THIS LINE, CHECK isNeutralDefaultVal FUNCTION
+    # note: if explaination is need just ask bryan
     if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
         nbpos = 0
         nbneu = 100
         nbneg = 0
         classification ="neutral"
-    #if neutral value is greater than both positive and negative value, then com us "-"
-    #if(nbneu > nbpos and nbneu > nbneg):
 
-
-
+    #return the values
     return classification + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
+#this method is to check if the values return are the default values of Neutral
+# note: if explaination is need just ask bryan
 def isNeutralDefaultVal(pos,neu,neg): 
     neu = round(neu,2)
     pos = round(pos,2)
@@ -274,12 +302,16 @@ def isNeutralDefaultVal(pos,neu,neg):
     defPos = round(48.540706605222745,2)
     defNeg = round(33.02611367127495,2)
 
+    #if verified that it is a default value, return True else False
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
+    else:
+        return False
 
 
 # ------------------------------------------------------------------------------------------ END FOR NAIVE BAYES
 # convert 2d list into dictionary
+# used for report
 def toDict(data):
     labels = [row[0] for row in data]
     values = [row[1] for row in data]
@@ -291,6 +323,7 @@ def toDict(data):
 
 
 # creating list for the labels in average chart
+# used for report
 def averageChartLabel():
     labels = []
     labels.append("Section 1")
@@ -304,6 +337,7 @@ def averageChartLabel():
 
 
 # creating list for pos,neg,neu averages
+# used for report
 def posNegNeuAve(dataDict):
     values = []
     values.append(dataDict['posAve'])
@@ -314,6 +348,7 @@ def posNegNeuAve(dataDict):
 
 
 # creating list for the labels in average chart
+# used for report
 def averageChartValues(dataDict):
     values = []
     values.append(dataDict['Section1'])
@@ -325,38 +360,63 @@ def averageChartValues(dataDict):
 
     return values
 
-
 # building API
+# this is the api for getSentiment (THIS IS THE ENDPOINT OF OUR ANALYZER)
+
 @app.route("/getSentiment", methods=['POST'])
 def sentimentAnalyis():
-    # get the data from the payload
+    # get the data from the payload 
+    # data = comment
     comment = request.get_json(force=True)
+    # pass the comment to analyzer which is in the "sentiment_scores" method
     result = sentiment_scores(comment.get("comment"))
+    # return the jsonify value of the result
     return jsonify(result)
 
 # @app.route("/displaydata", methods=['GET'])
 # def displayData():
 #     return jsonify(list_commentsAndLabel)
 
-# Report Generation
+# API/Endpoint for Report Generation
 @app.route("/reportGeneration", methods=["POST", "GET"])
 def generateReport():
+    # get the data from the payload 
+    # data = comment
     data = request.get_json(force=True)
+    # Convert data into a dictionary
+    # TO FURTHER UNDERSTAND THIS LINE, VISIT toDict function
     dataDict = toDict(data)
+    # Create list of values for the labels in BAR CHART  in report
+    # TO FURTHER UNDERSTAND THIS LINE, VISIT averageChartLabel function
     averageLabel = averageChartLabel()
+    # Create list of values for the values in BAR CHART in report
+    # TO FURTHER UNDERSTAND THIS LINE, VISIT averageChartValues function
+    # The previous line was to get the label, this line is to get the values
     averageValues = averageChartValues(dataDict)
+    # Create list of values for the values in PIE CHART in report
+    # TO FURTHER UNDERSTAND THIS LINE, VISIT posNegNeuAve function
     sentimentAve = posNegNeuAve(dataDict)
+
     print("sentiment Averages: ", sentimentAve)
+
+    #pass the values to report.html for the template of the pdf report
     rendered = render_template("report.html", labels=averageLabel, values=averageValues, data=dataDict,
                                sentimentAve=sentimentAve)
+    # configure options for the pdf file                                   
     options = {'page-size': 'A4', 'encoding': 'utf-8', 'margin-top': '0.5cm', 'margin-bottom': '0.5cm',
                'margin-left': '0.5cm', 'margin-right': '0.5cm'}
+    
+    #create a pdf file
     pdf = pdfkit.from_string(rendered, options=options, configuration=config)
 
+    #create response from the pdf file
     response = make_response(pdf)
+    
+    # set filename and "attachment" is to download the pdf file
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
 
+    # return the response
     return response
 
 
