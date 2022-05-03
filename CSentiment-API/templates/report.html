@@ -270,11 +270,11 @@
                     </tr>
                     <tr id="ratingResult">
                         <th id="colEvalResult">RATING RESULT (70%)</th>
-                        {% set percSection1 = "%.2f"|format(data.Section1|float * 0.15)|float %}
-                        {% set percSection2 = "%.2f"|format(data.Section2|float * 0.35)|float %}
-                        {% set percSection3 = "%.2f"|format(data.Section3|float * 0.25)|float %}
-                        {% set percSection4 = "%.2f"|format(data.Section4|float * 0.10)|float %}
-                        {% set percSection5 = "%.2f"|format(data.Section5|float * 0.15)|float %}
+                        {% set percSection1 = data.Section1|float * 0.15 %}
+                        {% set percSection2 = data.Section2|float * 0.35 %}
+                        {% set percSection3 = data.Section3|float * 0.25 %}
+                        {% set percSection4 = data.Section4|float * 0.10 %}
+                        {% set percSection5 = data.Section5|float * 0.15 %}
                         {% set percRating = "%.2f"|format(percSection1+percSection2+percSection3+percSection4+percSection5)|float %}
                         <th id="colAve"></th>
                         <th id="colAve">{{percRating}}</th>
