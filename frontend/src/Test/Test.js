@@ -19,19 +19,17 @@ class Test extends Component {
     }
     testComment_onClick = (event) =>
     {
-        //console.log("this is testing")
         event.preventDefault();
         let COMMENT = {
             comment: this.state.comment
         }
         ApiService.postComment(COMMENT).then((res) =>{
-            //console.log(res);
+            console.log(res);
             this.setState({sentiment: res.data})
         })
     }
     render() {
         const sentiment = this.state.sentiment;
-       // console.log(sentiment)
         return (
             <div className="div_main">
                 <Comment textChange={this.onTextChange} onTestClick={this.testComment_onClick}/>

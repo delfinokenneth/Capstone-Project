@@ -1,4 +1,4 @@
-import '../evaluationForm.css';
+import '../comment.css';
 import SubmitButton from './buttonSubmitComment.js';
 
 const inputComment = (props) =>
