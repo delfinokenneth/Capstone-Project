@@ -358,36 +358,15 @@ def evaluation(teacher, subject):
                 val = (
                 teacher, "18013672", subject, sec1_string, sec2_string, sec3_string, sec4_string, sec5_string, pos_val,
                 neu_val, neg_val, comment, sen_val, score_val)
-
-                # getting the last row id inserted in evaluation table
-                cur.execute(sql, val)
-                mysql.connection.commit()
-                id = cur.lastrowid
-                # inserting sentiment values to table csentiment
-                sql = "INSERT INTO csentiment (evaluationId,comments,positive_value,neutral_value,negative_value,sentiment_classification,score)\
-                                VALUES (%s,%s,%s,%s,%s,%s,%s);"
-                val = (id,comment, pos_val,neu_val,neg_val,sen_val, score_val)
-                
-                
             # else input comment is empty
             else:
                 sql = "INSERT INTO evaluation (idteacher,idstudent,edpCode,section1,section2,section3,section4,section5)\
 							 VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
                 val = (teacher, "18013672", subject, sec1_string, sec2_string, sec3_string, sec4_string, sec5_string)
-                # getting the last row id inserted in evaluation table
-                cur.execute(sql, val)
-                mysql.connection.commit()
-                id = cur.lastrowid
-                # inserting sentiment values to table csentiment
-                sql = "INSERT INTO csentiment (evaluationId,comments,positive_value,neutral_value,negative_value,sentiment_classification,score)\
-                                VALUES (%s,%s,%s,%s,%s,%s,%s);"
-                val = (id, comment, pos_val, neu_val, neg_val, sen_val, score_val)
-
             cur.execute(sql, val)
             mysql.connection.commit()
             cur.close()
             return redirect("/teachersevaluation/all/all")
-                
 
         except Exception as exp:
             return f'<h1>{exp}</h1>'
