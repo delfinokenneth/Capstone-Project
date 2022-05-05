@@ -2,19 +2,20 @@ from flask import Flask, redirect, render_template, request, url_for
 from flask_mysqldb import MySQL
 import platform
 
+# create flask app
 app = Flask(__name__)
 
 # if not in deployment
 if platform.system() == "Windows":
-    app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
-    app.config['MYSQL_USER'] = 'dbuser';
-    app.config['MYSQL_PASSWORD'] = 'dbuser123';
-    app.config['MYSQL_DB'] = 'isent';
-    app.config['MYSQL_PORT'] = 14859;
-	# app.config['MYSQL_HOST'] = 'localhost';
-	# app.config['MYSQL_USER'] = 'root';
-	# app.config['MYSQL_PASSWORD'] = '';
-	# app.config['MYSQL_DB'] = 'isent';
+    # app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
+    # app.config['MYSQL_USER'] = 'dbuser';
+    # app.config['MYSQL_PASSWORD'] = 'dbuser123';
+    # app.config['MYSQL_DB'] = 'isent';
+    # app.config['MYSQL_PORT'] = 14859;
+	app.config['MYSQL_HOST'] = 'localhost';
+	app.config['MYSQL_USER'] = 'root';
+	app.config['MYSQL_PASSWORD'] = '';
+	app.config['MYSQL_DB'] = 'isent';
 # in deployment
 else:
     app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
@@ -23,18 +24,10 @@ else:
     app.config['MYSQL_DB'] = 'isent';
     app.config['MYSQL_PORT'] = 14859;
 
+# declare MySql for connection
 mysql = MySQL(app)
 
-
-@app.route("/login.html", methods=["POST", "GET"])
-def login():
-    if request.method == "POST":
-        return redirect(url_for("evaluate"))
-    else:
-        return render_template("login.html")
-
-
-# functions related to /teachersevaluation
+# function to check if filters for teacher and subject is "all" meaning in default filters
 def isDefaultUrlForSummary(teacher, subject):
     if teacher == "all" and subject == "all":
         return True
@@ -42,33 +35,40 @@ def isDefaultUrlForSummary(teacher, subject):
         return False
 
 
-# get teacher name from teacher id
+# get teacher name using teacher id
 def getSelectedTeacherName(teacher):
+    #if teacher selected is "all" return "All"
     if (teacher == "all" or teacher == "0"):
         return "All"
+    # else: get the firstname and lastname of the teacher from db
     else:
         cur = mysql.connection.cursor()
         sql = "SELECT fname,lname from teachers WHERE idteacher = %s LIMIT 1"
         val = (teacher,)
         cur.execute(sql, val)
         resultTeachers = cur.fetchall()
+        # resultTeachers[0][1] is the teacher's lastname and resultTeachers[0][0] for the teachers firstname
         return resultTeachers[0][1] + ", " + resultTeachers[0][0]
 
 
 # get teacher name from subject id
 def getSelectedSubjectTitle(teacher, subject):
     cur = mysql.connection.cursor()
+    #if selected subject is all or 0, return "All"
     if (subject == "all" or subject == "0"):
         return "All"
     else:
+        # if subject is 0, then get the first subject of the selected teacher
         if (subject == "0"):
             sql = "SELECT title from subjects WHERE teacherId = %s ORDER BY title asc LIMIT 1"
             val = (teacher,)
+        # else get the subject
         else:
             sql = "SELECT edpcode,title from subjects WHERE edpCode = %s LIMIT 1"
             val = (subject,)
         cur.execute(sql, val)
         resultSubject = cur.fetchall()
+        # return subject where resultSubject[0][0] is the edp code and resultSubject[0][1] is the subject name
         return str(resultSubject[0][0]) + "-" + resultSubject[0][1]
 
 
@@ -98,6 +98,8 @@ def getNumberOfRespondents(teacher, subject):
 
         cur.execute(sql, val)
         result = cur.fetchall()
+
+        #return number of respondents
         return result[0][0]
 
 
@@ -105,7 +107,8 @@ def getNumberOfRespondents(teacher, subject):
 def getSentimentValues(teacher, subject):
     cur = mysql.connection.cursor()
     # if default
-    # if no teacher is selected, and no subject select (no filter)
+    # if no teacher is selected, and no subject selected (no filter)
+    # get all records where the comments is not null
     if ((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
         cur.execute(
             "SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> ''")
@@ -113,14 +116,17 @@ def getSentimentValues(teacher, subject):
     # if not default
     else:
         # if a teacher is selected, but no subject is selected (teacher + all subjects)
+        # get all records of that teacher and its all subjects
         if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
             sql = "SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> '' and idteacher = %s"
             val = (teacher,)
         # if a teacher is selected, and a subject is selected (teacher + subject)
+        # get the records of that selected teacher and selected subject
         elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
             sql = "SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> '' and idteacher = %s and edpCode = %s"
             val = (teacher, subject,)
         # else (if there is no teacher selected and a subject is selected)
+        # get records of the selected subject from all teachers
         else:
             sql = "SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> '' and edpCode = %s"
             val = (subject,)
@@ -156,10 +162,12 @@ def getRatingValues(teacher, subject):
         cur.execute(sql, val)
         return cur.fetchall()
 
-
+#endpoint for teachersevaluation (summary page)
 @app.route("/teachersevaluation/<teacher>/<subject>", methods=["POST", "GET"])
 def evaluate(teacher, subject):
+    # create new connection
     cur = mysql.connection.cursor()
+    #global declaration, meaning the value can be accessed everywhere in the class
     global G_TEACHER_NAME
     global G_SUBJECT_NAME
     global G_NUMBER_OF_RESPONDENTS
@@ -168,23 +176,28 @@ def evaluate(teacher, subject):
 
     G_TEACHER_ID = teacher
     G_SUBJECT_ID = subject
+    # pass to getSelectedTeacherName and get the selected teacher name
+    # TO FURTHER UNDERSTAND THE NEXT 3 LINES, CHECK ITS FUNCTIONS
     G_TEACHER_NAME = getSelectedTeacherName(teacher)
+    # pass to getSelectedSubjectTitle and get the selected subject title
     G_SUBJECT_NAME = getSelectedSubjectTitle(teacher, subject)
+    # pass to getNumberOfRespondents and get the number of respondents based on the filters
     G_NUMBER_OF_RESPONDENTS = getNumberOfRespondents(teacher, subject)
 
     # common queries
+    #get all questionaire of section 1
     cur.execute("SELECT * FROM questionaire where section = 1")
     section1 = cur.fetchall()
-
+    #get all questionaire of section 2
     cur.execute("SELECT * FROM questionaire where section = 2")
     section2 = cur.fetchall()
-
+    #get all questionaire of section 3
     cur.execute("SELECT * FROM questionaire where section = 3")
     section3 = cur.fetchall()
-
+    #get all questionaire of section 4
     cur.execute("SELECT * FROM questionaire where section = 4")
     section4 = cur.fetchall()
-
+    #get all questionaire of section 5
     cur.execute("SELECT * FROM questionaire where section = 5")
     section5 = cur.fetchall()
 

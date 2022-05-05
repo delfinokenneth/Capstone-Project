@@ -243,6 +243,7 @@ def NB_Classify(comment):
     # TRAINING PART <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     
     #load the model
+    # rb = read binary
     model = pickle.load(open('NB_Model.pkl', 'rb'))
     # predict the comment using the model
     # get the proba values: numerical values for pos, neu, and neg
@@ -298,9 +299,9 @@ def isNeutralDefaultVal(pos,neu,neg):
     pos = round(pos,2)
     neg = round(neg,2)
 
-    defNeu = round(18.4331797235023,2)
-    defPos = round(48.540706605222745,2)
-    defNeg = round(33.02611367127495,2)
+    defNeu = round(18.470149253731346,2)
+    defPos = round(48.50746268656717,2)
+    defNeg = round(33.02238805970149,2)
 
     #if verified that it is a default value, return True else False
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
@@ -414,7 +415,7 @@ def generateReport():
     
     # set filename and "attachment" is to download the pdf file
     response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=summary.pdf'
 
     # return the response
     return response

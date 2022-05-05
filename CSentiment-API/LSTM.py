@@ -29,8 +29,8 @@ data['comment'] = data['comment'].apply((lambda x: re.sub('[^a-zA-z0-9\s]','',x)
 print(data[ data['label'] == 'positive'].size)
 print(data[ data['label'] == 'negative'].size)
 
-for idx,row in data.iterrows():
-    row[0] = row[0].replace('rt',' ')
+# for idx,row in data.iterrows():
+#     row[0] = row[0].replace('rt',' ')
     
 max_fatures = 2000
 tokenizer = Tokenizer(num_words=max_fatures, split=' ')
@@ -96,8 +96,8 @@ for x in range(len(X_validate)):
 
 
 
-print("pos_acc", pos_correct/pos_cnt*100, "%")
-print("neg_acc", neg_correct/neg_cnt*100, "%")
+# print("pos_acc", pos_correct/pos_cnt*100, "%")
+# print("neg_acc", neg_correct/neg_cnt*100, "%")
 
 twt = "bati kaayo siya pagka maestra kay dili mutudlo ug tarong"
 #vectorizing the tweet by the pre-fitted tokenizer instance
@@ -211,7 +211,7 @@ def getPosNegNeuAccuracy():
     #print accuracy of pos,neg,neu guess
     print("positive accuracy: ", pos_correct/countPositives)
     print("negative accuracy: ", neg_correct/countNegatives)
-    print("neutral accuracy: ", neu_correct/countNeutral)
+    #print("neutral accuracy: ", neu_correct/countNeutral)
 
     #print the number of correct guess
     print("positive ", countPositives, " correct pos guess ", pos_correct)
@@ -220,4 +220,4 @@ def getPosNegNeuAccuracy():
 
 #getAccuracy()
 #getLanguageAccuracy()
-#getPosNegNeuAccuracy()
+getPosNegNeuAccuracy()

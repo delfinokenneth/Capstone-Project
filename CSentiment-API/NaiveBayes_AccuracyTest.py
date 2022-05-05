@@ -108,21 +108,21 @@ def getLanguageAccuracy():
     print("english ", countEnglish, " correct english guess ", eng_correct)
 
 #call the methods
-# getAccuracy()
+getAccuracy()
 # getPosNegNeuAccuracy()
 # getLanguageAccuracy()
 
-while(True):
-    text = input("Enter: ")
-    blob = TextBlob(text, classifier=classifier)
-    print (blob.classify())
+# while(True):
+#     text = input("Enter: ")
+#     blob = TextBlob(text, classifier=classifier)
+#     print (blob.classify())
 
-    prob = classifier.prob_classify(text)
-    prob.max()
+#     prob = classifier.prob_classify(text)
+#     prob.max()
 
-    print("positive",round(prob.prob("positive"),2))
-    print("negative", round(prob.prob("negative"),2))
-    print("neutral",round(prob.prob("neutral"),2))
+#     print("positive",round(prob.prob("positive"),2))
+#     print("negative", round(prob.prob("negative"),2))
+#     print("neutral",round(prob.prob("neutral"),2))
 
 
         
