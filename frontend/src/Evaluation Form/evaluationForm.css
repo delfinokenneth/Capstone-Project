@@ -1,16 +1,19 @@
-.commentBox,.resultBox{
+.commentBox, .resultBox{
 padding: 20px;
 width: 500px;
 }
 .inputComment{
     padding: 5px;
     width: 80%;
+    font-size: 20px;
 }
 .btnSubmitFragment{
     margin: 5px;
 }
 #btnSubmit{
     width: 200px;
+    height: 50px;
+    
 }
 .main_div{
     margin: auto; 
@@ -19,4 +22,16 @@ width: 500px;
     border-radius: 5px;
     max-width: 50%;
     margin-top: 50px;
+}
+
+.questionaireTable tr,th{
+    width: 100%;
+    background-color: aquamarine;
+    text-align: left;
+}
+
+.questionaireDiv
+{
+    display: block;
+    border: 1px black solid;
 }
