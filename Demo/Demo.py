@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, jsonify, redirect, render_template, request, url_for
 from flask_mysqldb import MySQL
 import platform
 
@@ -490,21 +490,36 @@ with app.app_context():
 with app.app_context():
     def printReport(sec1, sec2, sec3, sec4, sec5, comment, posAve, negAve, neuAve):
         import requests
-        data = [
-            ("Section1", sec1),
-            ("Section2", sec2),
-            ("Section3", sec3),
-            ("Section4", sec4),
-            ("Section5", sec5),
-            ("Comments", comment),
-            ("Teacher", G_TEACHER_NAME),
-            ("Subject", G_SUBJECT_NAME),
-            ("Respondents", G_NUMBER_OF_RESPONDENTS),
-            ("posAve", posAve),
-            ("negAve", negAve),
-            ("neuAve", neuAve),
-        ]
-        resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = data, stream=True)
+        test = {
+            'Section1': sec1,
+            'Section2': sec2,
+            'Section3': sec3,
+            'Section4': sec4,
+            'Section5': sec5,
+            'Comments': comment,
+            'Teacher': G_TEACHER_NAME,
+            'Subject': G_SUBJECT_NAME,
+            'Respondents': G_NUMBER_OF_RESPONDENTS,
+            'posAve': posAve,
+            'negAve': negAve,
+            'neuAve': neuAve
+        }
+        # data = [
+        #     ("Section1", sec1),
+        #     ("Section2", sec2),
+        #     ("Section3", sec3),
+        #     ("Section4", sec4),
+        #     ("Section5", sec5),
+        #     ("Comments", comment),
+        #     ("Teacher", G_TEACHER_NAME),
+        #     ("Subject", G_SUBJECT_NAME),
+        #     ("Respondents", G_NUMBER_OF_RESPONDENTS),
+        #     ("posAve", posAve),
+        #     ("negAve", negAve),
+        #     ("neuAve", neuAve),
+        # ]
+        data = list(test.items())
+        resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = test, stream=True)
         #resp = requests.post('https://csentimentapi.herokuapp.com/reportGeneration', json=data, stream=True)
         return resp.raw.read(), resp.status_code, resp.headers.items()
 
