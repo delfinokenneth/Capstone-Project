@@ -17,11 +17,17 @@ if platform.system() == "Windows":
 	app.config['MYSQL_DB'] = 'isent';
 # in deployment
 else:
-    app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
+    app.config['MYSQL_HOST'] = 'mysql-77857-0.cloudclusters.net';
     app.config['MYSQL_USER'] = 'dbuser';
     app.config['MYSQL_PASSWORD'] = 'dbuser123';
     app.config['MYSQL_DB'] = 'isent';
-    app.config['MYSQL_PORT'] = 14859;
+    app.config['MYSQL_PORT'] = 12998;
+    #old-db
+    #app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
+    #app.config['MYSQL_USER'] = 'dbuser';
+    #app.config['MYSQL_PASSWORD'] = 'dbuser123';
+    #app.config['MYSQL_DB'] = 'isent';
+    #app.config['MYSQL_PORT'] = 14859;
 
 mysql = MySQL(app)
 
@@ -84,17 +90,18 @@ def getNumberOfRespondents(teacher, subject):
     # if not default
     else:
         # if a teacher is selected, but no subject is selected (teacher + all subjects)
-        if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
+        if ((teacher != "0" or teacher != "all") and (subject == "0" or subject == "all")):
             sql = "SELECT count(*) from evaluation WHERE idTeacher = %s"
             val = (teacher,)
-        # if a teacher is selected, and a subject is selected (teacher + subject)
-        elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
-            sql = "SELECT count(*) from evaluation WHERE idTeacher = %s and edpCode = %s"
-            val = (teacher, subject,)
         # else (if there is no teacher selected and a subject is selected)
-        else:
+        elif ((teacher == "0" or teacher == "all") and (subject != "0" or subject != "all")):
             sql = "SELECT count(*) from evaluation WHERE edpCode = %s"
             val = (subject,)
+        # if a teacher is selected, and a subject is selected (teacher + subject)
+        elif ((teacher != "0" or teacher != "all") and (subject != "0" or subject != "all")):
+            sql = "SELECT count(*) from evaluation WHERE idTeacher = %s and edpCode = %s"
+            val = (teacher, subject,)
+
 
         cur.execute(sql, val)
         result = cur.fetchall()
@@ -280,7 +287,7 @@ def evaluation(teacher, subject):
     cur.execute(sql, val)
     teachers = cur.fetchall()
 
-    sql = "SELECT * FROM subjects WHERE teacherId = %s order by (case edpCode when %s then 0 else 1 end), title asc"
+    sql = "SELECT * FROM subjects WHERE teacherId = %s or edpCode = 0 order by (case edpCode when %s then 0 else 1 end), title asc"
     val = (teachers[0][0], subject,)
     cur.execute(sql, val)
     subjects = cur.fetchall()
@@ -439,22 +446,22 @@ def getNeutralAverage():
     # if default
     # if no teacher is selected, and no subject select (no filter)
     if ((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
-        cur.execute("SELECT AVG(neu) from evaluation WHERE score IS NOT NULL")
+        cur.execute("SELECT AVG(neu) from evaluation")
         neuAve = cur.fetchall()[0]
         return neuAve
     # if not default
     else:
         # if a teacher is selected, but no subject is selected (teacher + all subjects)
         if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
-            sql = "SELECT AVG(neu) from evaluation where idteacher = %s and score IS NOT NULL "
+            sql = "SELECT AVG(neu) from evaluation where idteacher = %s"
             val = (teacher,)
         # if a teacher is selected, and a subject is selected (teacher + subject)
         elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
-            sql = "SELECT AVG(neu) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
+            sql = "SELECT AVG(neu) from evaluation where idteacher = %s and edpCode = %s"
             val = (teacher, subject,)
         # else (if there is no teacher selected and a subject is selected)
         else:
-            sql = "SELECT AVG(neu) from evaluation where edpCode = %s and score IS NOT NULL"
+            sql = "SELECT AVG(neu) from evaluation where edpCode = %s"
             val = (subject,)
 
         cur.execute(sql, val)
@@ -481,8 +488,8 @@ with app.app_context():
     def getsentiment(comment):
         import requests
         dictToSend = {'comment': comment}
-        res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
-        #res = requests.post('https://csentimentapi.herokuapp.com/getSentiment', json=dictToSend)
+        #res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
+        res = requests.post('https://csentiment-api.herokuapp.com/getSentiment', json=dictToSend)
         print('response from server:', res.text)
         dictFromServer = res.json()
         return str(dictFromServer)
@@ -524,6 +531,6 @@ with app.app_context():
         return resp.raw.read(), resp.status_code, resp.headers.items()
 
 if __name__ == "__main__":
-    #app.run(debug=True)
-    app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(debug=True)
+    #app.run(host='127.0.0.1', port=8080, debug=True)
 

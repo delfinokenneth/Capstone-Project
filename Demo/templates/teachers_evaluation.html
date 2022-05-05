@@ -205,7 +205,7 @@
 								{% if teacher[0] != 0 %}
 									<OPTION value={{teacher[0]}}>{{teacher[2]}}, {{teacher[1]}}</OPTION>
 								{% else %}
-									<OPTION value={{teacher[0]}}>{{teacher[1]}}</OPTION>
+									<OPTION value = "0"> All </OPTION>
 								{% endif%}	
 							{% endfor %}
 						</SELECT>
@@ -216,7 +216,11 @@
 						<b> Subject : </b> 
 						<SELECT name="teachers" id="selectSubject">
 							{% for subject in subjects %}
-								<OPTION value={{subject[0]}}>{{subject[0]}}-{{subject[2]}}</OPTION>
+								{% if subject[0] == 0 %}
+									<OPTION value="0">All</OPTION>
+								{% else %}
+									<OPTION value={{subject[0]}}>{{subject[0]}}-{{subject[2]}}</OPTION>
+								{% endif %}
 							{% endfor %}
 						</SELECT>
 					</td>
@@ -456,8 +460,8 @@
 			</tr>
 			<tr class="sectiondata">
 				<td class="scenario"> Numerical (70%) </td>
-				{% set numavg = "%.2f"|format(allsecsum.value)|float  %}
-				<td class="sentimentValues"> {{ numavg }}  </td>
+					{% set numavg = allsecsum.value  %}
+				<td class="sentimentValues"> {{ "%.2f"|format(numavg)|float }}  </td>
 				<td class="sentimentValues">
 					{% if numavg >= 4.2 and numavg <= 5.0 %}
 						{{"Excellent"}}
@@ -476,15 +480,15 @@
 				<td class="scenario"> Comment (30%)</td>
 
 				{% if commentsum.value != 0 or counter.value != 0 %}
-					{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
+					{% set comavg = commentsum.value/counter.value %}
 				{% else %}
 					{% set comavg = 0 %}
 				{% endif %}
 				
 				<text style="display: none;">
-					{{arrayAve.append(comavg)}}
+					{{arrayAve.append("%.2f"|format(comavg)|float)}}
 				</text>
-				<td class="sentimentValues"> {{ comavg }} </td>
+				<td class="sentimentValues"> {{ "%.2f"|format(comavg)|float }} </td>
 				<td class="sentimentValues">
 					{% if comavg >= 4.2 and comavg <= 5.0 %}
 						{{"Excellent"}}
