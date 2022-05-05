@@ -5,29 +5,23 @@ import platform
 app = Flask(__name__)
 
 # if not in deployment
-#if platform.system() == "Windows":
-    #app.config['MYSQL_HOST'] = 'mysql-77857-0.cloudclusters.net';
-    #app.config['MYSQL_USER'] = 'dbuser';
-    #app.config['MYSQL_PASSWORD'] = 'dbuser123';
-    #app.config['MYSQL_DB'] = 'isent';
-    #app.config['MYSQL_PORT'] = 12998;
-    #old-db
-    #app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
-    #app.config['MYSQL_USER'] = 'dbuser';
-    #app.config['MYSQL_PASSWORD'] = 'dbuser123';
-    #app.config['MYSQL_DB'] = 'isent';
-    #app.config['MYSQL_PORT'] = 14859;
-app.config['MYSQL_HOST'] = 'localhost';
-app.config['MYSQL_USER'] = 'root';
-app.config['MYSQL_PASSWORD'] = '';
-app.config['MYSQL_DB'] = 'isent';
+if platform.system() == "Windows":
+    # app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
+    # app.config['MYSQL_USER'] = 'dbuser';
+    # app.config['MYSQL_PASSWORD'] = 'dbuser123';
+    # app.config['MYSQL_DB'] = 'isent';
+    # app.config['MYSQL_PORT'] = 14859;
+	app.config['MYSQL_HOST'] = 'localhost';
+	app.config['MYSQL_USER'] = 'root';
+	app.config['MYSQL_PASSWORD'] = '';
+	app.config['MYSQL_DB'] = 'isent';
 # in deployment
-#else:
-    #app.config['MYSQL_HOST'] = 'mysql-77857-0.cloudclusters.net';
-    #app.config['MYSQL_USER'] = 'dbuser';
-    #app.config['MYSQL_PASSWORD'] = 'dbuser123';
-    #app.config['MYSQL_DB'] = 'isent';
-    #app.config['MYSQL_PORT'] = 12998;
+else:
+    app.config['MYSQL_HOST'] = 'mysql-77857-0.cloudclusters.net';
+    app.config['MYSQL_USER'] = 'dbuser';
+    app.config['MYSQL_PASSWORD'] = 'dbuser123';
+    app.config['MYSQL_DB'] = 'isent';
+    app.config['MYSQL_PORT'] = 12998;
     #old-db
     #app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
     #app.config['MYSQL_USER'] = 'dbuser';
@@ -514,8 +508,8 @@ with app.app_context():
     def getsentiment(comment):
         import requests
         dictToSend = {'comment': comment}
-        #res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
-        res = requests.post('https://csentiment-api.herokuapp.com/getSentiment', json=dictToSend)
+        res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
+        #res = requests.post('https://csentiment-api.herokuapp.com/getSentiment', json=dictToSend)
         print('response from server:', res.text)
         dictFromServer = res.json()
         return str(dictFromServer)
@@ -523,22 +517,37 @@ with app.app_context():
 with app.app_context():
     def printReport(sec1, sec2, sec3, sec4, sec5, comment, posAve, negAve, neuAve):
         import requests
-        data = [
-            ("Section1", sec1),
-            ("Section2", sec2),
-            ("Section3", sec3),
-            ("Section4", sec4),
-            ("Section5", sec5),
-            ("Comments", comment),
-            ("Teacher", G_TEACHER_NAME),
-            ("Subject", G_SUBJECT_NAME),
-            ("Respondents", G_NUMBER_OF_RESPONDENTS),
-            ("posAve", posAve),
-            ("negAve", negAve),
-            ("neuAve", neuAve),
-        ]
-        #resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = data, stream=True)
-        resp = requests.post('https://csentiment-api.herokuapp.com/reportGeneration', json=data, stream=True)
+        test = {
+            'Section1': sec1,
+            'Section2': sec2,
+            'Section3': sec3,
+            'Section4': sec4,
+            'Section5': sec5,
+            'Comments': comment,
+            'Teacher': G_TEACHER_NAME,
+            'Subject': G_SUBJECT_NAME,
+            'Respondents': G_NUMBER_OF_RESPONDENTS,
+            'posAve': posAve,
+            'negAve': negAve,
+            'neuAve': neuAve
+        }
+        # data = [
+        #     ("Section1", sec1),
+        #     ("Section2", sec2),
+        #     ("Section3", sec3),
+        #     ("Section4", sec4),
+        #     ("Section5", sec5),
+        #     ("Comments", comment),
+        #     ("Teacher", G_TEACHER_NAME),
+        #     ("Subject", G_SUBJECT_NAME),
+        #     ("Respondents", G_NUMBER_OF_RESPONDENTS),
+        #     ("posAve", posAve),
+        #     ("negAve", negAve),
+        #     ("neuAve", neuAve),
+        # ]
+        data = list(test.items())
+        resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = test, stream=True)
+        #resp = requests.post('https://csentimentapi.herokuapp.com/reportGeneration', json=data, stream=True)
         return resp.raw.read(), resp.status_code, resp.headers.items()
 
 if __name__ == "__main__":

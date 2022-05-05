@@ -296,6 +296,7 @@ def sentimentAnalyis():
 @app.route("/reportGeneration", methods=["POST", "GET"])
 def generateReport():
     data = request.get_json(force=True)
+    data = list(data.items())
     dataDict = toDict(data)
     averageLabel = averageChartLabel()
     averageValues = averageChartValues(dataDict)
@@ -309,14 +310,14 @@ def generateReport():
 
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'attachment; filename=summary.pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=summary.pdf'
 
     return response
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-#  app.run(host="127.0.0.6", port=8000, debug=True)
+    # app.run(debug=True)
+    app.run(host="127.0.0.6", port=8000, debug=True)
 # app.run(host="0.0.0.0", port=5000, debug=True)
 #    app.run(debug=True)
 
