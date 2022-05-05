@@ -130,8 +130,8 @@
                             label:"Averages",
                             data: {{ values | safe }},
                             fill: false,
-                            backgroundColor: [ '#ccddff', '#ccddff', '#ccddff',
-                            '#ccddff', '#ccddff', '#ccddff'],
+                            backgroundColor: [ '#8080ff', '#8080ff', '#8080ff',
+                            '#8080ff', '#8080ff', '#8080ff'],
                             lineTension: 0.1,
                         }
                     ]
@@ -270,7 +270,7 @@
 						    {% endif %}	
                         </td>
                     </tr>
-                    {% if data.Comments == "0.0" %}
+                    {% if data.Comments == "0" %}
                     {% set percentageRating = "(100%)"%}
                     {% set percentageComment = "(0%)"%}
                     {% else %}
@@ -305,7 +305,7 @@
                     <tr id="commentResult">
                         <th id="colEvalResult">COMMENT RESULT <span> {{percentageComment}}</span></th>
                         <th id="colAve"></th>
-                        {% if data.Comments == "0.0" %}
+                        {% if data.Comments == "0" %}
                         {% set comAve = "-" %}
                         {% else %}
                         {% set comAve = data.Comments %}
@@ -329,7 +329,7 @@
                     </tr>
                     <tr id="tblHead">
                         <th id="colEvalResult">OVERALL EVALUATION SCORE</th>
-                        {% if commentResult == 0 %}
+                        {% if data.Comments == "0" %}
                         {% set overallResult = percRating %}
                         {% else %}
                         {% set overallResult = "%.2f"|format(percRating * 0.70 + commentResult * 0.30) |float %}
