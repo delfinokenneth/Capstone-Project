@@ -1,0 +1,641 @@
+{% extends "base.html" %}
+
+{% block title %} Evaluation Page {% endblock %}
+
+{% block content %}
+
+
+<style>
+	*{
+		font-size: 15px;
+	}
+	#teacher{
+		font-weight: bolder;
+	}
+
+	#rating tr:nth-child(even){background-color: #f2f2f2;}
+
+	#rating tr:hover {background-color: #ddd;}
+
+	#rating th,td 
+	{
+		font-size: 13px;
+	}
+	#rating th {
+	  padding-top: 12px;
+	  padding-bottom: 12px;
+	  text-align: left;
+	  background-color: rgb(174, 213, 250);
+	  color: black;
+	}
+	#rating 
+	{
+		width: 500px;
+		margin-left: -10px;
+		margin-top: 20px;
+	}
+	#detailsandlegend
+	{
+		display: inline-block;
+		min-width: 100%;
+	}
+	#details,#legend
+	{
+		padding: 10px;
+		border-radius: 5px;
+		margin-bottom: 10px;
+	}
+	#details
+	{
+		font-size: 12px;
+		float: left;
+		width: 400px;
+	}
+	#legend
+	{
+		float: left;
+	}
+	#tname
+	{
+		background-color: #f2f2f2;
+	}
+	.evaluatee
+	{
+		min-width: 150px;
+		font-weight: bolder;
+	}
+	#info_tname, #info_sub
+	{
+		min-width: 100px;
+
+	}
+	.info_details
+	{
+		padding-top: 5px;
+		padding-bottom: 5px;
+		width: 100%;
+	}
+	#note
+	{
+		width: 100%;
+		display: inline-block;
+		padding: 10px;
+		border-radius: 5px;
+		background-color: #ccddff;
+	}
+	.sentimentValues{
+		min-width: 50px;
+		padding-left: 15px;
+		padding-right: 15px;
+		margin: 20px;
+	}
+	@media screen and (max-width: 1200px)
+	{
+		
+		#legend
+		{
+			float: left;
+		}
+		#details, #rating, #legend
+		{
+			width: 100%;
+		}
+	}
+</style>
+
+
+
+
+<!-- STYLE FOR SECTION 1-->
+<style type="text/css">
+	#section1
+	{
+		width: 100%;
+		margin-top: 10px;
+	}
+	#section tr:nth-child(even){background-color: #f2f2f2;}
+
+	#section tr:hover {background-color: #ddd;}
+
+	#section td 
+	{
+		font-size: 15px;
+	}
+	#section th
+	{
+		font-size: 15px;
+	}
+	#section th {
+	  padding-top: 12px;
+	  padding-bottom: 12px;
+	  text-align: left;
+	  background-color: #ccddff;
+	  color: black;
+	}
+	#section 
+	{
+		width: 100%;
+	}
+	.scenario
+	{
+		width: calc(100%);
+		padding: 5px;
+	}
+	#rate
+	{
+		min-width: 100px;
+		
+	}
+	.rates 
+	{
+		text-align: center;
+	}
+	.sectioncolumn, .sectiondata
+	{
+		border-bottom: solid 0.5px lightgray;
+	}
+	.sectioncolumn td
+	{
+		color: black;
+		font-weight: regular;
+	}
+	#section tr
+	{
+		padding: 5px;	
+	}
+	.sections
+	{
+		/* margin-top: 1px; */
+		border-left: 5px solid #ccddff;
+		/* border-bottom: 1px solid #0066ff; */
+	}
+	form
+	{
+		margin-bottom: 20px;
+	}
+	@media screen and (min-width: 1200px)
+	{
+		#rate
+		{
+			min-width: 200px;
+		}
+	}
+
+</style>
+<form method="POST">
+<div id="questionaire">
+	<div id="section1" class="sections">
+		<table id="section">
+			<tbody>
+				<tr class="sectioncolumn">
+					<td class="scenario" style="padding-bottom: 20px; padding-top: 20px"> 
+							<center> <b>UNIVERSITY OF CEBU LAPU-LAPU AND MANDAUE <br>
+													2nd Semester S.Y 2020 - 2021 <br>
+														TEACHERS EVALUATION </b>
+										
+							</center> </td>
+				</tr>
+
+				<!-- RATING AVG -->
+				<tr class="sectiondata">
+					<td class="scenario">  
+						<b> Teacher : </b> 
+						<SELECT name="teachers" id="selectTeacher">
+							{% for teacher in teachers %}
+								{% if teacher[0] != 0 %}
+									<OPTION value={{teacher[0]}}>{{teacher[2]}}, {{teacher[1]}}</OPTION>
+								{% else %}
+									<OPTION value = "0"> All </OPTION>
+								{% endif%}	
+							{% endfor %}
+						</SELECT>
+					</td>
+				</tr>
+				<tr class="sectiondata" >
+					<td class="scenario">  
+						<b> Subject : </b> 
+						<SELECT name="teachers" id="selectSubject">
+							{% for subject in subjects %}
+								{% if subject[0] == 0 %}
+									<OPTION value="0">All</OPTION>
+								{% else %}
+									<OPTION value={{subject[0]}}>{{subject[0]}}-{{subject[2]}}</OPTION>
+								{% endif %}
+							{% endfor %}
+						</SELECT>
+					</td>
+				</tr>
+				<tr class="sectiondata">
+					<td class="scenario">  <b> Respondents : </b> {{countrespondents}} </td>
+				</tr>
+				<tr class="sectiondata">
+					<td class="scenario" style="padding-top: 15px;">    </td>
+				</tr>
+			</tbody>
+		</table>
+
+
+	</div>
+
+	<!-- ~~~~~~~~~~~~ global var ~~~~~~~~~~~~ -->
+	
+	{% set allsecsum = namespace(value = 0) %}
+	{% set secper = namespace(value = 0) %}
+	{% set countsec = namespace(value = 0) %}
+	{% set arrayAve =[] %}
+	<!-- assign var secallavg = 0 (all section averages) -->
+
+
+	<!--                   ==                         -->
+	 <!-- leftsectionsleft view ->  https://imgur.com/YMKA4ib -->
+	{% for n in range(0, lensectionsleft) %} <!-- [5]rows only | has: sectionnum, description, percentage... -->
+	<div id="section2" class="sections">
+		<table id="section">
+			<tbody>
+				<tr class="sectioncolumn">			<!-- n+1 (SECTION) --> <!-- sectionsleft[n][2] (NAME) --> <!--  sectionsleft[n][4] (PERCENTAGE) -->
+					<td class="scenario">  <b> SECTION {{n + 1}}: {{ sectionsleft[n][2] }} ({{ sectionsleft[n][4] }}%) </b> </td>
+				</tr>
+
+				<!--     x         -->
+				<!-- assign var counter = 0-->
+				{% set counter = namespace(value = 0) %}
+				<!-- assign var secavg = 0-->
+				{% set secavg = namespace(value = 0) %}
+				<!-- lensectionsright view -> https://imgur.com/i9U7wMK -->
+				{% for x in range(0, lensectionsright) %} <!-- [53] rows | has section, question -->
+					<!-- ex: if [1] == section[1] then -->
+					{% if ((n + 1)==sectionsright[x][0]) %}
+						<tr class="sectiondata">			<!--counter.value (JUST A NUMBERING THAT WILL INCREMENT PER SECTION)  --> <!-- sectionsright[x][1] (QUESTIONS FROM QUESTIONAIRE TABLE)-->
+							<td class="scenario"> {% set counter.value = counter.value + 1 %} {{ counter.value}}.  {{ sectionsright[x][1] }}</td> <!-- section data-->
+							<td class="rates" id="rate" style="text-align: right;" colspan=""> 
+
+				<!-- assign var count = 0-->							
+						{% set count = namespace(value=0) %}
+				
+					{% if evalsecans|length > 0 %}
+						<!-- evalsecans[0][5] (TOTAL NUMBER OF SECTIONS) ex: (so 0, 5)-->	
+						{% for y in range(0, evalsecans[0][5]) %}
+						<!-- evalsecans[y=NUMBER-OF-ROWS-IN-EVALUATION][n=NUMBER-OF-SECTIONS].split(",")[counter.value-1=UNSA-NUMBER-SIYA-SA-QUESTION]-->							
+						{% set count.value = count.value + evalsecans[y][n].split(",")[counter.value - 1]|float %}
+						{% endfor %}
+						
+						<!-- SUM/evalsecans[0][5](TOTAL NUM OF SECTIONS)-->	
+						<!-- AVERAGE PER NUMBER IN EVERY SECTIONS-->
+						{{ "%.1f"|format(count.value/evalsecans[0][5])|float }}
+
+						{% set secavg.value = secavg.value + count.value/evalsecans[0][5]|float %}
+						{% set final = namespace(value = 0) %}
+						{% set final.value = count.value/evalsecans[0][5]|float %}
+					{% else %}
+						{% set count.value = 0 %}	
+						{% set secavg.value = 0 %}	
+						{% set final = namespace(value = 0) %}	
+					{% endif %}
+							</td>  	<!-- average -->
+							<td class="rates" id="rate" style="text-align: center;" colspan="100"> 
+							
+							{% if final.value >= 4.2 and final.value <= 5.0 %}
+								{{"Excellent"}}
+							{% elif final.value >= 3.4 and final.value <= 4.19 %}
+								{{"Very Satisfactory"}}
+							{% elif final.value >= 2.6 and final.value <= 3.39 %}
+								{{"Satisfactory"}}
+							{% elif final.value >= 1.8 and final.value <= 2.59 %}
+								{{"Poor"}}
+							{% elif final.value >= 1.0 and final.value <= 1.79 %}
+								{{"Needs Improvement"}}								
+							{% endif %}
+							</td> <!-- rating -->
+						</tr>
+
+						{% set count = namespace(value=0) %}
+					{% endif %}
+				{% endfor %}
+				<text style="display: none;">
+					{{ arrayAve.append("%.2f"|format(secavg.value/counter.value)|float) }}
+				</text>
+				<!-- RATING AVG -->
+				<tr class="sectiondata">
+					<td class="scenario" bgcolor="#ccddff"> <b> Rating Average </b> </td>
+					<td class="rates" id="rate" style="text-align: right;" colspan="" bgcolor="#ccddff"> 
+					<!-- GETTING AVG PER SECTION -->
+					<!-- TOTAL SUM OF RATE PER NUM IN SECTION / TOTAL NUMBER OF QUESTIONS -->
+					
+					{{ "%.2f"|format(secavg.value/counter.value) }}
+					{% set secrateavg = "%.2f"|format(secavg.value/counter.value)|float %}
+
+					<!-- GETTING  PERCENTAGE PER SECTION -->
+
+					{% set sum =0 %}
+					
+					{% if n == 0 %}
+					{% set sec1per = (secavg.value/counter.value * 0.15) %}
+					{% set sum = sum + sec1per %}
+					{% endif %}
+
+					{% if n == 1 %}
+					{% set sec2per = (secavg.value/counter.value * 0.35) %}
+					{% set sum = sum + sec2per %}
+					{% endif %}
+
+					{% if n == 2 %}
+					{% set sec3per = (secavg.value/counter.value * 0.25) %}
+					{% set sum = sum + sec3per %}
+					{% endif %}
+
+					{% if n == 3 %}
+					{% set sec4per = (secavg.value/counter.value * 0.10) %}
+					{% set sum = sum + sec4per %}
+					{% endif %}
+
+					{% if n == 4 %}
+					{% set sec5per = (secavg.value/counter.value * 0.15) %}
+					{% set sum = sum + sec5per %}
+					{% endif %}
+
+					<!-- GETTING TOTAL PERCENTAGE OF ALL SECTIONS -->
+					{% set allsecsum.value =  allsecsum.value + sum %}
+					
+					</td>
+					<td class="rates" id="rate" style="text-align: center;" colspan="100" bgcolor="#ccddff"> 				
+						{% if secrateavg >= 4.2 and secrateavg <= 5.0 %}
+							{{"Excellent"}}
+						{% elif secrateavg >= 3.4 and secrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						{% elif secrateavg >= 2.6 and secrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						{% elif secrateavg >= 1.8 and secrateavg <= 2.59 %}
+							{{"Poor"}}
+						{% elif secrateavg >= 1.0 and secrateavg <= 1.79 %}
+							{{"Needs Improvement"}}								
+						{% endif %}						
+					</td>
+				</tr>
+			</tbody>
+
+		</table>
+
+	</div>
+	{% endfor %}
+
+	<!--                   ==                         -->
+
+	<div id="section6" class="sections">
+		<table id="section">
+			<tbody>
+				<tr class="sectioncolumn" >
+					<td class="sentimentValues"> <b> COMMENTS </b></td>
+					<td class="sentimentValues"> <b> pos </b></td>
+					<td class="sentimentValues"> <b> neu </b></td>
+					<td class="sentimentValues"> <b> neg </b></td>
+					<td class="sentimentValues"> <b> score </b></td>
+					<td class="sentimentValues"> <b> result </b></td>
+				</tr>
+
+				{% set counter = namespace(value = 0) %}
+				{% set commentsum = namespace(value = 0) %}
+				{% set commentavg = namespace(value = 0) %}
+				{% for row in datacomments %}
+				<tr class="sectiondata">
+					<td class="scenario"> {{ row.0 }}</td> <!-- comment -->
+					<td class="sentimentValues">{{"%.2f"|format(row.1|float)}}</td> <!-- pos -->
+					<td class="sentimentValues">{{"%.2f"|format(row.2|float)}}</td> <!-- neu -->
+					<td class="sentimentValues">{{"%.2f"|format(row.3|float)}}</td> <!-- neg -->
+					<td class="sentimentValues">
+						{% if row.5 is not none %}
+								{{"%.2f"|format(row.5|float)}}
+								{% set commentsum.value = commentsum.value + "%.2f"|format(row.5|float)|float %}
+								{% set counter.value = counter.value + 1 %}
+						{% else %}
+								{{"-"}}
+						{% endif %}
+
+
+					<td class="sentimentValues" colspan="200">  {{row.4}} </td> <!-- sentiment -->
+
+					
+				</tr>
+				{% endfor %}
+				<tr class="scenario" bgcolor="#ccddff">
+					<td class="scenario" bgcolor="#ccddff"> <b>Comment Rating Average </b></td>
+
+					<td class="scenario" bgcolor="#ccddff"></td>
+					<td class="scenario" bgcolor="#ccddff"></td>
+					<td class="scenario" bgcolor="#ccddff"></td>
+					
+					{% if commentsum.value != 0 or counter.value != 0 %}
+						{% set comrateavg = "%.2f"|format(commentsum.value/counter.value)|float %}
+					{% else %}
+						{% set comrateavg = 0 %}
+					{% endif %}
+					
+					<td class="scenario" bgcolor="#ccddff"> {{ comrateavg }}</td>
+					<td class="scenario" bgcolor="#ccddff" colspan="200" style="text-align: left; padding-left: 15px;">
+						{% if comrateavg >= 4.2 and comrateavg <= 5.0 %}
+							{{"Excellent"}}
+						{% elif comrateavg >= 3.4 and comrateavg <= 4.19 %}
+							{{"Very Satisfactory"}}
+						{% elif comrateavg >= 2.6 and comrateavg <= 3.39 %}
+							{{"Satisfactory"}}
+						{% elif comrateavg >= 1.8 and comrateavg <= 2.59 %}
+							{{"Poor"}}
+						{% elif comrateavg >= 1.0 and comrateavg <= 1.79 %}
+							{{"Needs Improvement"}}
+						{% endif %}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<!--Table for overall feedback average-->
+<div id="section6" class="sections">
+	<table id="section">
+		<tbody>
+			<tr class="sectioncolumn" >
+				<td > <b> EVALUATION RESULT </b> </td>
+				<td class="sentimentValues"> <b> Average </b></td>
+				<td class="sentimentValues"> <b> Status </b></td>
+			</tr>
+			<tr class="sectiondata">
+				<td class="scenario"> Numerical (70%) </td>
+					{% set numavg = allsecsum.value  %}
+				<td class="sentimentValues"> {{ "%.2f"|format(numavg)|float }}  </td>
+				<td class="sentimentValues">
+					{% if numavg >= 4.2 and numavg <= 5.0 %}
+						{{"Excellent"}}
+					{% elif numavg >= 3.4 and numavg <= 4.19 %}
+						{{"Very Satisfactory"}}
+					{% elif numavg >= 2.6 and numavg <= 3.39 %}
+						{{"Satisfactory"}}
+					{% elif numavg >= 1.8 and numavg <= 2.59 %}
+						{{"Poor"}}
+					{% elif numavg >= 1.0 and numavg <= 1.79 %}
+						{{"Needs Improvement"}}								
+					{% endif %}		
+				</td>
+			</tr> 
+			<tr class="sectiondata">
+				<td class="scenario"> Comment (30%)</td>
+
+				{% if commentsum.value != 0 or counter.value != 0 %}
+					{% set comavg = commentsum.value/counter.value %}
+				{% else %}
+					{% set comavg = 0 %}
+				{% endif %}
+				
+				<text style="display: none;">
+					{{arrayAve.append("%.2f"|format(comavg)|float)}}
+				</text>
+				<td class="sentimentValues"> {{ "%.2f"|format(comavg)|float }} </td>
+				<td class="sentimentValues">
+					{% if comavg >= 4.2 and comavg <= 5.0 %}
+						{{"Excellent"}}
+					{% elif comavg >= 3.4 and comavg <= 4.19 %}
+						{{"Very Satisfactory"}}
+					{% elif comavg >= 2.6 and comavg <= 3.39 %}
+						{{"Satisfactory"}}
+					{% elif comavg >= 1.8 and comavg <= 2.59 %}
+						{{"Poor"}}
+					{% elif comavg >= 1.0 and comavg <= 1.79 %}
+						{{"Needs Improvement"}}								
+					{% endif %}
+
+				</td>
+			</tr>
+			<tr>
+				<td class="scenario" bgcolor="#ccddff"><b>OVERALL EVALUATION AVERAGE</b></td>
+				<td class="sentimentValues" bgcolor="#ccddff"><b>
+
+					{% set overallavg = "%.2f"|format(( 70 * numavg + 30 * comavg) / (70+30))|float %}
+						{{ overallavg }}
+				</b></td>
+				<td class="sentimentValues" bgcolor="#ccddff"><b>
+					{% if overallavg >= 4.2 and overallavg <= 5.0 %}
+						{{"Excellent"}}
+					{% elif overallavg >= 3.4 and overallavg <= 4.19 %}
+						{{"Very Satisfactory"}}
+					{% elif overallavg >= 2.6 and overallavg <= 3.39 %}
+						{{"Satisfactory"}}
+					{% elif overallavg >= 1.8 and overallavg <= 2.59 %}
+						{{"Poor"}}
+					{% elif overallavg >= 1.0 and overallavg <= 1.79 %}
+						{{"Needs Improvement"}}								
+					{% endif %}
+
+				</b></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+	<div id="detailsandlegend">
+	<div id="legend">
+		<table id ="rating">
+			<thead>
+					<th colspan="2"><center> LEGEND </center></th>
+			</thead>
+			<tbody>
+				<tr class="lblLegend">
+					<td>Excellent </td>
+	 				<td>4.20 - 5.00</td>
+				</tr>
+				<tr>
+					<td class="lblLegend">Very Satisfactory</td>
+					<td>3.40 - 4.19</td>
+				</tr>
+				<tr>
+					<td class="lblLegend"> Satisfactory</td>
+					<td>2.60 - 3.39</td>
+				</tr>
+				<tr>
+					<td class="lblLegend">Poor </td>
+					<td>1.80 - 2.59</td>
+				</tr>
+				<tr>
+					<td class="lblLegend">Needs Improvement</td>
+					<td>1.00 - 1.79</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+		<!--STYLE FOR GENERATE REPORT BUTTON-->
+<style>
+	#divgenerate
+	{
+		margin-bottom: 20px;
+		padding-bottom: 50px;
+		margin-top: 7px;
+	}
+	@media screen and (min-width: 1200px)
+	{
+		#btngenerate
+		{
+			height: 30px;
+			background-color: #00cc00;
+			width: 130px;
+			color: white;
+			border: none;
+			float:right;
+			margin-right: 15;
+			margin-top: 30px;
+			border-radius: 3px;
+			text-align: center;
+			text-decoration: none;
+			vertical-align: middle;
+			
+		}
+	}
+	@media screen and (max-width: 1200px)
+	{
+
+		#btngenerate
+		{
+			height: 30px;
+			background-color: #00cc00;
+			width: 130px;
+			color: white;
+			border: none;
+			float:right;
+			margin-right: 15px;
+			margin-top: 10px;
+			border-radius: 3px;
+			text-align: center;
+			text-decoration: none;
+			vertical-align: middle;
+		}
+	}
+</style>
+<div id="divgenerate">
+	<button id="btngenerate" >
+	<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}" 
+		style="text-decoration: none; color: white;" >
+		Generate Report
+	</a>
+	</button>
+</div>
+</div>
+</div>
+</form>
+
+<script>
+	let selected_teacher = document.getElementById("selectTeacher");
+	let selected_subject = document.getElementById("selectSubject");
+
+	selected_teacher.onchange = function()
+	{
+		// disable subject dropdown if teacher is in default
+		if (selected_teacher.value == 0){
+			window.location='/teachersevaluation/all/all';		
+		}
+		else{
+			window.location='/teachersevaluation/'+ selected_teacher.value + "/0";	
+		}
+	}
+	selected_subject.onchange = function()
+	{
+		window.location='/teachersevaluation/'+ selected_teacher.value + "/" + selected_subject.value;	
+	}
+</script>
+{% endblock %}
+
