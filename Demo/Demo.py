@@ -6,15 +6,15 @@ app = Flask(__name__)
 
 # if not in deployment
 if platform.system() == "Windows":
-    app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
-    app.config['MYSQL_USER'] = 'dbuser';
-    app.config['MYSQL_PASSWORD'] = 'dbuser123';
-    app.config['MYSQL_DB'] = 'isent';
-    app.config['MYSQL_PORT'] = 14859;
-	# app.config['MYSQL_HOST'] = 'localhost';
-	# app.config['MYSQL_USER'] = 'root';
-	# app.config['MYSQL_PASSWORD'] = '';
-	# app.config['MYSQL_DB'] = 'isent';
+    # app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
+    # app.config['MYSQL_USER'] = 'dbuser';
+    # app.config['MYSQL_PASSWORD'] = 'dbuser123';
+    # app.config['MYSQL_DB'] = 'isent';
+    # app.config['MYSQL_PORT'] = 14859;
+	app.config['MYSQL_HOST'] = 'localhost';
+	app.config['MYSQL_USER'] = 'root';
+	app.config['MYSQL_PASSWORD'] = '';
+	app.config['MYSQL_DB'] = 'isent';
 # in deployment
 else:
     app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
