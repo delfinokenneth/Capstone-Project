@@ -423,7 +423,7 @@
 					<td class="scenario" bgcolor="#ccddff"></td>
 					<td class="scenario" bgcolor="#ccddff"></td>
 					
-					{% if commentsum.value != 0 or counter.value != 0 %}
+					{% if commentsum.value != 0  %}
 						{% set comrateavg = "%.2f"|format(commentsum.value/counter.value)|float %}
 					{% else %}
 						{% set comrateavg = 0 %}
@@ -459,7 +459,7 @@
 				<td class="sentimentValues"> <b> Status </b></td>
 			</tr>
 			<tr class="sectiondata">
-				<td class="scenario"> Numerical (70%) </td>
+				<td class="scenario"> Numerical <span id="ratingPercentage">(70%)</span> </td>
 					{% set numavg = allsecsum.value  %}
 				<td class="sentimentValues"> {{ "%.2f"|format(numavg)|float }}  </td>
 				<td class="sentimentValues">
@@ -477,10 +477,10 @@
 				</td>
 			</tr> 
 			<tr class="sectiondata">
-				<td class="scenario"> Comment (30%)</td>
+				<td class="scenario"> Comment <span id="commentPercentage">(30%)</span></td>
 
 				{% if commentsum.value != 0 or counter.value != 0 %}
-					{% set comavg = commentsum.value/counter.value %}
+					{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
 				{% else %}
 					{% set comavg = 0 %}
 				{% endif %}
@@ -488,7 +488,7 @@
 				<text style="display: none;">
 					{{arrayAve.append("%.2f"|format(comavg)|float)}}
 				</text>
-				<td class="sentimentValues"> {{ "%.2f"|format(comavg)|float }} </td>
+				<td class="sentimentValues" id = "comAverage"> {{ comavg }} </td>
 				<td class="sentimentValues">
 					{% if comavg >= 4.2 and comavg <= 5.0 %}
 						{{"Excellent"}}
@@ -507,9 +507,12 @@
 			<tr>
 				<td class="scenario" bgcolor="#ccddff"><b>OVERALL EVALUATION AVERAGE</b></td>
 				<td class="sentimentValues" bgcolor="#ccddff"><b>
-
+					{% if counter.value == 0 %}
+					{% set overallavg = numavg %}
+					{% else %}
 					{% set overallavg = "%.2f"|format(( 70 * numavg + 30 * comavg) / (70+30))|float %}
-						{{ overallavg }}
+					{% endif %}
+					{{ "%.2f"|format(overallavg)|float }}
 				</b></td>
 				<td class="sentimentValues" bgcolor="#ccddff"><b>
 					{% if overallavg >= 4.2 and overallavg <= 5.0 %}
@@ -621,7 +624,16 @@
 <script>
 	let selected_teacher = document.getElementById("selectTeacher");
 	let selected_subject = document.getElementById("selectSubject");
+	let comment_average = document.getElementById("comAverage");
+	let rating_percentage = document.getElementById("ratingPercentage");
+	let comment_percentage = document.getElementById("commentPercentage");
 
+	if(comment_average.innerText == "0"){
+		comment_average.innerText = "-";
+		rating_percentage.innerText = "(100%)";
+		comment_percentage.innerText = "(0%)";
+	}
+	
 	selected_teacher.onchange = function()
 	{
 		// disable subject dropdown if teacher is in default
