@@ -6,15 +6,15 @@ app = Flask(__name__)
 
 # if not in deployment
 if platform.system() == "Windows":
-    # app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
-    # app.config['MYSQL_USER'] = 'dbuser';
-    # app.config['MYSQL_PASSWORD'] = 'dbuser123';
-    # app.config['MYSQL_DB'] = 'isent';
-    # app.config['MYSQL_PORT'] = 14859;
-	app.config['MYSQL_HOST'] = 'localhost';
-	app.config['MYSQL_USER'] = 'root';
-	app.config['MYSQL_PASSWORD'] = '';
-	app.config['MYSQL_DB'] = 'isent';
+    app.config['MYSQL_HOST'] = 'mysql-77857-0.cloudclusters.net';
+    app.config['MYSQL_USER'] = 'dbuser';
+    app.config['MYSQL_PASSWORD'] = 'dbuser123';
+    app.config['MYSQL_DB'] = 'isent';
+    app.config['MYSQL_PORT'] = 12998;
+    #app.config['MYSQL_HOST'] = 'localhost';
+    #app.config['MYSQL_USER'] = 'root';
+    #app.config['MYSQL_PASSWORD'] = '';
+    #app.config['MYSQL_DB'] = 'isent';
 # in deployment
 else:
     app.config['MYSQL_HOST'] = 'mysql-77857-0.cloudclusters.net';
@@ -22,12 +22,12 @@ else:
     app.config['MYSQL_PASSWORD'] = 'dbuser123';
     app.config['MYSQL_DB'] = 'isent';
     app.config['MYSQL_PORT'] = 12998;
-    #old-db
-    #app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
-    #app.config['MYSQL_USER'] = 'dbuser';
-    #app.config['MYSQL_PASSWORD'] = 'dbuser123';
-    #app.config['MYSQL_DB'] = 'isent';
-    #app.config['MYSQL_PORT'] = 14859;
+    # old-db
+    # app.config['MYSQL_HOST'] = 'mysql-76692-0.cloudclusters.net';
+    # app.config['MYSQL_USER'] = 'dbuser';
+    # app.config['MYSQL_PASSWORD'] = 'dbuser123';
+    # app.config['MYSQL_DB'] = 'isent';
+    # app.config['MYSQL_PORT'] = 14859;
 
 mysql = MySQL(app)
 
@@ -102,7 +102,6 @@ def getNumberOfRespondents(teacher, subject):
             sql = "SELECT count(*) from evaluation WHERE idTeacher = %s and edpCode = %s"
             val = (teacher, subject,)
 
-
         cur.execute(sql, val)
         result = cur.fetchall()
         return result[0][0]
@@ -115,10 +114,10 @@ def getSentimentValues(teacher, subject):
     # if no teacher is selected, and no subject select (no filter)
     if ((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
         sql = "SELECT evaluation.comment,"
-        sql += "csentiment.positive_value,"
-        sql += "csentiment.neutral_value,"
-        sql += "csentiment.negative_value,"
-        sql += "csentiment.sentiment_classification,"
+        sql += "csentiment.posVal,"
+        sql += "csentiment.neuVal,"
+        sql += "csentiment.negVal,"
+        sql += "csentiment.classification,"
         sql += "csentiment.score "
         sql += "from evaluation INNER JOIN csentiment ON evaluation.id = csentiment.evaluationId "
         sql += "where evaluation.comment is not null and evaluation.comment <> ''"
@@ -129,10 +128,10 @@ def getSentimentValues(teacher, subject):
         # if a teacher is selected, but no subject is selected (teacher + all subjects)
         if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
             sql = "SELECT evaluation.comment,"
-            sql += "csentiment.positive_value,"
-            sql += "csentiment.neutral_value,"
-            sql += "csentiment.negative_value,"
-            sql += "csentiment.sentiment_classification,"
+            sql += "csentiment.posVal,"
+            sql += "csentiment.neuVal,"
+            sql += "csentiment.negVal,"
+            sql += "csentiment.classification,"
             sql += "csentiment.score "
             sql += "from evaluation INNER JOIN csentiment ON evaluation.id = csentiment.evaluationId "
             sql += "where evaluation.comment is not null and evaluation.comment <> '' and evaluation.idteacher = %s"
@@ -140,26 +139,26 @@ def getSentimentValues(teacher, subject):
         # if a teacher is selected, and a subject is selected (teacher + subject)
         elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
             sql = "SELECT evaluation.comment,"
-            sql += "csentiment.positive_value,"
-            sql += "csentiment.neutral_value,"
-            sql += "csentiment.negative_value,"
-            sql += "csentiment.sentiment_classification,"
+            sql += "csentiment.posVal,"
+            sql += "csentiment.neuVal,"
+            sql += "csentiment.negVal,"
+            sql += "csentiment.classification,"
             sql += "csentiment.score "
             sql += "from evaluation INNER JOIN csentiment ON evaluation.id = csentiment.evaluationId "
             sql += "where evaluation.comment is not null and evaluation.comment <> '' and evaluation.idteacher = %s and evaluation.edpCode = %s"
-            #sql = "SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> '' and idteacher = %s and edpCode = %s"
+            # sql = "SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> '' and idteacher = %s and edpCode = %s"
             val = (teacher, subject,)
         # else (if there is no teacher selected and a subject is selected)
         else:
             sql = "SELECT evaluation.comment,"
-            sql += "csentiment.positive_value,"
-            sql += "csentiment.neutral_value,"
-            sql += "csentiment.negative_value,"
-            sql += "csentiment.sentiment_classification,"
+            sql += "csentiment.posVal,"
+            sql += "csentiment.neuVal,"
+            sql += "csentiment.negVal,"
+            sql += "csentiment.classification,"
             sql += "csentiment.score "
             sql += "from evaluation INNER JOIN csentiment ON evaluation.id = csentiment.evaluationId "
             sql += "where evaluation.comment is not null and evaluation.comment <> '' and evaluation.edpCode = %s"
-            #sql = "SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> '' and edpCode = %s"
+            # sql = "SELECT comment,pos,neu,neg,sentiment,score from evaluation where comment is not null and comment <> '' and edpCode = %s"
             val = (subject,)
 
         cur.execute(sql, val)
@@ -380,19 +379,20 @@ def evaluation(teacher, subject):
                 sql = "INSERT INTO evaluation (idteacher,idstudent,edpCode,section1,section2,section3,section4,section5,pos,neu,neg,comment,sentiment, score)\
 					 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
                 val = (
-                teacher, "18013672", subject, sec1_string, sec2_string, sec3_string, sec4_string, sec5_string, pos_val,
-                neu_val, neg_val, comment, sen_val, score_val)
+                    teacher, "18013672", subject, sec1_string, sec2_string, sec3_string, sec4_string, sec5_string,
+                    pos_val,
+                    neu_val, neg_val, comment, sen_val, score_val)
 
                 # getting the last row id inserted in evaluation table
                 cur.execute(sql, val)
                 mysql.connection.commit()
                 id = cur.lastrowid
                 # inserting sentiment values to table csentiment
-                sql = "INSERT INTO csentiment (evaluationId,comments,positive_value,neutral_value,negative_value,sentiment_classification,score)\
+                sql = "INSERT INTO csentiment (evaluationId,comment,posVal,neuVal,negVal,classification,score)\
                                 VALUES (%s,%s,%s,%s,%s,%s,%s);"
-                val = (id,comment, pos_val,neu_val,neg_val,sen_val, score_val)
-                
-                
+                val = (id, comment, pos_val, neu_val, neg_val, sen_val, score_val)
+
+
             # else input comment is empty
             else:
                 sql = "INSERT INTO evaluation (idteacher,idstudent,edpCode,section1,section2,section3,section4,section5)\
@@ -403,9 +403,9 @@ def evaluation(teacher, subject):
                 mysql.connection.commit()
                 id = cur.lastrowid
                 # inserting sentiment values to table csentiment
-                sql = "INSERT INTO csentiment (evaluationId,comments,positive_value,neutral_value,negative_value,sentiment_classification,score)\
-                                VALUES (%s,%s,%s,%s,%s,%s,%s);"
-                val = (id, comment, pos_val, neu_val, neg_val, sen_val, score_val)
+                sql = "INSERT INTO csentiment (evaluationId)\
+                                VALUES (%s);"
+                val = (id,)
 
             cur.execute(sql, val)
             mysql.connection.commit()
@@ -434,33 +434,33 @@ def getPositiveAverage():
     # if default
     # if no teacher is selected, and no subject select (no filter)
     if ((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
-        cur.execute("SELECT AVG(positive_value) from csentiment WHERE score IS NOT NULL ")
+        cur.execute("SELECT AVG(posVal) from csentiment WHERE score IS NOT NULL ")
         posAve = cur.fetchall()[0]
         return posAve
     # if not default
     else:
         # if a teacher is selected, but no subject is selected (teacher + all subjects)
         if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
-            sql = "SELECT AVG(csentiment.positive_value) "
+            sql = "SELECT AVG(csentiment.posVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.idteacher = %s and csentiment.score IS NOT NULL "
             val = (teacher,)
         # if a teacher is selected, and a subject is selected (teacher + subject)
         elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
-            sql = "SELECT AVG(csentiment.positive_value) "
+            sql = "SELECT AVG(csentiment.posVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.idteacher = %s and evaluation.edpCode = %s and csentiment.score IS NOT NULL "
-            #sql = "SELECT AVG(pos) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
+            # sql = "SELECT AVG(pos) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
             val = (teacher, subject,)
         # else (if there is no teacher selected and a subject is selected)
         else:
-            sql = "SELECT AVG(csentiment.positive_value) "
+            sql = "SELECT AVG(csentiment.posVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.edpCode = %s and csentiment.score IS NOT NULL "
-            #sql = "SELECT AVG(pos) from evaluation where edpCode = %s and score IS NOT NULL "
+            # sql = "SELECT AVG(pos) from evaluation where edpCode = %s and score IS NOT NULL "
             val = (subject,)
 
         cur.execute(sql, val)
@@ -476,33 +476,33 @@ def getNegativeAverage():
     # if default
     # if no teacher is selected, and no subject select (no filter)
     if ((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
-        cur.execute("SELECT AVG(csentiment.negative_value) from csentiment WHERE score IS NOT NULL ")
+        cur.execute("SELECT AVG(csentiment.negVal) from csentiment WHERE score IS NOT NULL ")
         posAve = cur.fetchall()[0]
         return posAve
     # if not default
     else:
         # if a teacher is selected, but no subject is selected (teacher + all subjects)
         if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
-            sql = "SELECT AVG(csentiment.negative_value) "
+            sql = "SELECT AVG(csentiment.negVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.idteacher = %s and csentiment.score IS NOT NULL "
             val = (teacher,)
         # if a teacher is selected, and a subject is selected (teacher + subject)
         elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
-            sql = "SELECT AVG(csentiment.negative_value) "
+            sql = "SELECT AVG(csentiment.negVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.idteacher = %s and evaluation.edpCode = %s and csentiment.score IS NOT NULL "
-            #sql = "SELECT AVG(pos) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
+            # sql = "SELECT AVG(pos) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
             val = (teacher, subject,)
         # else (if there is no teacher selected and a subject is selected)
         else:
-            sql = "SELECT AVG(csentiment.negative_value) "
+            sql = "SELECT AVG(csentiment.negVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.edpCode = %s and csentiment.score IS NOT NULL "
-            #sql = "SELECT AVG(pos) from evaluation where edpCode = %s and score IS NOT NULL "
+            # sql = "SELECT AVG(pos) from evaluation where edpCode = %s and score IS NOT NULL "
             val = (subject,)
 
         cur.execute(sql, val)
@@ -515,36 +515,36 @@ def getNeutralAverage():
     subject = G_SUBJECT_ID
 
     cur = mysql.connection.cursor()
-       # if default
+    # if default
     # if no teacher is selected, and no subject select (no filter)
     if ((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
-        cur.execute("SELECT AVG(csentiment.neutral_value) from csentiment WHERE score IS NOT NULL ")
+        cur.execute("SELECT AVG(csentiment.neuVal) from csentiment WHERE score IS NOT NULL ")
         posAve = cur.fetchall()[0]
         return posAve
     # if not default
     else:
         # if a teacher is selected, but no subject is selected (teacher + all subjects)
         if ((teacher != "0" and teacher != "all") and (subject == "0" or subject == "all")):
-            sql = "SELECT AVG(csentiment.neutral_value) "
+            sql = "SELECT AVG(csentiment.neuVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.idteacher = %s and csentiment.score IS NOT NULL "
             val = (teacher,)
         # if a teacher is selected, and a subject is selected (teacher + subject)
         elif ((teacher != "0" and teacher != "all") and (subject != "0" or subject != "all")):
-            sql = "SELECT AVG(csentiment.neutral_value) "
+            sql = "SELECT AVG(csentiment.neuVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.idteacher = %s and evaluation.edpCode = %s and csentiment.score IS NOT NULL "
-            #sql = "SELECT AVG(pos) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
+            # sql = "SELECT AVG(pos) from evaluation where idteacher = %s and edpCode = %s and score IS NOT NULL "
             val = (teacher, subject,)
         # else (if there is no teacher selected and a subject is selected)
         else:
-            sql = "SELECT AVG(csentiment.neutral_value) "
+            sql = "SELECT AVG(csentiment.neuVal) "
             sql += "from csentiment INNER JOIN evaluation ON "
             sql += "csentiment.evaluationId = evaluation.id "
             sql += "where evaluation.edpCode = %s and csentiment.score IS NOT NULL "
-            #sql = "SELECT AVG(pos) from evaluation where edpCode = %s and score IS NOT NULL "
+            # sql = "SELECT AVG(pos) from evaluation where edpCode = %s and score IS NOT NULL "
             val = (subject,)
 
     cur.execute(sql, val)
@@ -572,7 +572,7 @@ with app.app_context():
         import requests
         dictToSend = {'comment': comment}
         res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
-        #res = requests.post('https://csentiment-api.herokuapp.com/getSentiment', json=dictToSend)
+        # res = requests.post('https://csentiment-api.herokuapp.com/getSentiment', json=dictToSend)
         print('response from server:', res.text)
         dictFromServer = res.json()
         return str(dictFromServer)
@@ -609,11 +609,11 @@ with app.app_context():
         #     ("neuAve", neuAve),
         # ]
         data = list(test.items())
-        resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = test, stream=True)
-        #resp = requests.post('https://csentimentapi.herokuapp.com/reportGeneration', json=data, stream=True)
+        resp = requests.post('http://127.0.0.6:8000/reportGeneration', json=test, stream=True)
+        # resp = requests.post('https://csentimentapi.herokuapp.com/reportGeneration', json=data, stream=True)
         return resp.raw.read(), resp.status_code, resp.headers.items()
 
 if __name__ == "__main__":
     app.run(debug=True)
-    #app.run(host='127.0.0.1', port=8080, debug=True)
+    # app.run(host='127.0.0.1', port=8080, debug=True)
 
