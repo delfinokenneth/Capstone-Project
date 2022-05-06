@@ -173,7 +173,7 @@ def NB_Classify(comment):
     x = data['comment']
     y = data['label']
 
-    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.15, random_state=45)
+    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.30, random_state=50)
 
     # Vectorize text reviews to numbers
     vec = CountVectorizer(stop_words='english')
@@ -188,6 +188,12 @@ def NB_Classify(comment):
     nbpos = result[0][2]*100
     nbneu = result[0][1]*100
     nbneg = result[0][0]*100
+
+    if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
+        nbpos = 0
+        nbneu = 100
+        nbneg = 0
+        classification ="neutral"
 
     # if nb sentiment is  neutral
     if classification == 'neutral':
@@ -207,16 +213,9 @@ def NB_Classify(comment):
     print("sentence was rated as ", nbneg, "% Negative")
     print("----------------------------")
 
-    if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
-        nbpos = 0
-        nbneu = 100
-        nbneg = 0
-        classification ="neutral"
     #if neutral value is greater than both positive and negative value, then com us "-"
     #if(nbneu > nbpos and nbneu > nbneg):
-
-
-
+    
     return classification + " " + str(nbpos) + " " + str(nbneu) + " " + str(nbneg) + " " + str(nbscore)
 
 def isNeutralDefaultVal(pos,neu,neg): 
@@ -224,9 +223,9 @@ def isNeutralDefaultVal(pos,neu,neg):
     pos = round(pos,2)
     neg = round(neg,2)
 
-    defNeu = round(18.4331797235023,2)
-    defPos = round(48.540706605222745,2)
-    defNeg = round(33.02611367127495,2)
+    defNeu = round(18.470149253731346,2)
+    defPos = round(48.50746268656717,2)
+    defNeg = round(33.02238805970149,2)
 
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
