@@ -84,22 +84,22 @@ def getNumberOfRespondents(teacher, subject):
     # if default
     # if no teacher is selected, and no subject select (no filter)
     if ((teacher == "all" or teacher == "0") and (subject == "0" or subject == "all")):
-        cur.execute("SELECT count(*) from evaluation ")
+        cur.execute("SELECT count(*) from evaluation INNER JOIN csentiment ON evaluation.id = csentiment.evaluationId ")
         result = cur.fetchall()
         return result[0][0]
     # if not default
     else:
         # if a teacher is selected, but no subject is selected (teacher + all subjects)
         if ((teacher != "0" or teacher != "all") and (subject == "0" or subject == "all")):
-            sql = "SELECT count(*) from evaluation WHERE idTeacher = %s"
+            sql = "SELECT count(*) from evaluation INNER JOIN csentiment ON evaluation.id = csentiment.evaluationId WHERE evaluation.idTeacher = %s"
             val = (teacher,)
         # else (if there is no teacher selected and a subject is selected)
         elif ((teacher == "0" or teacher == "all") and (subject != "0" or subject != "all")):
-            sql = "SELECT count(*) from evaluation WHERE edpCode = %s"
+            sql = "SELECT count(*) from evaluation INNER JOIN csentiment ON evaluation.id = csentiment.evaluationId WHERE evaluation.edpCode = %s"
             val = (subject,)
         # if a teacher is selected, and a subject is selected (teacher + subject)
         elif ((teacher != "0" or teacher != "all") and (subject != "0" or subject != "all")):
-            sql = "SELECT count(*) from evaluation WHERE idTeacher = %s and edpCode = %s"
+            sql = "SELECT count(*) from evaluation INNER JOIN csentiment ON evaluation.id = csentiment.evaluationId WHERE evaluation.idTeacher = %s and evaluation.edpCode = %s"
             val = (teacher, subject,)
 
         cur.execute(sql, val)
@@ -553,13 +553,13 @@ def getNeutralAverage():
 
 
 # end for getting average for positive, negative and neutral
-@app.route("/generateReport/<sec1>/<sec2>/<sec3>/<sec4>/<sec5>/<comment>/", methods=["POST", "GET"])
-def generateReport(sec1, sec2, sec3, sec4, sec5, comment):
+@app.route("/generateReport/<sec1>/<sec2>/<sec3>/<sec4>/<sec5>/<comment>/<ratingPerc>/<commentPerc>/", methods=["POST", "GET"])
+def generateReport(sec1, sec2, sec3, sec4, sec5, comment, ratingPerc, commentPerc):
     try:
         posAve = getPositiveAverage()
         negAve = getNegativeAverage()
         neuAve = getNeutralAverage()
-        resp = printReport(sec1, sec2, sec3, sec4, sec5, comment, posAve[0], negAve[0], neuAve[0])
+        resp = printReport(sec1, sec2, sec3, sec4, sec5, comment, posAve[0], negAve[0], neuAve[0], ratingPerc, commentPerc)
         return resp  # anhi na part ma download ang summary report nga pdf
     except Exception as e:
         print(e)
@@ -578,7 +578,7 @@ with app.app_context():
         return str(dictFromServer)
 
 with app.app_context():
-    def printReport(sec1, sec2, sec3, sec4, sec5, comment, posAve, negAve, neuAve):
+    def printReport(sec1, sec2, sec3, sec4, sec5, comment, posAve, negAve, neuAve, ratingPerc, commentPerc):
         import requests
         test = {
             'Section1': sec1,
@@ -592,7 +592,9 @@ with app.app_context():
             'Respondents': G_NUMBER_OF_RESPONDENTS,
             'posAve': posAve,
             'negAve': negAve,
-            'neuAve': neuAve
+            'neuAve': neuAve,
+            'ratingPercentage': ratingPerc,
+            'commentPercentage': commentPerc,
         }
         # data = [
         #     ("Section1", sec1),

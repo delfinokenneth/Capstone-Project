@@ -271,14 +271,14 @@
                         </td>
                     </tr>
                     {% if data.Comments == "0" %}
-                    {% set percentageRating = "(100%)"%}
-                    {% set percentageComment = "(0%)"%}
+                    {% set percentageRating = "100"%}
+                    {% set percentageComment = "0"%}
                     {% else %}
-                    {% set percentageRating = "(70%)"%}
-                    {% set percentageComment = "(30%)"%}
+                    {% set percentageRating = "%.0f"|format(data.ratingPercentage|float) %}
+                    {% set percentageComment = "%.0f"|format(data.commentPercentage|float) %}
                     {% endif %}
                     <tr id="ratingResult">
-                        <th id="colEvalResult">RATING RESULT <span>{{percentageRating}}</span></th>
+                        <th id="colEvalResult">RATING RESULT <span>({{percentageRating}}%)</span></th>
                         {% set percSection1 = data.Section1|float * 0.15 %}
                         {% set percSection2 = data.Section2|float * 0.35 %}
                         {% set percSection3 = data.Section3|float * 0.25 %}
@@ -303,7 +303,7 @@
                         </th>
                     </tr>
                     <tr id="commentResult">
-                        <th id="colEvalResult">COMMENT RESULT <span> {{percentageComment}}</span></th>
+                        <th id="colEvalResult">COMMENT RESULT <span>({{percentageComment}}%)</span></th>
                         <th id="colAve"></th>
                         {% if data.Comments == "0" %}
                         {% set comAve = "-" %}
@@ -332,7 +332,7 @@
                         {% if data.Comments == "0" %}
                         {% set overallResult = percRating %}
                         {% else %}
-                        {% set overallResult = "%.2f"|format(percRating * 0.70 + commentResult * 0.30) |float %}
+                        {% set overallResult = "%.2f"|format(percRating * (data.ratingPercentage|float/100) + commentResult * (data.commentPercentage|float/100)) |float %}
                         {% endif %}
                         <th id="colAve"></th>
                         <th id="colAve">{{overallResult}}</th>

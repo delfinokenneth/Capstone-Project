@@ -27,16 +27,28 @@ x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.30, random_
 # Vectorize text reviews to numbers
 vec = CountVectorizer(stop_words='english')
 x = vec.fit_transform(x).toarray()
+#test_vectors = vec.transform(x_test)
+#print(test_vectors)
 x_test = vec.transform(x_test).toarray()
+print(x_test)
 
 from sklearn.naive_bayes import MultinomialNB                                                 
 
 model = MultinomialNB()
 model.fit(x, y)
 
-accuracy = model.score(x_test, y_test)
+from sklearn import metrics
+from sklearn.metrics import accuracy_score
 
-#print(model.predict(vec.transform(['dili kahibaw mutudlo, mura ug di kahibaw sa iyang subject'])))
+predicted_train = model.predict(x)
+print("Training Accuracy ", accuracy_score(y,predicted_train))
+print(metrics.classification_report(y,predicted_train))
+metrics.confusion_matrix(y,predicted_train)
+
+predicted_test = model.predict(x_test)
+print("Testing Accuracy ", accuracy_score(y_test,predicted_test))
+print(metrics.classification_report(y_test,predicted_test))
+metrics.confusion_matrix(y_test,predicted_test)
 
 #save model
 pickle.dump(model, open('NB_Model.pkl', 'wb'))

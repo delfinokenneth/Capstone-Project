@@ -101,6 +101,9 @@
 			width: 100%;
 		}
 	}
+	#reportUrl{
+		display: none;
+	}
 </style>
 
 
@@ -180,7 +183,33 @@
 			min-width: 200px;
 		}
 	}
-
+	#inputCommentPercentage{
+		width: 50px;
+		/* display:none; */
+		border-radius: 5px;
+	}
+	#saveComment, #cancelComment{
+		border-radius: 5px;
+		padding: 2px;
+		width: 50px;
+		border: none;
+		color: white;
+	}
+	#saveComment{
+		background-color: #00cc00;	
+	}
+	#cancelComment{
+		background-color: red;	
+	}
+	#commentPercentageEdit{
+		display: none;
+	}
+	#commentEditIcon:hover{
+		color: blue;
+		width: 20px;
+		height: 20px;
+		cursor: pointer;
+	}
 </style>
 <form method="POST">
 <div id="questionaire">
@@ -459,9 +488,11 @@
 				<td class="sentimentValues"> <b> Status </b></td>
 			</tr>
 			<tr class="sectiondata">
-				<td class="scenario"> Numerical <span id="ratingPercentage">(70%)</span> </td>
-					{% set numavg = allsecsum.value  %}
-				<td class="sentimentValues"> {{ "%.2f"|format(numavg)|float }}  </td>
+				<td class="scenario"> 
+					Numerical (<span id="ratingPercentage">70</span>%) 
+				</td>
+					{% set numavg = "%.2f"|format(allsecsum.value)|float  %}
+				<td class="sentimentValues" id="ratingAverage"> {{ numavg }}  </td>
 				<td class="sentimentValues">
 					{% if numavg >= 4.2 and numavg <= 5.0 %}
 						{{"Excellent"}}
@@ -477,7 +508,21 @@
 				</td>
 			</tr> 
 			<tr class="sectiondata">
-				<td class="scenario"> Comment <span id="commentPercentage">(30%)</span></td>
+				<td class="scenario"> 
+					Comment 
+					<span id = "commentPercentageLabel"> 
+						(<span id="commentPercentage" >30</span>%) 
+						<svg id="commentEditIcon" onclick="editPercentage('comment')" class="EditIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+							<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+							<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+						</svg>
+					</span>
+					<span id="commentPercentageEdit">
+						<input type="text" id="inputCommentPercentage">
+						<button id="saveComment" type="button" onclick="saveEditPercentage('comment')"> save </button>
+						<button id="cancelComment" type="button" onclick="cancelEditPercentage('comment')"> cancel </button>
+					</span>
+				</td>
 
 				{% if commentsum.value != 0 or counter.value != 0 %}
 					{% set comavg = "%.2f"|format(commentsum.value/counter.value)|float %}
@@ -506,7 +551,7 @@
 			</tr>
 			<tr>
 				<td class="scenario" bgcolor="#ccddff"><b>OVERALL EVALUATION AVERAGE</b></td>
-				<td class="sentimentValues" bgcolor="#ccddff"><b>
+				<td class="sentimentValues" id="overallaverage" bgcolor="#ccddff"><b>
 					{% if counter.value == 0 %}
 					{% set overallavg = numavg %}
 					{% else %}
@@ -610,11 +655,12 @@
 	}
 </style>
 <div id="divgenerate">
-	<button id="btngenerate" >
-	<a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}" 
-		style="text-decoration: none; color: white;" >
+	<input id="reportUrl" value = "/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}">
+	<button id="btngenerate" type="button" onclick="generateReport()">
+	<!-- <a href="/generateReport/{{arrayAve[0]}}/{{arrayAve[1]}}/{{arrayAve[2]}}/{{arrayAve[3]}}/{{arrayAve[4]}}/{{arrayAve[5]}}" 
+		style="text-decoration: none; color: white;" > -->
 		Generate Report
-	</a>
+	<!-- </a> -->
 	</button>
 </div>
 </div>
@@ -624,16 +670,76 @@
 <script>
 	let selected_teacher = document.getElementById("selectTeacher");
 	let selected_subject = document.getElementById("selectSubject");
-	let comment_average = document.getElementById("comAverage");
+	
+	let rating_average = document.getElementById("ratingAverage");
 	let rating_percentage = document.getElementById("ratingPercentage");
+
+	let icon_comment_edit = document.getElementById("commentEditIcon");
+
+	let comment_average = document.getElementById("comAverage");
 	let comment_percentage = document.getElementById("commentPercentage");
+
+	let span_commment_percentage_label = document.getElementById("commentPercentageLabel");
+	let span_comment_editmode = document.getElementById("commentPercentageEdit");
+	let input_comment_percentage = document.getElementById("inputCommentPercentage");
+	
+	let overallaverage_average = document.getElementById("overallaverage");
+
+	var ratingAverage = parseFloat(rating_average.innerText);
+	var commentAverage = parseFloat(comment_average.innerText);
+
+	var commentPerc = parseInt(comment_percentage.innerText,10);
+	var ratingPerc = parseInt(rating_percentage.innerText,10);
+
+	function saveEditPercentage(x)
+	{
+		if(input_comment_percentage.value > 100 || input_comment_percentage.value < 0){
+			alert("Invalid value!");
+		}
+		else{
+			if(x == "comment"){
+				span_comment_editmode.style.display = "none";
+				span_commment_percentage_label.style.display = "inline";
+				console.log(input_comment_percentage.value);
+
+				ratingPerc = 100 - input_comment_percentage.value;
+				commentPerc = input_comment_percentage.value;
+				comment_percentage.innerText = commentPerc;
+				rating_percentage.innerText = ratingPerc;
+				input_comment_percentage.value = "";
+				overallaverage_average.innerText = (ratingAverage * (ratingPerc/100) + commentAverage * (commentPerc/100)).toFixed(2);
+			}
+		}
+	}
+	function cancelEditPercentage(x)
+	{
+		if(x == "comment"){
+			span_comment_editmode.style.display = "none";
+			span_commment_percentage_label.style.display = "inline";
+		}
+	}
+	
+	function editPercentage(x){
+		if(x == "comment"){
+			span_commment_percentage_label.style.display = "none";
+			span_comment_editmode.style.display = "inline";
+		}	
+	}
+
+	let report_url = document.getElementById("reportUrl");
+	console.log(report_url.value + "/" + ratingPerc.toString() +"/" +commentPerc.toString());
+
+	function generateReport(){
+		 window.location = report_url.value + "/" + ratingPerc.toString() +"/" + commentPerc.toString();
+	}
 
 	if(comment_average.innerText == "0"){
 		comment_average.innerText = "-";
-		rating_percentage.innerText = "(100%)";
-		comment_percentage.innerText = "(0%)";
+		rating_percentage.innerText = "100";
+		comment_percentage.innerText = "0";
+		icon_comment_edit.style.pointerEvents = "none";
 	}
-	
+
 	selected_teacher.onchange = function()
 	{
 		// disable subject dropdown if teacher is in default
