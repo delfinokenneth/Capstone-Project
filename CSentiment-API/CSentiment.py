@@ -118,20 +118,20 @@ def sentiment_scores(sentence):
         vdscore = abs(vdscore) * 5
         vdscore = round(vdscore, 2)
 
+    # detect language used
+    try:
+        langUsed = detect(sentence)
+    except Exception as e:
+        langUsed = ""
+
     print("word: ", sentence)
     print("Overall sentiment dictionary is : ", sentiment_dict)
-    print("----------------------------")
+    print("---------------------------- language: ", langUsed)
     print("VADER : ", sentiment_output, "|", vdscore)
     print("sentence was rated as ", vdpos, "% Positive")
     print("sentence was rated as ", vdneu, "% Neutral")
     print("sentence was rated as ", vdneg, "% Negative")
     print("----------------------------")
-
-    try:
-        langUsed = detect(sentence)
-    except Exception as e:
-        langUsed = ""
-    # detect language used
 
     # decide sentiment as positive, negative and neutral
     if sentiment_dict['compound'] >= 0.05:
@@ -140,8 +140,8 @@ def sentiment_scores(sentence):
     elif sentiment_dict['compound'] <= -0.05:
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
-    elif (isEnglishOrCebuano(langUsed) or sentence == ""):
-        return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
+    # elif (isEnglishOrCebuano(langUsed) or sentence == ""):
+    #     return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
     else:
         #print("pass to NB, langused: ", langUsed)
