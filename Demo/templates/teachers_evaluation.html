@@ -425,8 +425,21 @@
 				{% set commentsum = namespace(value = 0) %}
 				{% set commentavg = namespace(value = 0) %}
 				{% for row in datacomments %}
+				{% set new_comment = row.0.replace("\r\n"+"-","*") %}
+				{% set comment_list = new_comment.split("*") %}
 				<tr class="sectiondata">
-					<td class="scenario"> {{ row.0 }}</td> <!-- comment -->
+					<td class="scenario"> 
+						{% for item in comment_list %}
+						{% if item[0] == "-" %}
+							{% set item = item.replace('-'," ") %}	
+						{% endif %}
+						{% if comment_list|length > 1 %}
+						•
+						{% endif %}
+						{{ item }}
+							<br>
+						{% endfor %}
+					</td> <!-- comment -->
 					<td class="sentimentValues">{{"%.2f"|format(row.1|float)}}</td> <!-- pos -->
 					<td class="sentimentValues">{{"%.2f"|format(row.2|float)}}</td> <!-- neu -->
 					<td class="sentimentValues">{{"%.2f"|format(row.3|float)}}</td> <!-- neg -->

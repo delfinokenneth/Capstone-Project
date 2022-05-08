@@ -173,7 +173,7 @@ def NB_Classify(comment):
     x = data['comment']
     y = data['label']
 
-    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.30, random_state=50)
+    x, x_test, y, y_test = train_test_split(x,y, stratify=y, test_size=0.1, random_state=50)
 
     # Vectorize text reviews to numbers
     vec = CountVectorizer(stop_words='english')
