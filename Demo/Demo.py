@@ -238,6 +238,7 @@ def evaluate(teacher, subject):
     cur.execute("SELECT * FROM questionaire where section = 5")
     section5 = cur.fetchall()
 
+    # ask kenneth in this part
     # <!-- DB guide-> https://imgur.com/YMKA4ib -->
     cur.execute("""SELECT DISTINCT section.id, section.section, section.name, section.description, section.percentage, 
 				(select count(question) from questionaire  where section = '1') as total1, 
@@ -247,8 +248,11 @@ def evaluate(teacher, subject):
 				(select count(question) from questionaire  where section = '5') as total5 
 				from section 
 				right join questionaire on section.section = questionaire.section """)
+
+    #fetch result/data from the database of the previous query
     sectionsleft = cur.fetchall()
 
+    # get the questionaire section and question from the database
     cur.execute(""" SELECT questionaire.section, questionaire.question from questionaire
 					right join section
 					ON questionaire.section = section.section """)
@@ -257,16 +261,19 @@ def evaluate(teacher, subject):
 
     # FOR DEFAULT QUERIES
     # queries for the teachers and subject filter
+    # get teachers from query, selected nga teacher should be on top
     sql = "SELECT * FROM teachers order by (case idteacher when %s then 0 else 1 end), lname asc"
     val = (teacher,)
     cur.execute(sql, val)
     teachers = cur.fetchall()
 
+    #if a teacher is select but subject is in default = 0, 1st subject of the selected teacher should be on top
     if (subject != "all" and (teacher != "0")):
         sql = "SELECT * FROM subjects WHERE teacherId = %s or edpCode = 0 order by (case edpCode when %s then 0 else 1 end), title asc"
         val = (teachers[0][0], subject,)
         cur.execute(sql, val)
         subjects = cur.fetchall()
+    # else if a subject is selected, selected subject should be on top
     else:
         sql = "SELECT * FROM subjects order by (case edpCode when %s then 0 else 1 end), title asc"
         val = (subject,)
@@ -275,17 +282,21 @@ def evaluate(teacher, subject):
     # end for default queries
 
     # get sentiment values
+    # to understand this line, visit getSentimentValues() Function
     comments = getSentimentValues(teacher, subject)
 
     # get total number of respondents
+    # to understand this line, visit getNumberOfRespondents() Function
     numofrespondents = getNumberOfRespondents(teacher, subject)
 
     # get rating records from all sections
+    # to understand this line, visit getRatingValues() Function
     evalsecans = getRatingValues(teacher, subject)
 
     # END FOR FILTER RECORDS
     cur.close()
 
+    # then mugawas na dayon tong summary nga page, and gipasa ang mga values (refer below)
     return render_template("teachers_evaluation.html",
                            section1=section1, section2=section2,
                            lensec1=len(section1), lensec2=len(section2),
@@ -304,32 +315,41 @@ def evaluate(teacher, subject):
                            isDefault=isDefaultUrlForSummary(teacher, subject)
                            )
 
-
+# this the for the evaluation nga page (katong pag evaluate)
 @app.route("/evaluation/<teacher>/<subject>", methods=["POST", "GET"])
 def evaluation(teacher, subject):
+    #fetch all questions from nga section 1
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM questionaire where section = 1")
     section1 = cur.fetchall()
 
+    #fetch all questions from nga section 1
     cur.execute("SELECT * FROM questionaire where section = 2")
     section2 = cur.fetchall()
 
+    #fetch all questions from nga section 1
     cur.execute("SELECT * FROM questionaire where section = 3")
     section3 = cur.fetchall()
 
+    #fetch all questions from nga section 1
     cur.execute("SELECT * FROM questionaire where section = 4")
     section4 = cur.fetchall()
 
+    #fetch all questions from nga section 1
     cur.execute("SELECT * FROM questionaire where section = 5")
     section5 = cur.fetchall()
 
     # FOR DEFAULT QUERIES
     # queries for the teachers and subject filter
+    # para ni atong dropdown button
+    # fetch all teacher, and selected teacher should be on top sa dropdown
     sql = "SELECT * FROM teachers order by (case idteacher when %s then 0 else 1 end), lname asc"
     val = (teacher,)
     cur.execute(sql, val)
     teachers = cur.fetchall()
 
+     # fetch all teacher, and selected teacher should be on top sa dropdown
+     # if there is selected subject, selected subject should be on top
     sql = "SELECT * FROM subjects WHERE teacherId = %s or edpCode = 0 order by (case edpCode when %s then 0 else 1 end), title asc"
     val = (teachers[0][0], subject,)
     cur.execute(sql, val)
@@ -338,6 +358,7 @@ def evaluation(teacher, subject):
 
     cur.close()
 
+    #if musubmit ang user sa evaluation, ma trigger ni nga part
     if request.method == 'POST':
         # Declaring variables for list to store rating in each section
         sec1_rating = []
@@ -346,18 +367,23 @@ def evaluation(teacher, subject):
         sec4_rating = []
         sec5_rating = []
 
+        #store all the ratings from section 1 questions into the sec1_rating list variable
         for i in range(len(section1)):
             sec1_rating.append(request.form[f'rating[{i}]'])
 
+        #store all the ratings from section 2 questions into the sec1_rating list variable
         for i in range(len(section2)):
             sec2_rating.append(request.form[f'rating2[{i}]'])
 
+        #store all the ratings from section 3 questions into the sec1_rating list variable
         for i in range(len(section3)):
             sec3_rating.append(request.form[f'rating3[{i}]'])
 
+        #store all the ratings from section 4 questions into the sec1_rating list variable
         for i in range(len(section4)):
             sec4_rating.append(request.form[f'rating4[{i}]'])
 
+        #store all the ratings from section 5 questions into the sec1_rating list variable
         for i in range(len(section5)):
             sec5_rating.append(request.form[f'rating5[{i}]'])
 
@@ -366,18 +392,29 @@ def evaluation(teacher, subject):
         comment = comment.replace("miss", "")
 
         # getting the sentiment and details from API
+        # getsentiment() function is mao ni gigamit pagkuhas sentiment
+        # PLEASE VISIT THIS FUNCTION TO UNDERSTAND 
+
+        # index[1] = get the positive value from the response from API
         pos_val = getsentiment(comment).split(" ")[1]
+        # index[2] = get the neutral value from the response from API
         neu_val = getsentiment(comment).split(" ")[2]
+        # index[3] = get the negative value from the response from API
         neg_val = getsentiment(comment).split(" ")[3]
+        # index[4] = get the score value from the response from API
         score_val = getsentiment(comment).split(" ")[4]
+        # index[0] = get the classification value from the response from API
         sen_val = getsentiment(comment).split(" ")[0]
         # if sentiment is neutral then score = null
+
+        # if the classification is neutral, Null is save to database
         if sen_val == 'neutral':
             score_val = None
 
         try:
+            #open the database
             cur = mysql.connection.cursor()
-            # converting list into string
+            # converting list into string para maoy isave sa database
             sec1_string = ','.join(sec1_rating)
             sec2_string = ','.join(sec2_rating)
             sec3_string = ','.join(sec3_rating)
@@ -388,17 +425,23 @@ def evaluation(teacher, subject):
             if comment is not "":
                 # if subject is 0 or default, get the value of first subject
                 if (subject == "0" and subject != "all"):
+                    #set subject to first subject
                     subject = subjects[0][0]
-
+                # insert data into database
                 sql = "INSERT INTO evaluation (idteacher,idstudent,edpCode,section1,section2,section3,section4,section5,pos,neu,neg,comment,sentiment, score)\
 					 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+
+                #values to save
                 val = (
                 teacher, "18013672", subject, sec1_string, sec2_string, sec3_string, sec4_string, sec5_string, pos_val,
                 neu_val, neg_val, comment, sen_val, score_val)
 
                 # getting the last row id inserted in evaluation table
                 cur.execute(sql, val)
+                # commit changes
                 mysql.connection.commit()
+                
+                # get the last id of the evaluation table
                 id = cur.lastrowid
                 # inserting sentiment values to table csentiment
                 sql = "INSERT INTO csentiment (evaluationId,comments,positive_value,neutral_value,negative_value,sentiment_classification,score)\
@@ -414,6 +457,7 @@ def evaluation(teacher, subject):
                 # getting the last row id inserted in evaluation table
                 cur.execute(sql, val)
                 mysql.connection.commit()
+                # get the last id of the evaluation table
                 id = cur.lastrowid
                 # inserting sentiment values to table csentiment
                 sql = "INSERT INTO csentiment (evaluationId,comments,positive_value,neutral_value,negative_value,sentiment_classification,score)\
@@ -423,11 +467,14 @@ def evaluation(teacher, subject):
             cur.execute(sql, val)
             mysql.connection.commit()
             cur.close()
+
+            #after masave ang gi evaluation, mu redirect adtos summary nga screen
             return redirect("/teachersevaluation/all/all")
 
         except Exception as exp:
             return f'<h1>{exp}</h1>'
 
+    # wala nagsubmit ang user, muredirect ras evaluation page
     else:
         return render_template("evaluation_page.html",
                                section1=section1, section2=section2,
@@ -569,9 +616,17 @@ def getNeutralAverage():
 @app.route("/generateReport/<sec1>/<sec2>/<sec3>/<sec4>/<sec5>/<comment>/<ratingPerc>/<commentPerc>/", methods=["POST", "GET"])
 def generateReport(sec1, sec2, sec3, sec4, sec5, comment, ratingPerc, commentPerc):
     try:
+        #get the average of positive scores
+        #to further understang this functions visit getPositiveAverage() function
         posAve = getPositiveAverage()
+        #get the average of negative scores
+        #to further understang this functions visit getNegativeAverage() function
         negAve = getNegativeAverage()
+        #get the average of neutral scores
+        #to further understang this functions visit getNeutralAverage() function
         neuAve = getNeutralAverage()
+        # get the response from API to download the PDF file
+        # visit printReport() function to para makita giunsa pag connect sa API
         resp = printReport(sec1, sec2, sec3, sec4, sec5, comment, posAve[0], negAve[0], neuAve[0], ratingPerc, commentPerc)
         return resp  # anhi na part ma download ang summary report nga pdf
     except Exception as e:
@@ -580,19 +635,26 @@ def generateReport(sec1, sec2, sec3, sec4, sec5, comment, ratingPerc, commentPer
 
 
 # method that will send the input comment to the API and return its response
+# This are the part ni connect and Demo.py sa API
 with app.app_context():
+    #this is for the sentimentAnalyzer
     def getsentiment(comment):
         import requests
         dictToSend = {'comment': comment}
+        #mao ni pag call sa API and the response from APi is stored in res nga variable
         res = requests.post('http://127.0.0.6:8000/getSentiment', json=dictToSend)
         #res = requests.post('https://csentiment-api.herokuapp.com/getSentiment', json=dictToSend)
         print('response from server:', res.text)
+        #convert the response into json
         dictFromServer = res.json()
         return str(dictFromServer)
 
 with app.app_context():
+    #this is for the report Generation
     def printReport(sec1, sec2, sec3, sec4, sec5, comment, posAve, negAve, neuAve, ratingPerc, commentPerc):
         import requests
+        # this data should be pass to API for creating the PDF file 
+        # if kuwang/sobra nag data, it will error and can't generate file
         test = {
             'Section1': sec1,
             'Section2': sec2,
@@ -624,6 +686,7 @@ with app.app_context():
         #     ("neuAve", neuAve),
         # ]
         data = list(test.items())
+        #mao ni ang pagcall sa API for report generation and response is store in resp nga variable
         resp = requests.post('http://127.0.0.6:8000/reportGeneration', json = test, stream=True)
         #resp = requests.post('https://csentimentapi.herokuapp.com/reportGeneration', json=data, stream=True)
         return resp.raw.read(), resp.status_code, resp.headers.items()
