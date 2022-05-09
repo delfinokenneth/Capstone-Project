@@ -223,9 +223,9 @@ def isNeutralDefaultVal(pos,neu,neg):
     pos = round(pos,2)
     neg = round(neg,2)
 
-    defNeu = round(18.470149253731346,2)
-    defPos = round(48.50746268656717,2)
-    defNeg = round(33.02238805970149,2)
+    defNeu = round(18.405797101449277,2)
+    defPos = round(48.55072463768116,2)
+    defNeg = round(33.04347826086958,2)
 
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
