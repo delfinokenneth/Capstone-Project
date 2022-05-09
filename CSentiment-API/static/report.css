@@ -16,7 +16,7 @@ body{
 #divForOverallAve {
     width: 100%;
     margin: auto;
-    border-left: 4px solid #ccddff;
+    border-left: 4px solid #8080ff;
 }
 #tblForOverallAve {
     width: 100%;
@@ -35,7 +35,8 @@ body{
     width: 20%;
 }
 #tblHead {
-    background-color: #ccddff;
+    background-color: #8080ff;
+    color: white;
 }
 #ratingResult, #commentResult
 {

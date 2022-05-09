@@ -1,11 +1,3 @@
-
-# IMPORTS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-# noinspection PyUnresolvedReferences
-from xml.dom.minidom import Document
-# noinspection PyUnresolvedReferences
-from xml.dom.minidom import Element
-from h11 import Data
-
 # for language detection
 from langdetect import detect
 #for pdf report generation
@@ -19,21 +11,14 @@ import pandas as pd
 nltk.download('vader_lexicon')
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-#this imports are for the NaiveBayes Model
+
 from sklearn.feature_extraction.text import CountVectorizer
 import pickle
 from sklearn.model_selection import train_test_split
-#IMPORTS <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-# note: TO FURTHER UNDERSTAND THIS SECTION PLEASE OPEN THE vaderconstants.csv and make sure to check the column names
-# reads the vaderconstants.csv file (naa diri ang custom negate and boosters nga word)
 vaderconstants = pd.read_csv('vaderconstants.csv')
-#get the negate words from vaderconstants
 newnegate = tuple(vaderconstants['negate'])
-#get the booster-key(word) and the booster-value from vaderconstants
 newbooster = vaderconstants.set_index('booster-key')['booster-value'].to_dict()
-# note: "nltk" mao ni gigamit sa pagkuhas scores naa diri ang bag of words, negate and booster
-#set nltk.NEGATE with the newnegate values
 nltk.sentiment.vader.VaderConstants.NEGATE = newnegate
 #set nltk.BOOSTER with the newbooster values
 nltk.sentiment.vader.VaderConstants.BOOSTER_DICT = newbooster
@@ -72,20 +57,12 @@ pdfkit.from_url("http://google.com", "out.pdf", configuration=config)
 
 app = Flask(__name__)
 
-# this is to allow cross-origin to the backend
 cors = CORS(app)
 
-# note: TO FURTHER UNDERSTAND THIS SECTION OPEN THHE cebuanonewword.csv
-# get cebuano words and its weight/values -> vaders
 newvaderdata = pd.read_csv('cebuanonewword.csv')
-# this is to print the number of rows and columns sa cebuanonewword.csv
 print("number of data ", newvaderdata.shape)
-# get the token(word) and rating(weight/value) only and store to new_vader nga variable
-# new_vader variable will be used to update the nltk.VADER later
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 
-#check if the language used is cebuano or english
-#disregard other language code basta the thought here is to check either english or cebuano ang comment
 def isEnglishOrCebuano(langUsed):
     if (langUsed == "tl" or 
         langUsed == "en" or
@@ -162,21 +139,20 @@ def sentiment_scores(sentence):
         vdscore = abs(vdscore) * 5
         vdscore = round(vdscore, 2)
 
-    #this part is more on pag print sa console nga format
+    # detect language used
+    try:
+        langUsed = detect(sentence)
+    except Exception as e:
+        langUsed = ""
+
     print("word: ", sentence)
     print("Overall sentiment dictionary is : ", sentiment_dict)
-    print("----------------------------")
+    print("---------------------------- language: ", langUsed)
     print("VADER : ", sentiment_output, "|", vdscore)
     print("sentence was rated as ", vdpos, "% Positive")
     print("sentence was rated as ", vdneu, "% Neutral")
     print("sentence was rated as ", vdneg, "% Negative")
     print("----------------------------")
-
-    # detect the language used in the sentence
-    try:
-        langUsed = detect(sentence)
-    except Exception as e:
-        langUsed = ""
 
     # decide sentiment as positive, negative and neutral
     #if compound score is greater than or equal to 0.05 -> return positive and its pos,neg,neu, score values
@@ -185,11 +161,12 @@ def sentiment_scores(sentence):
     #if compound score is less than or equal to -0.05 -> return  negative and its pos,neg,neu, score values
     elif sentiment_dict['compound'] <= -0.05:
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
-    #if the sentence is cebuano or english or sentence is empty return neutral and its pos,neg,neu, score values
-    elif (isEnglishOrCebuano(langUsed) or sentence == ""):
-        return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
-    #else pass to Naive Bayes Model
+
+    # elif (isEnglishOrCebuano(langUsed) or sentence == ""):
+    #     return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
+
     else:
+        #print("pass to NB, langused: ", langUsed)
         return NB_Classify(sentence)
 
 
@@ -257,6 +234,12 @@ def NB_Classify(comment):
     nbneu = result[0][1]*100
     nbneg = result[0][0]*100
 
+    if(isNeutralDefaultVal(nbpos,nbneu,nbneg)):
+        nbpos = 0
+        nbneu = 100
+        nbneg = 0
+        classification ="neutral"
+
     # if nb sentiment is  neutral
     if classification == 'neutral':
         # score is null and represented as '-' instead of returning 2.5 value
@@ -299,9 +282,9 @@ def isNeutralDefaultVal(pos,neu,neg):
     pos = round(pos,2)
     neg = round(neg,2)
 
-    defNeu = round(18.470149253731346,2)
-    defPos = round(48.50746268656717,2)
-    defNeg = round(33.02238805970149,2)
+    defNeu = round(18.405797101449277,2)
+    defPos = round(48.55072463768116,2)
+    defNeg = round(33.04347826086958,2)
 
     #if verified that it is a default value, return True else False
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
@@ -422,7 +405,7 @@ def generateReport():
 
 
 if __name__ == '__main__':
-    #app.run(debug=True)
+    # app.run(debug=True)
     app.run(host="127.0.0.6", port=8000, debug=True)
 # app.run(host="0.0.0.0", port=5000, debug=True)
 #    app.run(debug=True)

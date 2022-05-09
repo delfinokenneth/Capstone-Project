@@ -107,7 +107,7 @@
 <div id="detailsandlegend">
 	<div id="details">
 	 <h6 style="font-weight: bolder;"> EVALUATION FOR </h6>
-	 <p id="msgSelectTeacher">Please select a teacher to evaluate</p>
+	 <p id="msgSelectTeacher">Please select a teacher and subject to evaluate</p>
 		<label class="detailsLabel"><b> Teacher : </b> </label>
 		<SELECT name="teachers" id="selectTeacher">
 			{% for teacher in teachers %}
@@ -118,10 +118,15 @@
 				{% endif%}	
 			{% endfor %}
 		</SELECT><br>
-		<label class="detailsLabel"><b> Subjects : </b></label>
-		<SELECT name="teachers" id="selectSubject">
+		<label class="detailsLabel"><b> Subject : </b></label>
+		<SELECT name="subjects" id="selectSubject">
+		<!--	<option selected="" disabled="">Select</option> -->
 			{% for subject in subjects %}
-				<OPTION value={{subject[0]}}>{{subject[2]}}</OPTION>
+				{% if subject[0] == 0 %}
+					<OPTION value="0">Select</OPTION>
+				{% else %}
+				<OPTION value={{subject[0]}}>{{subject[0]}}-{{subject[2]}}</OPTION>
+				{% endif %}
 			{% endfor %}
 		</SELECT>
 	</div>
@@ -508,7 +513,8 @@
 			window.location='/evaluation/all/all';	
 		}
 		else{
-			window.location='/evaluation/'+ selected_teacher.value + "/0";	
+			//window.location='/evaluation/'+ selected_teacher.value + "/0";	
+			window.location='/evaluation/'+ selected_teacher.value + "/" + selected_subject.value;
 		}
 	}
 	selected_subject.onchange = function()
@@ -520,10 +526,15 @@
 			evaluation_Form.style.display = "none";
 			msg_SelectTeacher.style.display = "relative";
 	}
-	else{
+	else if (selected_subject.value == 0)
+	{
+		selected_subject.disabled = false;
+		evaluation_Form.style.display = "none";
+	}
+	else
+	{
 		msg_SelectTeacher.style.display = "none";
 	}
-	
 </script>
 
 {% endblock %}
