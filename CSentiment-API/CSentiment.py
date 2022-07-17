@@ -1,8 +1,3 @@
-# for language detection
-from langdetect import detect
-#for pdf report generation
-import pdfkit
-
 import nltk
 from flask import Flask, request, json, jsonify, make_response, render_template
 from flask_cors import CORS
@@ -63,20 +58,11 @@ newvaderdata = pd.read_csv('cebuanonewword.csv')
 print("number of data ", newvaderdata.shape)
 new_vader = newvaderdata.set_index('token')['rating'].to_dict()
 
-def isEnglishOrCebuano(langUsed):
-    if (langUsed == "tl" or 
-        langUsed == "en" or
-        langUsed == "fr" or
-        langUsed == "ro" or
-        langUsed == "so"):
-        return True
 
 # ALGORITHM 1
 # function to print sentiments 
 # of the sentence.
 def sentiment_scores(sentence):
-    #lowercase the  sentence for uniformity
-    sentence = sentence.lower() 
     #words to be remove from the comment because it can cause wrong result
     toRemoveWords=["miss"]
     #words to remove from vader dict
@@ -118,15 +104,9 @@ def sentiment_scores(sentence):
         vdscore = abs(vdscore) * 5
         vdscore = round(vdscore, 2)
 
-    # detect language used
-    try:
-        langUsed = detect(sentence)
-    except Exception as e:
-        langUsed = ""
-
     print("word: ", sentence)
     print("Overall sentiment dictionary is : ", sentiment_dict)
-    print("---------------------------- language: ", langUsed)
+    print("---------------------------- ")
     print("VADER : ", sentiment_output, "|", vdscore)
     print("sentence was rated as ", vdpos, "% Positive")
     print("sentence was rated as ", vdneu, "% Neutral")
@@ -139,9 +119,6 @@ def sentiment_scores(sentence):
 
     elif sentiment_dict['compound'] <= -0.05:
         return "negative" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
-
-    # elif (isEnglishOrCebuano(langUsed) or sentence == ""):
-    #     return "neutral" + " " + str(vdpos) + " " + str(vdneu) + " " + str(vdneg) + " " + str(vdscore)
 
     else:
         #print("pass to NB, langused: ", langUsed)
@@ -223,9 +200,9 @@ def isNeutralDefaultVal(pos,neu,neg):
     pos = round(pos,2)
     neg = round(neg,2)
 
-    defNeu = round(18.470149253731346,2)
-    defPos = round(48.50746268656717,2)
-    defNeg = round(33.02238805970149,2)
+    defNeu = round(18.405797101449277,2)
+    defPos = round(48.55072463768116,2)
+    defNeg = round(33.04347826086958,2)
 
     if (neu == defNeu) and (pos == defPos) and (neg == defNeg):
         return True
